@@ -1,0 +1,2165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cosmic Beauty Spa · Esthetician Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Syncopate:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --void: #030612;
+  --deep: #0a0820;
+  --card: rgba(18,10,45,0.9);
+  --violet: #6b2fa0;
+  --electric: #7c3aed;
+  --aurora: #a855f7;
+  --sky: #60a5fa;
+  --starlight: #e8d5ff;
+  --pearl: #f5f0ff;
+  --success: #34d399;
+  --warning: #fbbf24;
+  --danger: #f87171;
+  --gold: #f59e0b;
+  --border: rgba(168,85,247,0.15);
+  --border-hi: rgba(168,85,247,0.45);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--void);color:var(--pearl);font-family:'DM Sans',sans-serif;font-weight:300;min-height:100vh;overflow-x:hidden;}
+::selection{background:var(--aurora);color:var(--void);}
+
+/* STARS */
+#starfield{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;}
+.nb{position:fixed;border-radius:50%;filter:blur(110px);pointer-events:none;z-index:0;}
+.nb1{width:500px;height:500px;background:radial-gradient(circle,rgba(107,47,160,.22) 0%,transparent 70%);top:-80px;left:-60px;animation:drift 20s ease-in-out infinite alternate;}
+.nb2{width:380px;height:380px;background:radial-gradient(circle,rgba(61,47,160,.18) 0%,transparent 70%);bottom:10%;right:-40px;animation:drift 25s ease-in-out infinite alternate-reverse;}
+@keyframes drift{0%{transform:translate(0,0);}100%{transform:translate(28px,18px);}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+@keyframes slideIn{from{transform:translateX(100%);opacity:0;}to{transform:translateX(0);opacity:1;}}
+@keyframes pulse{0%,100%{opacity:.6;}50%{opacity:1;}}
+
+/* LAYOUT */
+#app{position:relative;z-index:1;min-height:100vh;display:flex;}
+
+/* ── LOGIN ── */
+#loginScreen{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;background:rgba(3,6,18,.97);backdrop-filter:blur(20px);}
+.login-box{background:linear-gradient(145deg,rgba(18,10,45,.97),rgba(13,26,74,.92));border:1px solid rgba(168,85,247,.3);border-radius:28px;padding:52px 44px;width:100%;max-width:420px;box-shadow:0 0 80px rgba(107,47,160,.3);animation:fadeUp .6s ease both;}
+.login-logo{font-family:'Syncopate',sans-serif;font-size:12px;letter-spacing:.3em;color:var(--aurora);text-align:center;margin-bottom:4px;}
+.login-sub-logo{font-size:9px;letter-spacing:.5em;text-transform:uppercase;color:rgba(168,85,247,.4);text-align:center;margin-bottom:24px;}
+.login-title{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:300;text-align:center;margin-bottom:6px;}
+.login-title em{font-style:italic;background:linear-gradient(135deg,var(--aurora),var(--sky));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.login-hint{text-align:center;font-size:12px;color:rgba(232,213,255,.35);margin-bottom:32px;padding:10px 16px;background:rgba(168,85,247,.06);border:1px solid rgba(168,85,247,.1);border-radius:10px;}
+.lfield{display:flex;flex-direction:column;gap:7px;margin-bottom:16px;}
+.lfield label{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--aurora);}
+.lfield input{background:rgba(26,10,61,.6);border:1px solid var(--border);border-radius:12px;padding:13px 16px;color:var(--pearl);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:all .3s;}
+.lfield input:focus{border-color:var(--border-hi);box-shadow:0 0 16px rgba(168,85,247,.12);}
+.lfield input::placeholder{color:rgba(232,213,255,.2);}
+.btn-login{width:100%;background:linear-gradient(135deg,var(--electric),rgba(107,47,160,.9));color:#fff;border:none;padding:15px;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:13px;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;transition:all .4s;box-shadow:0 0 24px rgba(124,58,237,.4);margin-top:4px;}
+.btn-login:hover{box-shadow:0 0 44px rgba(124,58,237,.7);transform:translateY(-1px);}
+.login-back{display:block;text-align:center;margin-top:18px;font-size:12px;color:rgba(232,213,255,.3);text-decoration:none;letter-spacing:.05em;transition:color .3s;}
+.login-back:hover{color:var(--aurora);}
+
+/* ── SIDEBAR ── */
+.sidebar{width:240px;min-height:100vh;background:rgba(5,3,18,.95);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:50;transition:transform .3s;}
+.sb-logo{padding:28px 24px 20px;border-bottom:1px solid var(--border);}
+.sb-logo-name{font-family:'Syncopate',sans-serif;font-size:10px;letter-spacing:.25em;color:var(--aurora);}
+.sb-logo-sub{font-size:8px;letter-spacing:.35em;text-transform:uppercase;color:rgba(168,85,247,.35);margin-top:3px;}
+.sb-role{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,rgba(107,47,160,.35),rgba(61,47,160,.25));border:1px solid rgba(168,85,247,.3);border-radius:100px;padding:4px 12px;font-size:9px;letter-spacing:.2em;color:var(--aurora);margin-top:10px;}
+
+.sb-nav{flex:1;padding:20px 12px;overflow-y:auto;}
+.sb-section{font-size:8px;letter-spacing:.4em;text-transform:uppercase;color:rgba(168,85,247,.35);padding:0 10px;margin:20px 0 8px;}
+.sb-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;cursor:pointer;transition:all .3s;color:rgba(232,213,255,.5);font-size:13px;border:1px solid transparent;margin-bottom:2px;}
+.sb-item:hover{background:rgba(168,85,247,.08);color:var(--starlight);}
+.sb-item.active{background:linear-gradient(135deg,rgba(107,47,160,.35),rgba(61,47,160,.25));border-color:rgba(168,85,247,.2);color:var(--starlight);}
+.sb-item .si-icon{font-size:16px;width:20px;text-align:center;}
+.sb-item .si-badge{margin-left:auto;background:var(--aurora);color:#fff;font-size:9px;padding:2px 7px;border-radius:100px;font-weight:600;}
+
+.sb-footer{padding:16px 12px;border-top:1px solid var(--border);}
+.sb-user{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:rgba(168,85,247,.06);border:1px solid var(--border);}
+.sb-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--electric),var(--violet));display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.sb-user-info{flex:1;min-width:0;}
+.sb-user-name{font-size:12px;color:var(--starlight);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sb-user-role{font-size:9px;color:var(--aurora);letter-spacing:.15em;}
+.sb-logout{background:none;border:none;color:rgba(232,213,255,.3);cursor:pointer;font-size:14px;transition:color .3s;padding:4px;}
+.sb-logout:hover{color:var(--danger);}
+
+/* ── MAIN ── */
+.main{margin-left:240px;min-height:100vh;flex:1;}
+.top-bar{padding:18px 32px;background:rgba(3,6,18,.7);border-bottom:1px solid var(--border);backdrop-filter:blur(16px);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:40;}
+.top-title{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:var(--starlight);}
+.top-title em{font-style:italic;color:var(--aurora);}
+.top-actions{display:flex;align-items:center;gap:12px;}
+.top-date{font-size:12px;color:rgba(232,213,255,.35);letter-spacing:.05em;}
+.btn-primary{background:linear-gradient(135deg,var(--electric),rgba(107,47,160,.9));color:#fff;border:none;padding:9px 20px;border-radius:100px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:all .3s;font-family:'DM Sans',sans-serif;box-shadow:0 0 16px rgba(124,58,237,.3);}
+.btn-primary:hover{box-shadow:0 0 30px rgba(124,58,237,.6);transform:translateY(-1px);}
+.btn-ghost{background:rgba(168,85,247,.08);border:1px solid var(--border);color:rgba(232,213,255,.6);padding:9px 18px;border-radius:100px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .3s;font-family:'DM Sans',sans-serif;}
+.btn-ghost:hover{border-color:var(--border-hi);color:var(--starlight);}
+.btn-sm-danger{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.2);color:#f87171;padding:6px 14px;border-radius:100px;font-size:10px;letter-spacing:.1em;cursor:pointer;transition:all .3s;font-family:'DM Sans',sans-serif;border-width:1px;border-style:solid;}
+.btn-sm-danger:hover{background:rgba(248,113,113,.2);}
+
+.page-content{padding:28px 32px 60px;animation:fadeUp .4s ease both;}
+
+/* Cards */
+.card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:22px;backdrop-filter:blur(12px);transition:border-color .3s;}
+.card:hover{border-color:rgba(168,85,247,.25);}
+.card-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;color:var(--starlight);margin-bottom:3px;}
+.card-sub{font-size:11px;color:rgba(232,213,255,.35);letter-spacing:.05em;margin-bottom:16px;}
+
+/* Grids */
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+
+/* Stat cards */
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:20px;text-align:center;backdrop-filter:blur(12px);position:relative;overflow:hidden;transition:all .3s;}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(to right,var(--aurora),var(--sky));opacity:.5;}
+.stat-card:hover{border-color:rgba(168,85,247,.3);transform:translateY(-2px);}
+.stat-num{font-family:'Cormorant Garamond',serif;font-size:38px;color:var(--aurora);display:block;line-height:1;}
+.stat-label{font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:rgba(232,213,255,.35);display:block;margin-top:6px;}
+.stat-change{font-size:11px;color:var(--success);margin-top:4px;display:block;}
+
+/* Pill badges */
+.pill{display:inline-flex;align-items:center;gap:4px;font-size:10px;letter-spacing:.1em;padding:3px 10px;border-radius:100px;}
+.pill-purple{background:rgba(168,85,247,.12);border:1px solid rgba(168,85,247,.2);color:rgba(168,85,247,.9);}
+.pill-green{background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.2);color:#34d399;}
+.pill-yellow{background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.2);color:#fbbf24;}
+.pill-red{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.2);color:#f87171;}
+.pill-blue{background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.2);color:#60a5fa;}
+.pill-gold{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.2);color:#f59e0b;}
+
+/* ── PANELS ── */
+.panel{display:none;}
+.panel.active{display:block;animation:fadeUp .4s ease both;}
+
+/* ── OVERVIEW / BOOKINGS ── */
+.booking-row{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid rgba(168,85,247,.07);cursor:pointer;transition:all .3s;}
+.booking-row:last-child{border-bottom:none;}
+.booking-row:hover{padding-left:6px;}
+.br-time{font-size:12px;color:var(--aurora);font-weight:500;min-width:60px;letter-spacing:.05em;}
+.br-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--electric),var(--violet));display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.br-info{flex:1;}
+.br-name{font-size:14px;color:var(--starlight);}
+.br-service{font-size:11px;color:rgba(232,213,255,.4);margin-top:1px;}
+.br-actions{display:flex;gap:8px;align-items:center;}
+
+.alert-item{display:flex;gap:12px;align-items:flex-start;padding:12px 16px;border-radius:14px;background:rgba(26,10,61,.5);border:1px solid rgba(168,85,247,.1);margin-bottom:10px;cursor:pointer;transition:all .3s;}
+.alert-item:hover{border-color:rgba(168,85,247,.3);}
+.alert-item.urgent{border-color:rgba(248,113,113,.2);background:rgba(248,113,113,.05);}
+.alert-item.warning{border-color:rgba(251,191,36,.2);background:rgba(251,191,36,.05);}
+.ai-icon{font-size:20px;flex-shrink:0;}
+.ai-text{flex:1;}
+.ai-title{font-size:13px;color:var(--starlight);margin-bottom:2px;}
+.ai-sub{font-size:11px;color:rgba(232,213,255,.4);}
+
+/* ── CLIENT LIST ── */
+.search-bar{display:flex;gap:10px;margin-bottom:20px;align-items:center;}
+.search-input{flex:1;background:rgba(26,10,61,.6);border:1px solid var(--border);border-radius:12px;padding:12px 18px;color:var(--pearl);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:all .3s;}
+.search-input:focus{border-color:var(--border-hi);box-shadow:0 0 14px rgba(168,85,247,.1);}
+.search-input::placeholder{color:rgba(232,213,255,.25);}
+.filter-btns{display:flex;gap:6px;}
+.filter-btn{padding:8px 16px;border-radius:100px;border:1px solid var(--border);background:rgba(26,10,61,.4);color:rgba(232,213,255,.5);font-size:11px;letter-spacing:.1em;cursor:pointer;transition:all .3s;font-family:'DM Sans',sans-serif;}
+.filter-btn.active{background:linear-gradient(135deg,rgba(107,47,160,.4),rgba(61,47,160,.3));border-color:rgba(168,85,247,.4);color:var(--starlight);}
+
+.client-table{width:100%;border-collapse:collapse;}
+.client-table th{font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:rgba(168,85,247,.5);padding:8px 12px;text-align:left;border-bottom:1px solid var(--border);}
+.client-table td{padding:14px 12px;border-bottom:1px solid rgba(168,85,247,.06);vertical-align:middle;}
+.client-table tr:last-child td{border-bottom:none;}
+.client-table tr:hover td{background:rgba(168,85,247,.04);}
+.ct-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--electric),var(--violet));display:flex;align-items:center;justify-content:center;font-size:14px;}
+.ct-name{font-size:14px;color:var(--starlight);}
+.ct-email{font-size:11px;color:rgba(232,213,255,.35);}
+.ct-action{font-size:11px;color:var(--aurora);cursor:pointer;letter-spacing:.1em;background:none;border:none;font-family:'DM Sans',sans-serif;transition:color .3s;}
+.ct-action:hover{color:var(--sky);}
+.empty-clients{text-align:center;padding:60px 20px;color:rgba(232,213,255,.25);}
+.empty-icon{font-size:40px;margin-bottom:12px;}
+
+/* ── CLIENT DETAIL DRAWER ── */
+.drawer-overlay{position:fixed;inset:0;background:rgba(3,6,18,.6);backdrop-filter:blur(10px);z-index:150;display:none;}
+.drawer-overlay.open{display:block;}
+.client-drawer{position:fixed;top:0;right:-680px;width:680px;height:100%;background:linear-gradient(180deg,rgba(10,8,32,.98),rgba(18,10,45,.98));border-left:1px solid var(--border);z-index:151;transition:right .4s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;overflow:hidden;}
+.client-drawer.open{right:0;}
+.drawer-header{padding:24px 28px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;flex-shrink:0;}
+.drawer-client-info{display:flex;align-items:center;gap:16px;}
+.drawer-avatar{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--electric),var(--violet));display:flex;align-items:center;justify-content:center;font-size:24px;border:2px solid rgba(168,85,247,.3);}
+.drawer-name{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:var(--starlight);}
+.drawer-meta{font-size:12px;color:rgba(232,213,255,.4);margin-top:2px;}
+.drawer-close{background:rgba(168,85,247,.1);border:1px solid rgba(168,85,247,.2);border-radius:50%;width:34px;height:34px;color:var(--starlight);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .3s;flex-shrink:0;}
+.drawer-close:hover{background:rgba(168,85,247,.25);}
+.drawer-tabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0;}
+.dtab{flex:1;padding:12px;text-align:center;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:rgba(232,213,255,.4);cursor:pointer;transition:all .3s;border-bottom:2px solid transparent;}
+.dtab:hover{color:rgba(232,213,255,.7);}
+.dtab.active{color:var(--aurora);border-bottom-color:var(--aurora);}
+.drawer-body{flex:1;overflow-y:auto;padding:24px 28px;scrollbar-width:thin;scrollbar-color:rgba(168,85,247,.3) transparent;}
+.drawer-body::-webkit-scrollbar{width:4px;}
+.drawer-body::-webkit-scrollbar-thumb{background:rgba(168,85,247,.3);border-radius:2px;}
+
+/* Drawer sections */
+.ds-label{font-size:9px;letter-spacing:.4em;text-transform:uppercase;color:var(--aurora);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.ds-label::before{content:'';display:block;width:14px;height:1px;background:var(--aurora);}
+.ds-section{margin-bottom:24px;}
+
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.info-item{background:rgba(26,10,61,.5);border:1px solid rgba(168,85,247,.08);border-radius:12px;padding:12px 14px;}
+.info-item-label{font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:rgba(168,85,247,.5);margin-bottom:4px;}
+.info-item-val{font-size:13px;color:var(--starlight);}
+
+/* Quiz answers display */
+.quiz-answer-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid rgba(168,85,247,.06);}
+.quiz-answer-row:last-child{border-bottom:none;}
+.qa-question{font-size:12px;color:rgba(232,213,255,.5);}
+.qa-answer{font-size:12px;color:var(--starlight);font-weight:500;}
+
+/* Photos grid in drawer */
+.drawer-photos{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.dp-tile{aspect-ratio:1;border-radius:12px;overflow:hidden;position:relative;border:1px solid var(--border);}
+.dp-tile img{width:100%;height:100%;object-fit:cover;}
+.dp-overlay{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,rgba(3,6,18,.8),transparent);padding:8px;font-size:9px;color:rgba(232,213,255,.7);}
+.dp-empty{text-align:center;padding:32px;color:rgba(232,213,255,.25);font-size:13px;grid-column:1/-1;}
+
+/* Routine editor */
+.routine-step-row{display:flex;align-items:center;gap:12px;padding:10px 14px;background:rgba(26,10,61,.5);border:1px solid rgba(168,85,247,.08);border-radius:12px;margin-bottom:8px;transition:all .3s;}
+.routine-step-row:hover{border-color:rgba(168,85,247,.2);}
+.rsr-num{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,rgba(107,47,160,.5),rgba(61,47,160,.4));display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--aurora);flex-shrink:0;}
+.rsr-content{flex:1;}
+.rsr-name{font-size:13px;color:var(--starlight);}
+.rsr-product{font-size:11px;color:rgba(168,85,247,.6);}
+.rsr-edit{font-size:12px;color:rgba(232,213,255,.3);cursor:pointer;transition:color .3s;background:none;border:none;font-family:'DM Sans',sans-serif;}
+.rsr-edit:hover{color:var(--aurora);}
+
+/* Notes area */
+.notes-textarea{width:100%;background:rgba(26,10,61,.5);border:1px solid var(--border);border-radius:12px;padding:14px;color:var(--pearl);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;resize:vertical;min-height:120px;transition:all .3s;line-height:1.7;}
+.notes-textarea:focus{border-color:var(--border-hi);box-shadow:0 0 14px rgba(168,85,247,.1);}
+.notes-textarea::placeholder{color:rgba(232,213,255,.2);}
+
+/* Treatment record form */
+.treatment-form{display:flex;flex-direction:column;gap:14px;}
+.tform-field{display:flex;flex-direction:column;gap:7px;}
+.tform-field label{font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--aurora);}
+.tform-field input,.tform-field select,.tform-field textarea{background:rgba(26,10,61,.5);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--pearl);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;transition:all .3s;width:100%;}
+.tform-field input:focus,.tform-field select:focus,.tform-field textarea:focus{border-color:var(--border-hi);}
+.tform-field select option{background:var(--deep);}
+.tform-field textarea{resize:vertical;min-height:80px;}
+
+/* Treatment history */
+.treatment-record{background:rgba(26,10,61,.5);border:1px solid rgba(168,85,247,.1);border-radius:14px;padding:16px;margin-bottom:10px;position:relative;}
+.treatment-record::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:3px 0 0 3px;background:linear-gradient(to bottom,var(--aurora),var(--sky));}
+.tr-date{font-size:11px;color:var(--aurora);letter-spacing:.1em;margin-bottom:4px;}
+.tr-service{font-size:14px;color:var(--starlight);margin-bottom:4px;}
+.tr-notes{font-size:12px;color:rgba(232,213,255,.45);line-height:1.6;}
+.tr-products{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
+
+/* Reorder flags */
+.reorder-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(168,85,247,.07);}
+.reorder-row:last-child{border-bottom:none;}
+.rr-emoji{font-size:20px;}
+.rr-info{flex:1;}
+.rr-name{font-size:13px;color:var(--starlight);}
+.rr-status{font-size:11px;color:rgba(232,213,255,.4);margin-top:2px;}
+.rr-action{background:none;border:1px solid rgba(168,85,247,.25);border-radius:100px;padding:5px 14px;font-size:10px;color:var(--aurora);cursor:pointer;transition:all .3s;font-family:'DM Sans',sans-serif;letter-spacing:.1em;}
+.rr-action:hover{background:rgba(168,85,247,.12);border-color:var(--aurora);}
+
+/* Input in drawer */
+.drawer-input{width:100%;background:rgba(26,10,61,.5);border:1px solid var(--border);border-radius:10px;padding:10px 14px;color:var(--pearl);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;transition:all .3s;}
+.drawer-input:focus{border-color:var(--border-hi);}
+.drawer-select{width:100%;background:rgba(26,10,61,.5);border:1px solid var(--border);border-radius:10px;padding:10px 14px;color:var(--pearl);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;transition:all .3s;}
+.drawer-select option{background:var(--deep);}
+
+/* Reorder panel */
+.reorder-table{width:100%;}
+.rt-row{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid rgba(168,85,247,.07);}
+.rt-row:last-child{border-bottom:none;}
+
+/* Toast */
+.toast{position:fixed;bottom:28px;right:28px;background:linear-gradient(135deg,rgba(18,10,45,.97),rgba(13,26,74,.97));border:1px solid rgba(168,85,247,.35);border-radius:14px;padding:14px 20px;display:flex;align-items:center;gap:10px;z-index:500;transform:translateY(60px);opacity:0;transition:all .4s;box-shadow:0 0 40px rgba(107,47,160,.3);max-width:320px;}
+.toast.show{transform:translateY(0);opacity:1;}
+.ti{font-size:18px;}.tt{font-size:13px;color:var(--starlight);}
+
+/* ── FACIAL FORM ── */
+.facial-progress{display:flex;align-items:center;gap:0;margin-bottom:32px;overflow-x:auto;padding-bottom:4px;}
+.fp-step{display:flex;align-items:center;flex-shrink:0;}
+.fp-dot{width:36px;height:36px;border-radius:50%;border:2px solid rgba(168,85,247,.2);background:rgba(26,10,61,.5);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;transition:all .3s;position:relative;}
+.fp-dot.done{background:linear-gradient(135deg,var(--electric),var(--violet));border-color:var(--aurora);box-shadow:0 0 14px rgba(124,58,237,.4);}
+.fp-dot.done::after{content:'✓';position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);font-size:9px;color:var(--success);white-space:nowrap;}
+.fp-dot.active{border-color:var(--aurora);background:rgba(107,47,160,.3);box-shadow:0 0 18px rgba(168,85,247,.35);animation:pulse 2s ease-in-out infinite;}
+.fp-line{width:48px;height:2px;background:rgba(168,85,247,.12);flex-shrink:0;transition:background .4s;}
+.fp-line.done{background:linear-gradient(to right,var(--aurora),var(--sky));}
+.fp-label{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(232,213,255,.35);text-align:center;margin-top:22px;white-space:nowrap;}
+
+.facial-step-card{display:none;animation:fadeUp .4s ease both;}
+.facial-step-card.active{display:block;}
+
+.step-header{display:flex;align-items:center;gap:16px;margin-bottom:24px;padding:20px 24px;background:linear-gradient(135deg,rgba(107,47,160,.25),rgba(61,47,160,.18));border:1px solid rgba(168,85,247,.2);border-radius:18px;}
+.step-icon{font-size:36px;}
+.step-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;color:var(--starlight);line-height:1.1;}
+.step-subtitle{font-size:12px;color:rgba(168,85,247,.6);margin-top:3px;}
+
+.product-picker{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
+.product-option{background:rgba(26,10,61,.6);border:1px solid rgba(168,85,247,.12);border-radius:14px;padding:14px 12px;cursor:pointer;transition:all .3s;text-align:center;}
+.product-option:hover{border-color:rgba(168,85,247,.35);background:rgba(107,47,160,.15);}
+.product-option.selected{border-color:rgba(168,85,247,.6);background:rgba(107,47,160,.3);box-shadow:0 0 16px rgba(107,47,160,.25);}
+.po-emoji{font-size:22px;display:block;margin-bottom:6px;}
+.po-name{font-size:12px;color:var(--starlight);display:block;line-height:1.3;}
+.po-type{font-size:10px;color:rgba(168,85,247,.55);display:block;margin-top:2px;letter-spacing:.05em;}
+
+.custom-product-row{display:flex;gap:10px;align-items:center;margin-top:4px;padding:12px 14px;background:rgba(26,10,61,.4);border:1px dashed rgba(168,85,247,.2);border-radius:12px;}
+.custom-product-row .cp-label{font-size:11px;color:rgba(168,85,247,.6);white-space:nowrap;letter-spacing:.05em;}
+.cp-input{flex:1;background:transparent;border:none;color:var(--pearl);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;}
+.cp-input::placeholder{color:rgba(232,213,255,.2);}
+
+.step-notes{width:100%;background:rgba(26,10,61,.5);border:1px solid var(--border);border-radius:12px;padding:13px 16px;color:var(--pearl);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;resize:vertical;min-height:72px;transition:all .3s;margin-top:4px;}
+.step-notes:focus{border-color:var(--border-hi);box-shadow:0 0 12px rgba(168,85,247,.1);}
+.step-notes::placeholder{color:rgba(232,213,255,.2);}
+
+.skin-condition-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:4px;}
+.sc-chip{padding:8px 10px;border-radius:10px;border:1px solid rgba(168,85,247,.12);background:rgba(26,10,61,.5);font-size:11px;color:rgba(232,213,255,.55);cursor:pointer;transition:all .3s;text-align:center;}
+.sc-chip:hover{border-color:rgba(168,85,247,.3);color:var(--starlight);}
+.sc-chip.selected{border-color:rgba(168,85,247,.55);background:rgba(107,47,160,.25);color:var(--starlight);}
+
+.facial-nav{display:flex;justify-content:space-between;align-items:center;margin-top:24px;padding-top:20px;border-top:1px solid rgba(168,85,247,.1);}
+.step-counter{font-size:11px;color:rgba(168,85,247,.5);letter-spacing:.2em;}
+
+.summary-card{background:rgba(26,10,61,.5);border:1px solid rgba(168,85,247,.12);border-radius:14px;padding:16px;margin-bottom:12px;}
+.sc-step-name{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--aurora);margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+.sc-step-name::before{content:'';display:block;width:12px;height:1px;background:var(--aurora);}
+.sc-product{font-size:14px;color:var(--starlight);margin-bottom:4px;}
+.sc-notes-text{font-size:12px;color:rgba(232,213,255,.45);line-height:1.6;}
+
+.facial-history-item{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid rgba(168,85,247,.07);cursor:pointer;transition:all .3s;}
+.facial-history-item:last-child{border-bottom:none;}
+.facial-history-item:hover{padding-left:6px;}
+.fhi-date{font-size:11px;color:var(--aurora);min-width:80px;letter-spacing:.05em;}
+.fhi-info{flex:1;}
+.fhi-client{font-size:13px;color:var(--aurora);cursor:pointer;text-decoration:underline;text-decoration-color:rgba(168,85,247,.3);}
+.fhi-client:hover{color:var(--sky);}
+.fhi-expand{display:none;margin-top:12px;padding-top:12px;border-top:1px solid rgba(168,85,247,.08);}
+.fhi-expand.open{display:block;}
+.fhi-expand-step{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px solid rgba(168,85,247,.05);}
+.fhi-expand-step:last-child{border-bottom:none;}
+.fhi-step-icon{font-size:15px;flex-shrink:0;width:22px;}
+.fhi-step-detail{flex:1;}
+.fhi-step-name{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(168,85,247,.5);}
+.fhi-step-product{font-size:13px;color:var(--starlight);margin:2px 0;}
+.fhi-step-notes{font-size:11px;color:rgba(232,213,255,.4);line-height:1.6;}
+.fhi-expand-toggle{font-size:11px;color:rgba(168,85,247,.6);cursor:pointer;background:none;border:none;font-family:'DM Sans',sans-serif;letter-spacing:.05em;transition:color .3s;padding:0;}
+.fhi-expand-toggle:hover{color:var(--aurora);}
+.facial-history-item{display:flex;gap:14px;padding:16px;border-bottom:1px solid rgba(168,85,247,.07);transition:background .3s;border-radius:12px;flex-direction:column;cursor:default;}
+.facial-history-item:hover{background:rgba(168,85,247,.04);}
+.fhi-top{display:flex;gap:14px;align-items:flex-start;}
+.fhi-date{font-size:11px;color:var(--aurora);min-width:80px;letter-spacing:.05em;padding-top:2px;}
+.fhi-info{flex:1;}
+.fhi-service{font-size:11px;color:rgba(232,213,255,.4);margin-top:2px;}
+.fhi-steps{display:flex;gap:4px;margin-top:6px;flex-wrap:wrap;}
+.fhi-actions{display:flex;gap:8px;align-items:center;flex-shrink:0;}
+
+/* Responsive */
+@media(max-width:1100px){.grid-4{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:900px){
+  .sidebar{transform:translateX(-100%);}
+  .sidebar.open{transform:translateX(0);}
+  .main{margin-left:0;}
+  .client-drawer{width:100%;}
+  .grid-3,.grid-2{grid-template-columns:1fr;}
+  .info-grid{grid-template-columns:1fr;}
+  .drawer-photos{grid-template-columns:repeat(2,1fr);}
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js"></script>
+<script src="supabase-client.js"></script>
+</head>
+<body>
+<canvas id="starfield"></canvas>
+<div class="nb nb1"></div>
+<div class="nb nb2"></div>
+
+<div id="app">
+
+<!-- ═══ LOGIN ═══ -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">COSMIC BEAUTY SPA</div>
+    <div class="login-sub-logo">Esthetician Portal</div>
+    <h2 class="login-title">Welcome Back,<br><em>Beautiful</em></h2>
+    <div class="login-hint">🔒 This portal is for Cosmic Beauty Spa staff only. Clients should use the <a href="client-portal.html" style="color:var(--aurora);">Client Portal</a>.</div>
+    <div class="lfield"><label>Email</label><input type="email" id="adminEmail" placeholder="christina@cosmicbeautyspa.com" autocomplete="email"></div>
+    <div class="lfield"><label>Password</label><input type="password" id="adminPw" placeholder="••••••••" onkeydown="if(event.key==='Enter')adminLogin()" autocomplete="current-password"></div>
+    <button class="btn-login" onclick="adminLogin()">Sign In to Dashboard ✦</button>
+    <a href="index.html" class="login-back">← Back to Sign In</a>
+  </div>
+</div>
+
+<!-- ═══ SIDEBAR ═══ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sb-logo">
+    <div class="sb-logo-name">COSMIC BEAUTY SPA</div>
+    <div class="sb-logo-sub">Hudson · Florida</div>
+    <div class="sb-role">✦ Esthetician Dashboard</div>
+  </div>
+
+  <nav class="sb-nav">
+    <div class="sb-section">Main</div>
+    <div class="sb-item active" onclick="showPanel('overview',this)"><span class="si-icon">🏠</span> Overview</div>
+    <div class="sb-item" onclick="showPanel('bookings',this)"><span class="si-icon">📅</span> Upcoming Bookings <span class="si-badge" id="bookingBadge">0</span></div>
+
+    <div class="sb-section">Clients</div>
+    <div class="sb-item" onclick="showPanel('clients',this)"><span class="si-icon">👥</span> All Clients <span class="si-badge" id="clientBadge">0</span></div>
+    <div class="sb-item" onclick="showPanel('reorders',this)"><span class="si-icon">🛍️</span> Reorder Alerts <span class="si-badge" id="reorderBadge" style="background:var(--warning);color:#000;">0</span></div>
+
+    <div class="sb-section">Tools</div>
+    <div class="sb-item" onclick="showPanel('facial',this)"><span class="si-icon">🌸</span> Facial Form</div>
+    <div class="sb-item" onclick="showPanel('addclient',this)"><span class="si-icon">➕</span> Add Client</div>
+    <div class="sb-item" onclick="showPanel('reviews',this)"><span class="si-icon">★</span> Reviews</div>
+    <div class="sb-item" onclick="window.open('https://cosmicnailsandspa.glossgenius.com','_blank')"><span class="si-icon">🔗</span> GlossGenius</div>
+    <div class="sb-item" onclick="window.open('client-portal.html','_blank')"><span class="si-icon">🌸</span> View Client Portal</div>
+  </nav>
+
+  <div class="sb-footer">
+    <div class="sb-user">
+      <div class="sb-avatar">👩‍⚕️</div>
+      <div class="sb-user-info">
+        <div class="sb-user-name">Cosmic Beauty Spa</div>
+        <div class="sb-user-role">Licensed Esthetician</div>
+      </div>
+      <button class="sb-logout" onclick="adminLogout()" title="Sign out">⏻</button>
+    </div>
+  </div>
+</aside>
+
+<!-- ═══ MAIN ═══ -->
+<div class="main" id="mainArea" style="display:none;">
+
+  <div class="top-bar">
+    <div class="top-title" id="topTitle">Overview</div>
+    <div class="top-actions">
+      <span class="top-date" id="topDate"></span>
+      <button class="btn-ghost" onclick="showPanel('addclient', document.querySelector('.sb-item:nth-child(8)'))">+ Add Client</button>
+    </div>
+  </div>
+
+  <div class="page-content">
+
+    <!-- ── OVERVIEW ── -->
+    <div class="panel active" id="panel-overview">
+      <div class="grid-4" id="overviewStats"></div>
+      <div class="grid-2" style="gap:20px;margin-bottom:20px;">
+        <div class="card">
+          <div class="card-title">Today's Appointments</div>
+          <div class="card-sub" id="todayDateSub"></div>
+          <div id="todayAppts"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Alerts & Actions</div>
+          <div class="card-sub">Things needing your attention</div>
+          <div id="overviewAlerts"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Recent Client Activity</div>
+        <div class="card-sub">Latest profile updates and quiz completions</div>
+        <div id="recentActivity"></div>
+      </div>
+    </div>
+
+    <!-- ── BOOKINGS ── -->
+    <div class="panel" id="panel-bookings">
+      <div class="card" style="margin-bottom:20px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+          <div>
+            <div class="card-title">Upcoming Appointments</div>
+            <div class="card-sub">Synced with GlossGenius · <a href="https://cosmicnailsandspa.glossgenius.com" target="_blank" style="color:var(--aurora);">Manage on GlossGenius →</a></div>
+          </div>
+          <a href="https://cosmicnailsandspa.glossgenius.com" target="_blank"><button class="btn-primary">Open GlossGenius</button></a>
+        </div>
+        <div id="bookingsList"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Manual Appointment Log</div>
+        <div class="card-sub">Add offline or phone bookings</div>
+        <div class="grid-2" style="gap:12px;margin-top:4px;">
+          <div class="tform-field"><label>Client Name</label><input type="text" id="apptClient" placeholder="Client name"></div>
+          <div class="tform-field"><label>Service</label>
+            <select id="apptService">
+              <option>Online Consultation</option><option>At-Home Facial · 60 min</option>
+              <option>At-Home Facial · 90 min</option><option>In-Spa Express Glow · 30 min</option>
+              <option>In-Spa Custom Facial · 60 min</option><option>In-Spa Anti-Aging · 90 min</option>
+              <option>Acne Clearing Treatment</option><option>Sensitive Skin Soother</option>
+              <option>Brightening & Glow Facial</option>
+            </select>
+          </div>
+          <div class="tform-field"><label>Date</label><input type="date" id="apptDate"></div>
+          <div class="tform-field"><label>Time</label><input type="time" id="apptTime" value="10:00"></div>
+          <div class="tform-field" style="grid-column:1/-1;"><label>Notes</label><input type="text" id="apptNotes" placeholder="Special requests or notes…"></div>
+        </div>
+        <button class="btn-primary" style="margin-top:14px;" onclick="addAppt()">Add Appointment ✦</button>
+      </div>
+    </div>
+
+    <!-- ── ALL CLIENTS ── -->
+    <div class="panel" id="panel-clients">
+      <div class="search-bar">
+        <input type="text" class="search-input" id="clientSearch" placeholder="Search clients by name, email, or skin type…" oninput="renderClientList()">
+        <div class="filter-btns">
+          <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
+          <button class="filter-btn" onclick="setFilter('Oily',this)">Oily</button>
+          <button class="filter-btn" onclick="setFilter('Dry',this)">Dry</button>
+          <button class="filter-btn" onclick="setFilter('Combination',this)">Combo</button>
+          <button class="filter-btn" onclick="setFilter('Sensitive',this)">Sensitive</button>
+        </div>
+      </div>
+      <div class="card">
+        <table class="client-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Client</th>
+              <th>Skin Type</th>
+              <th>Top Concerns</th>
+              <th>Photos</th>
+              <th>Streak</th>
+              <th>Joined</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="clientTableBody"></tbody>
+        </table>
+        <div class="empty-clients" id="clientsEmpty" style="display:none;">
+          <div class="empty-icon">🌸</div>
+          <p>No clients yet — they'll appear here once they create accounts on the Client Portal.</p>
+          <p style="margin-top:8px;font-size:11px;color:rgba(232,213,255,.2);">Share <strong style="color:rgba(168,85,247,.6);">client-portal.html</strong> with your clients to get started.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── REORDER ALERTS ── -->
+    <div class="panel" id="panel-reorders">
+      <div class="card" style="margin-bottom:20px;">
+        <div class="card-title">Product Reorder Alerts</div>
+        <div class="card-sub">Clients estimated to run low on products — reach out before they run out</div>
+        <div id="reorderAlertList"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Send Reorder Reminder</div>
+        <div class="card-sub">Manually flag a client for a reorder nudge</div>
+        <div class="grid-2" style="gap:12px;margin-top:4px;">
+          <div class="tform-field"><label>Client</label>
+            <select id="reorderClient" class="drawer-select"></select>
+          </div>
+          <div class="tform-field"><label>Product</label>
+            <select id="reorderProduct">
+              <option>Sleepwear</option><option>Crucial Moisture</option><option>Absolute Moisture</option>
+              <option>Kerafole Mask</option><option>Power Peptide Toner</option><option>Barrier Fix Hydrator</option>
+              <option>Firmwear Serum</option><option>vc10 Nightly Bright</option><option>Raydefense SPF 30</option>
+            </select>
+          </div>
+          <div class="tform-field"><label>Days Until Empty (est.)</label><input type="number" id="reorderDays" value="14" min="1" max="90"></div>
+          <div class="tform-field"><label>Send Via</label>
+            <select id="reorderVia"><option>Email & Text</option><option>Email only</option><option>Text only</option></select>
+          </div>
+        </div>
+        <button class="btn-primary" style="margin-top:14px;" onclick="sendReorderReminder()">Send Reorder Reminder ✦</button>
+      </div>
+    </div>
+
+    <!-- ── FACIAL FORM ── -->
+    <div class="panel" id="panel-facial">
+
+      <!-- Client + Service selector at top -->
+      <div class="grid-2" style="gap:16px;margin-bottom:24px;">
+        <div class="card">
+          <div class="card-title">Start a Facial</div>
+          <div class="card-sub">Select a client and service type to begin</div>
+          <div style="display:flex;flex-direction:column;gap:12px;margin-top:4px;">
+            <div class="tform-field">
+              <label>Client</label>
+              <select id="facialClient" class="drawer-select" onchange="onFacialClientChange()">
+                <option value="">— Walk-in / No Account —</option>
+              </select>
+            </div>
+            <div class="tform-field">
+              <label>Walk-in Name (if no account)</label>
+              <input type="text" id="facialWalkIn" class="drawer-input" placeholder="Client first name…">
+            </div>
+            <div class="tform-field">
+              <label>Service Type</label>
+              <select id="facialService" class="drawer-select">
+                <option>Signature Glow Facial · 60 min</option>
+                <option>Celestial Luxury Facial · 90 min</option>
+                <option>Express Glow Facial · 30 min</option>
+                <option>Custom Corrective Facial · 60 min</option>
+                <option>Anti-Aging Ritual · 90 min</option>
+                <option>Acne Clearing Treatment · 60 min</option>
+                <option>Sensitive Skin Soother · 60 min</option>
+                <option>Brightening & Glow Facial · 60 min</option>
+                <option>At-Home Facial · 60 min</option>
+                <option>At-Home Facial · 90 min</option>
+                <option>Online Consultation</option>
+              </select>
+            </div>
+            <div class="tform-field">
+              <label>Date & Time</label>
+              <input type="datetime-local" id="facialDateTime" class="drawer-input">
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Pre-Facial Skin Check</div>
+          <div class="card-sub">Observe and note skin condition before starting</div>
+          <div style="margin-bottom:10px;">
+            <div style="font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:rgba(168,85,247,.6);margin-bottom:8px;">Current Skin Condition</div>
+            <div class="skin-condition-grid" id="skinConditionGrid">
+              <div class="sc-chip" onclick="toggleCondition(this)">Oily</div>
+              <div class="sc-chip" onclick="toggleCondition(this)">Dry</div>
+              <div class="sc-chip" onclick="toggleCondition(this)">Dehydrated</div>
+              <div class="sc-chip" onclick="toggleCondition(this)">Congested</div>
+              <div class="sc-chip" onclick="toggleCondition(this)">Sensitive</div>
+              <div class="sc-chip" onclick="toggleCondition(this)">Inflamed</div>
+              <div class="sc-chip" onclick="toggleCondition(this)">Dull</div>
+              <div class="sc-chip" onclick="toggleCondition(this)">Balanced</div>
+              <div class="sc-chip" onclick="toggleCondition(this)">Breakouts</div>
+              <div class="sc-chip" onclick="toggleCondition(this)">Redness</div>
+              <div class="sc-chip" onclick="toggleCondition(this)">Flaky</div>
+              <div class="sc-chip" onclick="toggleCondition(this)">Glowing</div>
+            </div>
+          </div>
+          <div class="tform-field" style="margin-top:8px;">
+            <label>Pre-Treatment Notes</label>
+            <textarea class="step-notes" id="preNotes" rows="3" placeholder="First impressions, client concerns today, any contraindications…"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step progress bar -->
+      <div class="card" style="margin-bottom:20px;">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:28px;">
+          <div>
+            <div class="card-title">Treatment Steps</div>
+            <div class="card-sub">Fill each step as you go — tap a circle to jump to any step</div>
+          </div>
+          <div style="display:flex;gap:10px;">
+            <button class="btn-ghost" onclick="resetFacialForm()" style="font-size:11px;">↺ Reset</button>
+            <button class="btn-primary" onclick="saveFacialRecord()" style="font-size:11px;">Save Record ✦</button>
+          </div>
+        </div>
+
+        <!-- Progress indicators -->
+        <div class="facial-progress" id="facialProgress"></div>
+        <div style="display:flex;justify-content:space-around;margin-top:8px;padding:0 8px;" id="facialStepLabels"></div>
+
+        <!-- Step cards rendered by JS -->
+        <div style="margin-top:32px;" id="facialStepArea"></div>
+
+        <!-- Nav buttons -->
+        <div class="facial-nav">
+          <button class="btn-ghost" id="facialBackBtn" onclick="facialPrev()" style="font-size:11px;">← Previous Step</button>
+          <span class="step-counter" id="facialStepCounter"></span>
+          <button class="btn-primary" id="facialNextBtn" onclick="facialNext()" style="font-size:11px;">Next Step →</button>
+        </div>
+      </div>
+
+      <!-- Live Summary -->
+      <div class="card" id="facialSummaryCard" style="display:none;">
+        <div class="card-title">Treatment Summary ✦</div>
+        <div class="card-sub">Review before saving — this will be added to the client's treatment history</div>
+        <div id="facialSummaryBody" style="margin-top:8px;"></div>
+        <div style="margin-top:20px;">
+          <div style="font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--aurora);margin-bottom:8px;">Post-Treatment Notes & Recommendations</div>
+          <textarea class="step-notes" id="postNotes" rows="3" placeholder="Client reaction, skin improvement observed, home care instructions, next recommended treatment…"></textarea>
+        </div>
+        <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
+          <button class="btn-primary" onclick="saveFacialRecord()">Save to Client History ✦</button>
+          <button class="btn-ghost" onclick="printFacialRecord()" style="font-size:11px;">🖨️ Print / Export</button>
+        </div>
+      </div>
+
+      <!-- Past Facial Records -->
+      <div class="card" style="margin-top:20px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+          <div>
+            <div class="card-title">Past Facial Records</div>
+            <div class="card-sub">All saved treatment forms</div>
+          </div>
+          <input type="text" id="facialHistorySearch" class="search-input" placeholder="Search…" style="width:200px;padding:8px 14px;" oninput="renderFacialHistory()">
+        </div>
+        <div id="facialHistoryList"></div>
+      </div>
+
+    </div>
+
+    <!-- ── ADD CLIENT ── -->
+    <div class="panel" id="panel-addclient">
+      <div class="card" style="max-width:600px;">
+        <div class="card-title">Add New Client</div>
+        <div class="card-sub">Create a client record manually — they can also self-register via the Client Portal</div>
+        <div class="treatment-form" style="margin-top:8px;">
+          <div class="grid-2" style="gap:12px;">
+            <div class="tform-field"><label>First Name *</label><input type="text" id="nc-first" placeholder="Aurora"></div>
+            <div class="tform-field"><label>Last Name</label><input type="text" id="nc-last" placeholder="Starling"></div>
+          </div>
+          <div class="tform-field"><label>Email *</label><input type="email" id="nc-email" placeholder="client@email.com"></div>
+          <div class="tform-field"><label>Phone</label><input type="tel" id="nc-phone" placeholder="(727) 000-0000"></div>
+          <div class="grid-2" style="gap:12px;">
+            <div class="tform-field"><label>Skin Type</label>
+              <select id="nc-skin"><option value="">Select…</option><option>Oily</option><option>Dry</option><option>Combination</option><option>Normal</option><option>Sensitive</option></select>
+            </div>
+            <div class="tform-field"><label>Age Range</label>
+              <select id="nc-age"><option value="">Select…</option><option>Under 25</option><option>25–35</option><option>35–50</option><option>50+</option></select>
+            </div>
+          </div>
+          <div class="tform-field"><label>Known Allergies / Sensitivities</label><input type="text" id="nc-allergies" placeholder="e.g. fragrance, retinol…"></div>
+          <div class="tform-field"><label>Initial Esthetician Notes</label><textarea id="nc-notes" rows="4" placeholder="First impressions, skin observations, treatment goals…"></textarea></div>
+          <button class="btn-primary" onclick="addNewClient()">Create Client Profile ✦</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── REVIEWS ── -->
+    <div class="panel" id="panel-reviews">
+
+      <!-- Add Review Card -->
+      <div class="card" style="max-width:700px;margin-bottom:24px;">
+        <div class="card-title">Add Review</div>
+        <div class="card-sub">Paste a review from Google, Facebook, or GlossGenius to display it on your website</div>
+        <div class="treatment-form" style="margin-top:12px;">
+          <div class="grid-2" style="gap:12px;">
+            <div class="tform-field"><label>Platform *</label>
+              <select id="rv-platform">
+                <option value="">Select…</option>
+                <option>Google</option>
+                <option>Facebook</option>
+                <option>GlossGenius</option>
+              </select>
+            </div>
+            <div class="tform-field"><label>Rating *</label>
+              <select id="rv-rating">
+                <option value="5">★★★★★ (5)</option>
+                <option value="4">★★★★☆ (4)</option>
+                <option value="3">★★★☆☆ (3)</option>
+                <option value="2">★★☆☆☆ (2)</option>
+                <option value="1">★☆☆☆☆ (1)</option>
+              </select>
+            </div>
+          </div>
+          <div class="grid-2" style="gap:12px;">
+            <div class="tform-field"><label>Reviewer Name *</label><input type="text" id="rv-name" placeholder="Jane D."></div>
+            <div class="tform-field"><label>Review Date</label><input type="date" id="rv-date"></div>
+          </div>
+          <div class="tform-field"><label>Review Text *</label><textarea id="rv-text" rows="4" placeholder="Paste the review here…"></textarea></div>
+          <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+            <button class="btn-primary" id="rvSaveBtn" onclick="saveReviewForm()">Add Review ✦</button>
+            <button class="btn-ghost" id="rvCancelBtn" style="display:none;" onclick="cancelReviewEdit()">Cancel Edit</button>
+            <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);cursor:pointer;">
+              <input type="checkbox" id="rv-featured" checked style="accent-color:var(--accent);"> Show on website
+            </label>
+          </div>
+          <div id="rvFormMsg" style="margin-top:10px;font-size:13px;"></div>
+        </div>
+      </div>
+
+      <!-- Reviews List -->
+      <div class="card" style="max-width:700px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
+          <div class="card-title" style="margin:0;">All Reviews <span id="rvCountBadge" class="si-badge" style="background:var(--accent);color:#fff;vertical-align:middle;">0</span></div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="btn-ghost" style="font-size:11px;padding:5px 12px;" onclick="rvFilterPanel('all')">All</button>
+            <button class="btn-ghost" style="font-size:11px;padding:5px 12px;" onclick="rvFilterPanel('Google')">Google</button>
+            <button class="btn-ghost" style="font-size:11px;padding:5px 12px;" onclick="rvFilterPanel('Facebook')">Facebook</button>
+            <button class="btn-ghost" style="font-size:11px;padding:5px 12px;" onclick="rvFilterPanel('GlossGenius')">GlossGenius</button>
+          </div>
+        </div>
+        <div id="rvList"><div style="color:var(--muted);font-size:13px;padding:20px 0;">Loading reviews…</div></div>
+      </div>
+
+    </div><!-- end panel-reviews -->
+
+  </div><!-- end page-content -->
+</div><!-- end main -->
+
+</div><!-- end app -->
+
+<!-- ═══ CLIENT DETAIL DRAWER ═══ -->
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+<div class="client-drawer" id="clientDrawer">
+  <div class="drawer-header">
+    <div class="drawer-client-info">
+      <div class="drawer-avatar" id="drawerAvatar">🌸</div>
+      <div>
+        <div class="drawer-name" id="drawerName">Client Name</div>
+        <div class="drawer-meta" id="drawerMeta">email · phone</div>
+        <div style="margin-top:6px;" id="drawerTags"></div>
+      </div>
+    </div>
+    <button class="drawer-close" onclick="closeDrawer()">✕</button>
+  </div>
+
+  <div class="drawer-tabs">
+    <div class="dtab active" onclick="switchDrawerTab('info',this)">Profile</div>
+    <div class="dtab" onclick="switchDrawerTab('quiz',this)">Quiz</div>
+    <div class="dtab" onclick="switchDrawerTab('photos',this)">Photos</div>
+    <div class="dtab" onclick="switchDrawerTab('routine',this)">Routine</div>
+    <div class="dtab" onclick="switchDrawerTab('facials',this)">Facials</div>
+    <div class="dtab" onclick="switchDrawerTab('history',this)">History</div>
+    <div class="dtab" onclick="switchDrawerTab('notes',this)">Notes</div>
+  </div>
+
+  <div class="drawer-body">
+
+    <!-- INFO TAB -->
+    <div id="dtab-info">
+      <div class="ds-section">
+        <div class="ds-label">Client Information</div>
+        <div class="info-grid" id="drawerInfoGrid"></div>
+      </div>
+      <div class="ds-section">
+        <div class="ds-label">Skin Concerns</div>
+        <div id="drawerConcerns" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+      </div>
+      <div class="ds-section">
+        <div class="ds-label">Routine Adherence</div>
+        <div id="drawerAdherence"></div>
+      </div>
+      <div class="ds-section">
+        <div class="ds-label">Product Reorder Status</div>
+        <div id="drawerReorders"></div>
+      </div>
+    </div>
+
+    <!-- QUIZ TAB -->
+    <div id="dtab-quiz" style="display:none;">
+      <div class="ds-section">
+        <div class="ds-label">Quiz Answers</div>
+        <div id="drawerQuizAnswers"></div>
+      </div>
+      <div class="ds-section" style="margin-top:16px;">
+        <div class="ds-label">Update Skin Type</div>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+          <select class="drawer-select" id="updateSkinType" style="max-width:200px;">
+            <option value="">Select…</option>
+            <option>Oily</option><option>Dry</option><option>Combination</option><option>Normal</option><option>Sensitive</option>
+          </select>
+          <button class="btn-primary" onclick="updateClientSkinType()">Update ✦</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHOTOS TAB -->
+    <div id="dtab-photos" style="display:none;">
+      <div class="ds-section">
+        <div class="ds-label">Progress Photos</div>
+        <div class="drawer-photos" id="drawerPhotosGrid"></div>
+      </div>
+    </div>
+
+    <!-- ROUTINE TAB -->
+    <div id="dtab-routine" style="display:none;">
+      <div class="ds-section">
+        <div style="display:flex;gap:8px;margin-bottom:16px;">
+          <button class="btn-ghost" id="rtab-am" onclick="switchRoutineView('am')" style="font-size:11px;">☀️ AM</button>
+          <button class="btn-ghost" id="rtab-pm" onclick="switchRoutineView('pm')" style="font-size:11px;">🌙 PM</button>
+        </div>
+        <div id="drawerRoutineList"></div>
+        <div style="margin-top:16px;">
+          <div class="ds-label">Add / Update Routine Step</div>
+          <div style="display:flex;flex-direction:column;gap:10px;margin-top:8px;">
+            <input type="text" class="drawer-input" id="newStepName" placeholder="Step name (e.g. Tone)">
+            <input type="text" class="drawer-input" id="newStepProduct" placeholder="Bioelements® product name">
+            <input type="text" class="drawer-input" id="newStepTip" placeholder="Pro tip for client…">
+            <button class="btn-primary" onclick="addRoutineStep()">Add Step to Routine ✦</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FACIALS TAB -->
+    <div id="dtab-facials" style="display:none;">
+      <div class="ds-section">
+        <div class="ds-label" style="margin-bottom:14px;">Facial Treatment Records</div>
+        <div id="drawerFacialRecords"></div>
+        <div style="margin-top:16px;">
+          <button class="btn-primary" style="font-size:11px;" onclick="closeDrawer();showPanel('facial',document.querySelector('.sb-item:nth-child(7)'))">+ Start New Facial for This Client ✦</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- HISTORY TAB -->
+    <div id="dtab-history" style="display:none;">
+      <div class="ds-section">
+        <div class="ds-label" style="margin-bottom:14px;">Add Treatment Record</div>
+        <div class="treatment-form">
+          <div class="tform-field"><label>Date of Treatment</label><input type="date" id="trDate"></div>
+          <div class="tform-field"><label>Service Performed</label>
+            <select id="trService">
+              <option>Online Consultation</option><option>At-Home Facial · 60 min</option>
+              <option>At-Home Facial · 90 min</option><option>In-Spa Express Glow · 30 min</option>
+              <option>In-Spa Custom Facial · 60 min</option><option>In-Spa Anti-Aging Ritual · 90 min</option>
+              <option>Acne Clearing Treatment</option><option>Sensitive Skin Soother</option>
+              <option>Brightening & Glow Facial</option>
+            </select>
+          </div>
+          <div class="tform-field"><label>Products Used</label><input type="text" id="trProducts" placeholder="e.g. Kerafole, Crucial Moisture, Power Peptide…"></div>
+          <div class="tform-field"><label>Treatment Notes</label><textarea id="trNotes" rows="3" placeholder="Skin condition, techniques used, client reactions, results observed…"></textarea></div>
+          <div class="tform-field"><label>Next Recommended Service</label><input type="text" id="trNext" placeholder="e.g. Anti-Aging Ritual in 4 weeks"></div>
+          <button class="btn-primary" onclick="saveTreatRecord()">Save Treatment Record ✦</button>
+        </div>
+        <div style="margin-top:24px;">
+          <div class="ds-label">Treatment History</div>
+          <div id="treatmentHistory"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NOTES TAB -->
+    <div id="dtab-notes" style="display:none;">
+      <div class="ds-section">
+        <div class="ds-label">Esthetician Notes</div>
+        <p style="font-size:12px;color:rgba(232,213,255,.35);margin-bottom:12px;">These notes are visible to the client in their portal — use them for personalized advice and reminders.</p>
+        <textarea class="notes-textarea" id="drawerNotes" placeholder="Add notes about this client's skin, treatment history, product recommendations, observations…"></textarea>
+        <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;">
+          <button class="btn-primary" onclick="saveDrawerNotes()">Save Notes ✦</button>
+          <button class="btn-ghost" onclick="addQuickNote('Follow-up needed after last treatment')">+ Follow-up</button>
+          <button class="btn-ghost" onclick="addQuickNote('Recommended product reorder: ')">+ Reorder Note</button>
+          <button class="btn-ghost" onclick="addQuickNote('Skin improvement observed: ')">+ Progress Note</button>
+        </div>
+        <div style="margin-top:20px;">
+          <div class="ds-label">Flag Reorder Reminder</div>
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:8px;">
+            <select class="drawer-select" id="flagProduct" style="flex:1;">
+              <option>Sleepwear</option><option>Crucial Moisture</option><option>Kerafole Mask</option>
+              <option>Power Peptide Toner</option><option>Barrier Fix Hydrator</option><option>Firmwear Serum</option>
+            </select>
+            <input type="number" class="drawer-input" id="flagDays" value="14" style="width:80px;" min="1" max="90">
+            <span style="font-size:12px;color:rgba(232,213,255,.3);">days</span>
+            <button class="btn-primary" onclick="flagReorderFromDrawer()">Flag ✦</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end drawer body -->
+</div><!-- end drawer -->
+
+<!-- TOAST -->
+<div class="toast" id="toast"><span class="ti" id="ti">✦</span><span class="tt" id="tt"></span></div>
+
+<script>
+// ═══════════════════════════════════════════════════
+// SESSION STATE
+// ═══════════════════════════════════════════════════
+let adminUser    = null;
+let clientsCache = [];  // profiles rows for all non-admin clients
+
+function clientEmoji(type) {
+  return {Oily:'✨',Dry:'🌿',Combination:'⚖️',Normal:'🌸',Sensitive:'💜'}[type] || '🌸';
+}
+
+function fmtDate(iso) {
+  if (!iso) return 'N/A';
+  return new Date(iso).toLocaleDateString('en-US', {month:'short',day:'numeric',year:'numeric'});
+}
+
+async function refreshClients() {
+  clientsCache = await getAllClients();
+}
+
+function getClientById(id) {
+  return clientsCache.find(c => c.id === id) || null;
+}
+
+// ═══════════════════════════════════════════════════
+// STARS
+// ═══════════════════════════════════════════════════
+const canvas = document.getElementById('starfield');
+const ctx = canvas.getContext('2d');
+let stars = [];
+function resizeStars() {
+  canvas.width = innerWidth; canvas.height = innerHeight;
+  stars = Array.from({length:130}, () => ({
+    x: Math.random()*canvas.width, y: Math.random()*canvas.height,
+    r: Math.random()*1.2+.2, ts: Math.random()*.02+.004,
+    color: Math.random()>.7 ? '#60a5fa' : '#e8d5ff'
+  }));
+}
+function drawStars(t) {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  stars.forEach(s => {
+    ctx.globalAlpha = .1+.7*(.5+.5*Math.sin(t*s.ts));
+    ctx.fillStyle = s.color; ctx.beginPath();
+    ctx.arc(s.x,s.y,s.r,0,Math.PI*2); ctx.fill();
+  });
+  ctx.globalAlpha = 1;
+  requestAnimationFrame(drawStars);
+}
+resizeStars(); window.addEventListener('resize', resizeStars);
+requestAnimationFrame(drawStars);
+
+// ═══════════════════════════════════════════════════
+// AUTH
+// ═══════════════════════════════════════════════════
+async function adminLogin() {
+  const email = document.getElementById('adminEmail').value.trim();
+  const pw    = document.getElementById('adminPw').value;
+  try {
+    adminUser = await cbsLogin(email, pw);
+    const profile = await getProfile(adminUser.id);
+    if (!profile.is_admin) {
+      await cbsLogout();
+      toast('⚠️', 'This account does not have admin access.');
+      return;
+    }
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('mainArea').style.display = 'block';
+    CosmicAuth.injectAuthBar(['esthetician'], 'dashboard');
+    initDashboard();
+    toast('✦', 'Welcome back, Christina! Your dashboard is ready.');
+  } catch(e) {
+    toast('⚠️', e.message.includes('Invalid') ? 'Incorrect email or password' : e.message);
+  }
+}
+
+async function adminLogout() {
+  await cbsLogout();
+  adminUser = null;
+  clientsCache = [];
+  window.location.href = 'index.html';
+}
+
+// ═══════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════
+const panelTitles = {
+  overview: 'Overview',
+  bookings: 'Upcoming Bookings',
+  clients: 'All Clients',
+  reorders: 'Reorder Alerts',
+  facial: '🌸 Facial Treatment Form',
+  addclient: 'Add New Client',
+  reviews: '★ Reviews'
+};
+
+async function showPanel(name, el) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  if (el) el.classList.add('active');
+  document.getElementById('topTitle').textContent = panelTitles[name] || name;
+  if (name === 'clients') renderClientList();
+  if (name === 'overview') renderOverview();
+  if (name === 'bookings') renderBookings();
+  if (name === 'reorders') renderReorderPanel();
+  if (name === 'facial') initFacialForm();
+  if (name === 'reviews') loadReviewsPanel();
+  window.scrollTo(0,0);
+}
+
+// ═══════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════
+async function initDashboard() {
+  document.getElementById('topDate').textContent = new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+  document.getElementById('todayDateSub').textContent = new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+
+  await refreshClients();
+  document.getElementById('clientBadge').textContent = clientsCache.length;
+
+  // Reorder alerts count
+  const urgent = await getUrgentReorders(14);
+  document.getElementById('reorderBadge').textContent = urgent.length;
+
+  // Populate reorder client select
+  const rc = document.getElementById('reorderClient');
+  rc.innerHTML = clientsCache.map(c => `<option value="${c.id}">${c.first_name} ${c.last_name||''}</option>`).join('');
+
+  renderOverview();
+  renderBookings();
+}
+
+// ═══════════════════════════════════════════════════
+// OVERVIEW
+// ═══════════════════════════════════════════════════
+async function renderOverview() {
+  const clients  = clientsCache;
+  const todayAppts = await getTodayAppointments();
+  const urgent   = await getUrgentReorders(14);
+  const quizDone = clients.filter(c => c.skin_type).length;
+
+  document.getElementById('overviewStats').innerHTML = [
+    {num: clients.length, label:'Total Clients', change:'Growing!'},
+    {num: todayAppts.length, label:"Today's Appointments", change:'Via GlossGenius'},
+    {num: urgent.length, label:'Reorder Alerts', change:'Clients running low'},
+    {num: quizDone, label:'Quiz Completed', change:`${clients.length - quizDone} remaining`}
+  ].map(s => `
+    <div class="stat-card">
+      <span class="stat-num">${s.num}</span>
+      <span class="stat-label">${s.label}</span>
+      <span class="stat-change" style="color:rgba(232,213,255,.35);">${s.change}</span>
+    </div>`).join('');
+
+  // Today's appts
+  document.getElementById('todayAppts').innerHTML = todayAppts.length
+    ? todayAppts.map(a => `
+        <div class="booking-row">
+          <div class="br-time">${a.appt_time||'TBD'}</div>
+          <div class="br-avatar">${clientEmoji('')}</div>
+          <div class="br-info">
+            <div class="br-name">${a.client_name}</div>
+            <div class="br-service">${a.service}</div>
+          </div>
+          <span class="pill pill-green">Today</span>
+        </div>`).join('')
+    : `<div style="text-align:center;padding:28px;color:rgba(232,213,255,.25);font-size:13px;">
+        No appointments logged today.<br>
+        <a href="https://cosmicnailsandspa.glossgenius.com" target="_blank" style="color:var(--aurora);font-size:11px;">View GlossGenius for live bookings →</a>
+       </div>`;
+
+  // Alerts
+  const alerts = [];
+  if (urgent.length > 0) alerts.push({cls:'urgent', icon:'🛍️', title:`${urgent.length} client${urgent.length>1?'s':''} need product reorders`, sub:'Reach out before they run out', action:"showPanel('reorders')"});
+  clients.filter(c => !c.skin_type).slice(0,3).forEach(c =>
+    alerts.push({cls:'warning', icon:'🔬', title:`${c.first_name} hasn't completed the skin quiz`, sub:'Remind them to fill it out', action:`openClientDrawer('${c.id}')`})
+  );
+  if (!alerts.length) alerts.push({cls:'', icon:'✦', title:'All clear! No urgent alerts.', sub:'Everything is running smoothly.'});
+  document.getElementById('overviewAlerts').innerHTML = alerts.map(a =>
+    `<div class="alert-item ${a.cls}" onclick="${a.action||''}">
+      <span class="ai-icon">${a.icon}</span>
+      <div class="ai-text"><div class="ai-title">${a.title}</div><div class="ai-sub">${a.sub}</div></div>
+    </div>`).join('');
+
+  // Recent activity
+  const sorted = [...clients].sort((a,b) => new Date(b.joined_at||0)-new Date(a.joined_at||0)).slice(0,5);
+  document.getElementById('recentActivity').innerHTML = sorted.length
+    ? sorted.map(c => `
+        <div class="booking-row" onclick="openClientDrawer('${c.id}')">
+          <div class="br-avatar">${clientEmoji(c.skin_type)}</div>
+          <div class="br-info">
+            <div class="br-name">${c.first_name} ${c.last_name||''}</div>
+            <div class="br-service">${c.skin_type ? c.skin_type+' Skin' : 'Quiz not completed'} · Joined ${fmtDate(c.joined_at)}</div>
+          </div>
+          <span class="pill ${c.skin_type?'pill-purple':'pill-yellow'}">${c.skin_type||'No Quiz'}</span>
+        </div>`).join('')
+    : `<div style="color:rgba(232,213,255,.25);font-size:13px;text-align:center;padding:24px;">
+        No clients yet — share the Client Portal to get started!
+       </div>`;
+}
+
+// ═══════════════════════════════════════════════════
+// BOOKINGS
+// ═══════════════════════════════════════════════════
+async function renderBookings() {
+  const upcoming = await getAppointments();
+  document.getElementById('bookingBadge').textContent = upcoming.length;
+
+  document.getElementById('bookingsList').innerHTML = upcoming.length
+    ? upcoming.map(a => `
+        <div class="booking-row">
+          <div class="br-time">${new Date(a.appt_date).toLocaleDateString('en-US',{month:'short',day:'numeric'})}<br><span style="font-size:10px;">${a.appt_time||''}</span></div>
+          <div class="br-avatar">${clientEmoji('')}</div>
+          <div class="br-info">
+            <div class="br-name">${a.client_name}</div>
+            <div class="br-service">${a.service}</div>
+          </div>
+          <div class="br-actions">
+            <span class="pill pill-purple">Booked</span>
+            <button class="btn-sm-danger" onclick="removeAppt('${a.id}')">✕</button>
+          </div>
+        </div>`).join('')
+    : `<div style="text-align:center;padding:32px;color:rgba(232,213,255,.25);">
+        <div style="font-size:28px;margin-bottom:10px;">📅</div>
+        No manual appointments logged yet.<br>
+        <a href="https://cosmicnailsandspa.glossgenius.com" target="_blank" style="color:var(--aurora);font-size:12px;margin-top:8px;display:block;">View live bookings on GlossGenius →</a>
+       </div>`;
+}
+
+async function addAppt() {
+  const name    = document.getElementById('apptClient').value.trim();
+  const service = document.getElementById('apptService').value;
+  const date    = document.getElementById('apptDate').value;
+  const time    = document.getElementById('apptTime').value;
+  if (!name || !date) { toast('⚠️', 'Client name and date are required'); return; }
+  await addAppointment({ clientName: name, service, apptDate: date, apptTime: time });
+  document.getElementById('apptClient').value = '';
+  renderBookings();
+  toast('📅', `Appointment added for ${name}`);
+}
+
+async function removeAppt(id) {
+  await deleteAppointment(id);
+  renderBookings();
+  toast('✦', 'Appointment removed');
+}
+
+// ═══════════════════════════════════════════════════
+// CLIENT LIST
+// ═══════════════════════════════════════════════════
+let activeFilter = 'all';
+function setFilter(f, el) {
+  activeFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderClientList();
+}
+
+function renderClientList() {
+  const query = document.getElementById('clientSearch').value.toLowerCase();
+  let clients = clientsCache;
+
+  if (activeFilter !== 'all') clients = clients.filter(c => c.skin_type === activeFilter);
+  if (query) clients = clients.filter(c =>
+    (c.first_name+' '+(c.last_name||'')).toLowerCase().includes(query) ||
+    (c.email||'').toLowerCase().includes(query) ||
+    (c.skin_type||'').toLowerCase().includes(query)
+  );
+
+  const empty = document.getElementById('clientsEmpty');
+  const tbody = document.getElementById('clientTableBody');
+
+  if (clients.length === 0) {
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+  } else {
+    empty.style.display = 'none';
+    tbody.innerHTML = clients.map(c => `
+      <tr onclick="openClientDrawer('${c.id}')" style="cursor:pointer;">
+        <td><div class="ct-avatar">${clientEmoji(c.skin_type)}</div></td>
+        <td>
+          <div class="ct-name">${c.first_name} ${c.last_name||''}</div>
+          <div class="ct-email">${c.email||''}</div>
+        </td>
+        <td>${c.skin_type ? `<span class="pill pill-purple">${c.skin_type}</span>` : '<span class="pill pill-yellow">No Quiz</span>'}</td>
+        <td style="max-width:160px;">${(c.concerns||[]).slice(0,2).map(x=>`<span class="pill pill-blue" style="margin:2px;">${x}</span>`).join('')||'<span style="color:rgba(232,213,255,.25);font-size:12px;">None recorded</span>'}</td>
+        <td><span class="pill pill-gold">🔥 ${c.streak||0} days</span></td>
+        <td style="font-size:12px;color:rgba(232,213,255,.35);">${fmtDate(c.joined_at)}</td>
+        <td><button class="ct-action" onclick="event.stopPropagation();openClientDrawer('${c.id}')">View →</button></td>
+      </tr>`).join('');
+  }
+}
+
+// ═══════════════════════════════════════════════════
+// ADD CLIENT
+// ═══════════════════════════════════════════════════
+async function addNewClient() {
+  const first = document.getElementById('nc-first').value.trim();
+  const last  = document.getElementById('nc-last').value.trim();
+  const email = document.getElementById('nc-email').value.trim();
+  const phone = document.getElementById('nc-phone').value.trim();
+  const skin  = document.getElementById('nc-skin').value;
+  const notes = document.getElementById('nc-notes').value.trim();
+  if (!first || !email) { toast('⚠️', 'First name and email are required'); return; }
+  try {
+    // Admin creates the auth account; client sets their own password via email invite
+    const { data, error } = await db.auth.admin.createUser({
+      email, email_confirm: true,
+      user_metadata: { first_name: first, last_name: last, phone }
+    });
+    if (error) throw error;
+    // Update skin type and notes if provided
+    if (skin || notes) {
+      await updateProfile(data.user.id, { skin_type: skin || null });
+      if (notes) await saveEstheNotes(data.user.id, notes);
+    }
+    ['nc-first','nc-last','nc-email','nc-phone','nc-notes'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('nc-skin').value = '';
+    await initDashboard();
+    toast('✦', `${first} added! They'll receive an email to set their password.`);
+    showPanel('clients', document.querySelectorAll('.sb-item')[3]);
+  } catch(e) {
+    toast('⚠️', e.message.includes('already') ? 'A client with this email already exists' : e.message);
+  }
+}
+
+// ═══════════════════════════════════════════════════
+// CLIENT DETAIL DRAWER
+// ═══════════════════════════════════════════════════
+let activeDrawerClient = null;  // UUID
+let activeDrawerTab = 'info';
+let drawerRoutineView = 'am';
+
+async function openClientDrawer(id) {
+  // Refresh from cache or Supabase
+  let client = getClientById(id);
+  if (!client) {
+    client = await getProfile(id);
+    clientsCache.push(client);
+  }
+  activeDrawerClient = id;
+
+  // Header
+  document.getElementById('drawerAvatar').textContent = clientEmoji(client.skin_type);
+  document.getElementById('drawerName').textContent = (client.first_name||'') + ' ' + (client.last_name||'');
+  document.getElementById('drawerMeta').textContent = `${client.email||''}${client.phone ? ' · '+client.phone : ''}`;
+  document.getElementById('drawerTags').innerHTML =
+    (client.skin_type ? `<span class="pill pill-purple">${client.skin_type} Skin</span> ` : '<span class="pill pill-yellow">No Quiz</span> ') +
+    (client.streak ? `<span class="pill pill-gold">🔥 ${client.streak} day streak</span>` : '');
+
+  switchDrawerTab('info', document.querySelector('.dtab'));
+  document.getElementById('drawerOverlay').classList.add('open');
+  document.getElementById('clientDrawer').classList.add('open');
+}
+
+function closeDrawer() {
+  document.getElementById('drawerOverlay').classList.remove('open');
+  document.getElementById('clientDrawer').classList.remove('open');
+  activeDrawerClient = null;
+}
+
+function switchDrawerTab(tab, el) {
+  document.querySelectorAll('.dtab').forEach(t => t.classList.remove('active'));
+  if (el) el.classList.add('active');
+  else document.querySelectorAll('.dtab').forEach((t,i) => {
+    if (['info','quiz','photos','routine','history','notes'][i] === tab) t.classList.add('active');
+  });
+  ['info','quiz','photos','routine','facials','history','notes'].forEach(t => {
+    document.getElementById('dtab-'+t).style.display = t === tab ? 'block' : 'none';
+  });
+  activeDrawerTab = tab;
+  renderDrawerTab(tab);
+}
+
+async function renderDrawerTab(tab) {
+  const c = getClientById(activeDrawerClient);
+  if (!c) return;
+
+  if (tab === 'info') {
+    document.getElementById('drawerInfoGrid').innerHTML = [
+      {label:'First Name', val: c.first_name},
+      {label:'Last Name',  val: c.last_name||'—'},
+      {label:'Email',      val: c.email||'—'},
+      {label:'Phone',      val: c.phone||'—'},
+      {label:'Skin Type',  val: c.skin_type||'Not assessed'},
+      {label:'Age Range',  val: c.quiz_answers?.q4||'—'},
+      {label:'Joined',     val: fmtDate(c.joined_at)},
+    ].map(i => `<div class="info-item"><div class="info-item-label">${i.label}</div><div class="info-item-val">${i.val}</div></div>`).join('');
+
+    document.getElementById('drawerConcerns').innerHTML = (c.concerns||[]).length
+      ? c.concerns.map(x => `<span class="pill pill-blue">${x}</span>`).join('')
+      : '<span style="color:rgba(232,213,255,.25);font-size:12px;">No concerns recorded yet</span>';
+
+    const steps = c.routine_am || [];
+    const done = steps.filter(s=>s.done).length;
+    const pct = steps.length ? Math.round(done/steps.length*100) : 0;
+    document.getElementById('drawerAdherence').innerHTML = `
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="flex:1;height:6px;background:rgba(168,85,247,.1);border-radius:100px;overflow:hidden;">
+          <div style="width:${pct}%;height:100%;background:linear-gradient(to right,var(--aurora),var(--sky));border-radius:100px;transition:width .5s;"></div>
+        </div>
+        <span style="font-size:12px;color:var(--aurora);white-space:nowrap;">${pct}% today</span>
+      </div>
+      <p style="font-size:11px;color:rgba(232,213,255,.3);margin-top:6px;">${done}/${steps.length} AM steps completed today · ${c.streak||0} day streak</p>`;
+
+    const flags = await getReorderFlags(c.id);
+    document.getElementById('drawerReorders').innerHTML = flags.length
+      ? flags.map(f => `
+          <div class="reorder-row">
+            <span class="rr-emoji">🛍️</span>
+            <div class="rr-info"><div class="rr-name">Bioelements® ${f.product}</div><div class="rr-status">Est. ${f.days_until_empty} days remaining</div></div>
+            <span class="pill ${f.days_until_empty<=7?'pill-red':f.days_until_empty<=14?'pill-yellow':'pill-green'}">${f.days_until_empty}d</span>
+          </div>`).join('')
+      : '<p style="font-size:12px;color:rgba(232,213,255,.25);">No reorder flags set yet.</p>';
+  }
+
+  if (tab === 'quiz') {
+    const qa = c.quiz_answers || {};
+    const qMap = [
+      {q:'Skin feel at midday', k:'q1'},
+      {q:'Main concerns',       k:'q2'},
+      {q:'Sensitivity level',   k:'q3'},
+      {q:'Age range',           k:'q4'},
+      {q:'Daily water intake',  k:'q5'},
+      {q:'Current routine level', k:'q6'},
+      {q:'#1 skin goal',        k:'q7'},
+    ];
+    const answered = qMap.filter(q => qa[q.k]);
+    document.getElementById('drawerQuizAnswers').innerHTML = answered.length
+      ? answered.map(q => `
+          <div class="quiz-answer-row">
+            <span class="qa-question">${q.q}</span>
+            <span class="qa-answer">${Array.isArray(qa[q.k]) ? qa[q.k].join(', ') : qa[q.k]}</span>
+          </div>`).join('')
+      : '<p style="font-size:12px;color:rgba(232,213,255,.25);padding:16px 0;">This client has not completed the skin quiz yet.</p>';
+    document.getElementById('updateSkinType').value = c.skin_type || '';
+  }
+
+  if (tab === 'photos') {
+    const photos = await getSkinPhotos(c.id);
+    document.getElementById('drawerPhotosGrid').innerHTML = photos.length
+      ? photos.map(p => `
+          <div class="dp-tile">
+            <img src="${p.url}" alt="${p.caption||''}">
+            <div class="dp-overlay">${fmtDate(p.taken_at)} · ${p.caption||''}</div>
+          </div>`).join('')
+      : '<div class="dp-empty">📷<br>No progress photos uploaded yet</div>';
+  }
+
+  if (tab === 'routine') {
+    renderDrawerRoutine(drawerRoutineView);
+  }
+
+  if (tab === 'facials') {
+    renderDrawerFacials(c);
+  }
+
+  if (tab === 'history') {
+    const records = await getTreatmentHistory(c.id);
+    document.getElementById('treatmentHistory').innerHTML = records.length
+      ? records.map(r => `
+          <div class="treatment-record">
+            <div class="tr-date">${fmtDate(r.treatment_date)}</div>
+            <div class="tr-service">${r.service||''}</div>
+            <div class="tr-notes">${r.pre_notes||''}</div>
+            ${r.products_used ? `<div class="tr-products">${r.products_used.split(',').map(p=>`<span class="pill pill-purple">${p.trim()}</span>`).join('')}</div>` : ''}
+            ${r.next_appointment ? `<div style="font-size:11px;color:var(--aurora);margin-top:8px;">Next: ${r.next_appointment}</div>` : ''}
+          </div>`).join('')
+      : '<p style="color:rgba(232,213,255,.25);font-size:12px;padding:16px 0;">No treatment records yet.</p>';
+    document.getElementById('trDate').value = new Date().toISOString().split('T')[0];
+  }
+
+  if (tab === 'notes') {
+    const notes = await getEstheNotes(c.id);
+    document.getElementById('drawerNotes').value = notes;
+    document.getElementById('flagProduct').value = 'Sleepwear';
+    document.getElementById('flagDays').value = 14;
+  }
+}
+
+function renderDrawerRoutine(which) {
+  const c = getClientById(activeDrawerClient);
+  if (!c) return;
+  const steps = (which === 'am' ? c.routine_am : c.routine_pm) || [];
+  document.getElementById('drawerRoutineList').innerHTML = steps.length
+    ? steps.map((s,i) => `
+        <div class="routine-step-row">
+          <div class="rsr-num">${s.step||i+1}</div>
+          <div class="rsr-content">
+            <div class="rsr-name">${s.name}</div>
+            <div class="rsr-product">Bioelements® ${s.product}</div>
+            <div style="font-size:11px;color:rgba(232,213,255,.3);margin-top:2px;">💡 ${s.tip||''}</div>
+          </div>
+          <button class="rsr-edit" onclick="removeRoutineStep('${which}',${i})">✕</button>
+        </div>`).join('')
+    : '<p style="font-size:12px;color:rgba(232,213,255,.25);padding:12px 0;">No steps in this routine yet. Add steps below.</p>';
+
+  document.getElementById('rtab-am').classList.toggle('btn-primary', which==='am');
+  document.getElementById('rtab-pm').classList.toggle('btn-primary', which==='pm');
+  document.getElementById('rtab-am').classList.toggle('btn-ghost', which!=='am');
+  document.getElementById('rtab-pm').classList.toggle('btn-ghost', which==='am');
+}
+
+function switchRoutineView(which) {
+  drawerRoutineView = which;
+  renderDrawerRoutine(which);
+}
+
+async function removeRoutineStep(which, idx) {
+  const c = getClientById(activeDrawerClient);
+  if (!c) return;
+  const key = which === 'am' ? 'routine_am' : 'routine_pm';
+  const steps = (c[key] || []).slice();
+  steps.splice(idx, 1);
+  steps.forEach((s,i) => s.step = i+1);
+  await updateProfile(c.id, { [key]: steps });
+  c[key] = steps;
+  renderDrawerRoutine(which);
+  toast('✦', 'Step removed from routine');
+}
+
+async function addRoutineStep() {
+  const name    = document.getElementById('newStepName').value.trim();
+  const product = document.getElementById('newStepProduct').value.trim();
+  const tip     = document.getElementById('newStepTip').value.trim();
+  if (!name || !product) { toast('⚠️', 'Step name and product are required'); return; }
+  const c = getClientById(activeDrawerClient);
+  if (!c) return;
+  const key   = drawerRoutineView === 'am' ? 'routine_am' : 'routine_pm';
+  const steps = (c[key] || []).slice();
+  steps.push({ step: steps.length + 1, name, product, tip, time: drawerRoutineView.toUpperCase(), done: false });
+  await updateProfile(c.id, { [key]: steps });
+  c[key] = steps;
+  document.getElementById('newStepName').value = '';
+  document.getElementById('newStepProduct').value = '';
+  document.getElementById('newStepTip').value = '';
+  renderDrawerRoutine(drawerRoutineView);
+  toast('✦', `${name} added to ${drawerRoutineView.toUpperCase()} routine`);
+}
+
+async function updateClientSkinType() {
+  const val = document.getElementById('updateSkinType').value;
+  if (!val) { toast('⚠️', 'Please select a skin type'); return; }
+  const c = getClientById(activeDrawerClient);
+  if (!c) return;
+  await updateProfile(c.id, { skin_type: val });
+  c.skin_type = val;
+  document.getElementById('drawerAvatar').textContent = clientEmoji(val);
+  toast('✦', `Skin type updated to ${val}`);
+}
+
+async function saveTreatRecord() {
+  const date     = document.getElementById('trDate').value;
+  const service  = document.getElementById('trService').value;
+  const products = document.getElementById('trProducts').value.trim();
+  const notes    = document.getElementById('trNotes').value.trim();
+  const next     = document.getElementById('trNext').value.trim();
+  if (!date || !service) { toast('⚠️', 'Date and service are required'); return; }
+  const c = getClientById(activeDrawerClient);
+  if (!c) return;
+  await saveTreatmentRecord({ clientId: c.id, service, date, products_used: products, pre_notes: notes, next_appointment: next });
+  document.getElementById('trProducts').value = '';
+  document.getElementById('trNotes').value = '';
+  document.getElementById('trNext').value = '';
+  renderDrawerTab('history');
+  toast('✦', 'Treatment record saved!');
+}
+
+async function saveDrawerNotes() {
+  const notes = document.getElementById('drawerNotes').value;
+  const c = getClientById(activeDrawerClient);
+  if (!c) return;
+  await saveEstheNotes(c.id, notes);
+  toast('✦', 'Notes saved — client can see these in their portal');
+}
+
+function addQuickNote(prefix) {
+  const ta = document.getElementById('drawerNotes');
+  const date = new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  ta.value += (ta.value ? '\n\n' : '') + `[${date}] ${prefix}`;
+  ta.focus();
+}
+
+async function flagReorderFromDrawer() {
+  const product = document.getElementById('flagProduct').value;
+  const days    = parseInt(document.getElementById('flagDays').value);
+  const c = getClientById(activeDrawerClient);
+  if (!c) return;
+  await setReorderFlag(c.id, product, days);
+  await initDashboard();
+  toast('🛍️', `Reorder flag set for ${product} — ${days} days`);
+}
+
+// ═══════════════════════════════════════════════════
+// REORDER PANEL
+// ═══════════════════════════════════════════════════
+async function renderReorderPanel() {
+  const flags = await getUrgentReorders(9999); // all flags
+
+  document.getElementById('reorderAlertList').innerHTML = flags.length
+    ? flags.map(f => `
+        <div class="alert-item ${f.days_until_empty<=7?'urgent':f.days_until_empty<=14?'warning':''}" onclick="openClientDrawer('${f.profiles.id||''}')">
+          <span class="ai-icon">🛍️</span>
+          <div class="ai-text">
+            <div class="ai-title">${f.profiles.first_name} ${f.profiles.last_name||''} — Bioelements® ${f.product}</div>
+            <div class="ai-sub">Est. ${f.days_until_empty} days remaining · ${f.profiles.email||''} · ${f.profiles.phone||'No phone'}</div>
+          </div>
+          <span class="pill ${f.days_until_empty<=7?'pill-red':f.days_until_empty<=14?'pill-yellow':'pill-green'}">${f.days_until_empty}d</span>
+        </div>`).join('')
+    : '<p style="color:rgba(232,213,255,.25);font-size:13px;padding:20px 0;text-align:center;">No reorder flags set yet. Open a client profile and flag products from the Notes tab.</p>';
+
+  // Populate client select
+  const rc = document.getElementById('reorderClient');
+  rc.innerHTML = clientsCache.map(c => `<option value="${c.id}">${c.first_name} ${c.last_name||''}</option>`).join('');
+}
+
+async function sendReorderReminder() {
+  const clientId = document.getElementById('reorderClient').value;
+  const product  = document.getElementById('reorderProduct').value;
+  const days     = document.getElementById('reorderDays').value;
+  const via      = document.getElementById('reorderVia').value;
+  if (!clientId) { toast('⚠️', 'Please select a client'); return; }
+  await setReorderFlag(clientId, product, parseInt(days));
+  renderReorderPanel();
+  await initDashboard();
+  const c = getClientById(clientId);
+  toast('🛍️', `Reorder flag set for ${c?.first_name||'client'} via ${via}`);
+}
+
+// ═══════════════════════════════════════════════════
+// FACIAL FORM
+// ═══════════════════════════════════════════════════
+const FACIAL_STEPS = [
+  { id:'cleanser', icon:'🫧', label:'Cleanser', subtitle:'Double cleanse — remove all makeup, SPF & impurities', products:[
+    {e:'🫧',n:'Flash Foam Cleanser',t:'All skin types · foaming'},
+    {e:'🌿',n:'Decongestant Cleanser',t:'Oily · congested · acne'},
+    {e:'🌸',n:'Twice Daily Bar',t:'Dry · sensitive · gentle'},
+    {e:'💧',n:'Calmitude Cleanser',t:'Sensitive · redness'},
+    {e:'✨',n:'Luminizing Cleanser',t:'Dull · uneven · brightening'},
+    {e:'🧴',n:'Prebiotic Cleanser',t:'All types · barrier support'},
+  ]},
+  { id:'toner', icon:'💜', label:'Toner', subtitle:'Balance pH, prep skin to absorb actives', products:[
+    {e:'💜',n:'Power Peptide Toner',t:'All types · anti-aging'},
+    {e:'🌿',n:'Calm Skin Arnica Toner',t:'Sensitive · redness'},
+    {e:'💧',n:'Remineralist Toner',t:'Dry · dehydrated'},
+    {e:'⚖️',n:'Equalizer Toner',t:'Oily · combo · balancing'},
+    {e:'🌱',n:'Prebiotic Toner',t:'All types · microbiome'},
+    {e:'☀️',n:'Brightening Toner',t:'Dull · hyperpigmentation'},
+  ]},
+  { id:'exfoliant', icon:'⚡', label:'Exfoliant', subtitle:'Resurface, refine texture, and prep for treatment', products:[
+    {e:'⚡',n:'Kerafole Mask',t:'All types · AHA · deep purge'},
+    {e:'🌟',n:'Measured Micrograins+',t:'All types · physical scrub'},
+    {e:'✨',n:'Skin Editor AHA',t:'Lines · dull · texture'},
+    {e:'🔬',n:'Age Activist Serum',t:'Anti-aging · pores'},
+    {e:'💎',n:'Quick Refiner for Eyes',t:'Eye area · AHA + lactic'},
+    {e:'🌊',n:'Hydroplunge Enzyme',t:'Sensitive · gentle enzyme'},
+  ]},
+  { id:'massage', icon:'🤲', label:'Massage Oil', subtitle:'Lymphatic drainage, circulation, relaxation', products:[
+    {e:'🌹',n:'Dewluxe Facial Oil',t:'All types · nourishing'},
+    {e:'🌿',n:'Squalane Oil',t:'Dry · sensitive · barrier'},
+    {e:'💜',n:'Vitamin E Oil',t:'Anti-aging · antioxidant'},
+    {e:'🫧',n:'Jojoba Blend',t:'Oily · lightweight'},
+    {e:'🌸',n:'Rosehip Blend',t:'Brightening · regenerating'},
+    {e:'✨',n:'Chamomile Calming Oil',t:'Sensitive · redness'},
+  ]},
+  { id:'mask', icon:'🎭', label:'Mask', subtitle:'Targeted treatment mask — leave on 10–15 min', products:[
+    {e:'⚡',n:'Kerafole Mask',t:'Purifying · pore-clearing'},
+    {e:'💎',n:'Hydroplunge Mask',t:'Hydration · HA plumping'},
+    {e:'🌿',n:'Aminoderm Mask',t:'Sensitive · barrier repair'},
+    {e:'💛',n:'VitaMineral Deep Detox',t:'Pro · detox · brightening'},
+    {e:'🌸',n:'Soothing Mask',t:'Redness · reactive skin'},
+    {e:'☀️',n:'Brightening Mask',t:'Vitamin C · glow · even tone'},
+    {e:'🌙',n:'Sleepwear Mask',t:'Anti-aging · overnight ritual'},
+  ]},
+  { id:'serum', icon:'💉', label:'Serum', subtitle:'Targeted active — press in after mask, before moisture', products:[
+    {e:'🔬',n:'Age Activist Serum',t:'Anti-aging · lines · pores'},
+    {e:'⚗️',n:'Firmwear Serum',t:'Firm + lift · peptides'},
+    {e:'🛡️',n:'Barrier Fix Hydrator',t:'Ceramides · barrier repair'},
+    {e:'💛',n:'vc10 Nightly Bright',t:'Vitamin C · brightening'},
+    {e:'✨',n:'Skin Editor AHA',t:'Texture · dull · congestion'},
+    {e:'💧',n:'Hyaluronic Serum',t:'Deep hydration · plumping'},
+    {e:'🌿',n:'Calm Serum',t:'Sensitive · redness · repair'},
+  ]},
+  { id:'moisturizer', icon:'💧', label:'Moisturizer + SPF', subtitle:'Seal in treatment — always finish with SPF for daytime', products:[
+    {e:'💧',n:'Crucial Moisture',t:'Dry skin · emollient rich'},
+    {e:'🌊',n:'Absolute Moisture',t:'Combo · lightweight'},
+    {e:'💦',n:'Beyond Hydration',t:'Oily · gel · non-greasy'},
+    {e:'🛡️',n:'Really Rich Moisture',t:'Very dry · mature'},
+    {e:'🌙',n:'Sleepwear',t:'Night · retinol · repair'},
+    {e:'☀️',n:'Raydefense SPF 30',t:'Daily protection · all types'},
+    {e:'✨',n:'Remineralist Moisture',t:'Firming · minerals'},
+  ]},
+];
+
+let facialCurrentStep = 0;
+let facialData = {};
+
+function initFacialForm() {
+  facialData = {};
+  FACIAL_STEPS.forEach(s => { facialData[s.id] = { product:'', custom:'', notes:'' }; });
+  const sel = document.getElementById('facialClient');
+  if (sel) {
+    sel.innerHTML = '<option value="">— Walk-in / No Account —</option>' +
+      clientsCache.map(c => `<option value="${c.id}">${c.first_name} ${c.last_name||''}</option>`).join('');
+  }
+  const now = new Date();
+  now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+  const dtEl = document.getElementById('facialDateTime');
+  if (dtEl) dtEl.value = now.toISOString().slice(0,16);
+  facialCurrentStep = 0;
+  renderFacialProgress();
+  renderFacialStep(0);
+  renderFacialHistory();
+  const summCard = document.getElementById('facialSummaryCard');
+  if (summCard) summCard.style.display = 'none';
+}
+
+function renderFacialProgress() {
+  const prog = document.getElementById('facialProgress');
+  const labels = document.getElementById('facialStepLabels');
+  if (!prog) return;
+  prog.innerHTML = FACIAL_STEPS.map((s,i) => {
+    const isDone = facialData[s.id]?.product || facialData[s.id]?.custom;
+    const isActive = i === facialCurrentStep;
+    const prevDone = i > 0 && (facialData[FACIAL_STEPS[i-1].id]?.product || facialData[FACIAL_STEPS[i-1].id]?.custom);
+    return `<div class="fp-step">
+        <div class="fp-dot ${isDone?'done':''} ${isActive?'active':''}" onclick="goToFacialStep(${i})">${s.icon}</div>
+        ${i < FACIAL_STEPS.length-1 ? `<div class="fp-line ${isDone?'done':''}"></div>` : ''}
+      </div>`;
+  }).join('');
+  if (labels) labels.innerHTML = FACIAL_STEPS.map(s =>
+    `<span class="fp-label" style="flex:1;text-align:center;">${s.label}</span>`).join('');
+}
+
+function renderFacialStep(idx) {
+  const s = FACIAL_STEPS[idx];
+  const saved = facialData[s.id];
+  const area = document.getElementById('facialStepArea');
+  if (!area) return;
+  area.innerHTML = `
+    <div class="facial-step-card active">
+      <div class="step-header">
+        <div class="step-icon">${s.icon}</div>
+        <div><div class="step-title">Step ${idx+1}: ${s.label}</div><div class="step-subtitle">${s.subtitle}</div></div>
+      </div>
+      <div style="font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--aurora);margin-bottom:12px;">Select Bioelements® Product Used</div>
+      <div class="product-picker" id="productPicker">
+        ${s.products.map(p => `
+          <div class="product-option ${saved.product===p.n?'selected':''}" onclick="selectFacialProduct('${s.id}','${p.n}',this)">
+            <span class="po-emoji">${p.e}</span>
+            <span class="po-name">${p.n}</span>
+            <span class="po-type">${p.t}</span>
+          </div>`).join('')}
+      </div>
+      <div class="custom-product-row">
+        <span class="cp-label">➕ Not listed?</span>
+        <input class="cp-input" id="customProduct-${s.id}" placeholder="Type any product name…" value="${saved.custom||''}"
+          oninput="facialData['${s.id}'].custom=this.value;renderFacialProgress();">
+      </div>
+      <div style="margin-top:18px;">
+        <div style="font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:rgba(168,85,247,.6);margin-bottom:8px;">Step Notes</div>
+        <textarea class="step-notes" id="stepNotes-${s.id}" placeholder="Application technique, skin reaction, timing, observations…" oninput="facialData['${s.id}'].notes=this.value">${saved.notes||''}</textarea>
+      </div>
+    </div>`;
+  document.getElementById('facialStepCounter').textContent = `Step ${idx+1} of ${FACIAL_STEPS.length}`;
+  document.getElementById('facialBackBtn').style.opacity = idx === 0 ? '0.3' : '1';
+  document.getElementById('facialBackBtn').disabled = idx === 0;
+  document.getElementById('facialNextBtn').textContent = idx === FACIAL_STEPS.length-1 ? 'View Summary ✦' : 'Next Step →';
+}
+
+function selectFacialProduct(stepId, name, el) {
+  el.closest('#productPicker').querySelectorAll('.product-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  facialData[stepId].product = name;
+  const ci = document.getElementById('customProduct-'+stepId);
+  if (ci) { ci.value=''; facialData[stepId].custom=''; }
+  renderFacialProgress();
+}
+
+function goToFacialStep(idx) {
+  saveCurrentStepData();
+  facialCurrentStep = idx;
+  renderFacialProgress();
+  renderFacialStep(idx);
+  const sc = document.getElementById('facialSummaryCard');
+  if (sc) sc.style.display = 'none';
+}
+
+function facialNext() {
+  saveCurrentStepData();
+  if (facialCurrentStep < FACIAL_STEPS.length - 1) {
+    facialCurrentStep++;
+    renderFacialProgress();
+    renderFacialStep(facialCurrentStep);
+  } else {
+    renderFacialSummary();
+  }
+}
+
+function facialPrev() {
+  if (facialCurrentStep === 0) return;
+  saveCurrentStepData();
+  facialCurrentStep--;
+  renderFacialProgress();
+  renderFacialStep(facialCurrentStep);
+  const sc = document.getElementById('facialSummaryCard');
+  if (sc) sc.style.display = 'none';
+}
+
+function saveCurrentStepData() {
+  const s = FACIAL_STEPS[facialCurrentStep];
+  const notesEl = document.getElementById('stepNotes-'+s.id);
+  const customEl = document.getElementById('customProduct-'+s.id);
+  if (notesEl) facialData[s.id].notes = notesEl.value;
+  if (customEl) facialData[s.id].custom = customEl.value;
+}
+
+function renderFacialSummary() {
+  saveCurrentStepData();
+  const card = document.getElementById('facialSummaryCard');
+  card.style.display = 'block';
+  card.scrollIntoView({behavior:'smooth', block:'start'});
+  const clientId = document.getElementById('facialClient').value;
+  const walkIn   = document.getElementById('facialWalkIn').value.trim();
+  const service  = document.getElementById('facialService').value;
+  const dt       = document.getElementById('facialDateTime').value;
+  const conditions = [...document.querySelectorAll('.sc-chip.selected')].map(c=>c.textContent).join(', ');
+  const preNotes = document.getElementById('preNotes').value;
+  const cp = clientId ? getClientById(clientId) : null;
+  const clientName = cp ? (cp.first_name+' '+(cp.last_name||'')) : (walkIn || 'Walk-in Client');
+  document.getElementById('facialSummaryBody').innerHTML = `
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px;">
+      <span class="pill pill-purple">👤 ${clientName}</span>
+      <span class="pill pill-blue">${service}</span>
+      ${dt ? `<span class="pill pill-gold">📅 ${new Date(dt).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'})}</span>` : ''}
+      ${conditions ? `<span class="pill pill-yellow">🔍 ${conditions}</span>` : ''}
+    </div>
+    ${preNotes ? `<div class="summary-card"><div class="sc-step-name">Pre-Treatment Observation</div><div class="sc-notes-text">${preNotes}</div></div>` : ''}
+    ${FACIAL_STEPS.map(s => {
+      const d = facialData[s.id];
+      const product = d.product || d.custom;
+      if (!product && !d.notes) return '';
+      return `<div class="summary-card">
+        <div class="sc-step-name">${s.icon} ${s.label}</div>
+        ${product ? `<div class="sc-product">Bioelements® ${product}</div>` : '<div class="sc-product" style="color:rgba(232,213,255,.25);">No product selected</div>'}
+        ${d.notes ? `<div class="sc-notes-text" style="margin-top:5px;">${d.notes}</div>` : ''}
+      </div>`;
+    }).join('')}`;
+}
+
+async function saveFacialRecord() {
+  saveCurrentStepData();
+  const clientId   = document.getElementById('facialClient').value;
+  const walkIn     = document.getElementById('facialWalkIn').value.trim();
+  const service    = document.getElementById('facialService').value;
+  const dt         = document.getElementById('facialDateTime').value;
+  const conditions = [...document.querySelectorAll('.sc-chip.selected')].map(c=>c.textContent);
+  const preNotes   = document.getElementById('preNotes').value.trim();
+  const postNotes  = document.getElementById('postNotes')?.value.trim()||'';
+  const c          = clientId ? getClientById(clientId) : null;
+  const clientName = c ? (c.first_name+' '+(c.last_name||'')) : (walkIn || 'Walk-in Client');
+  const productsList = FACIAL_STEPS.map(s => facialData[s.id].product || facialData[s.id].custom || null).filter(Boolean).join(', ');
+  const fullNotes = [
+    conditions.length ? 'Skin condition: '+conditions.join(', ') : '',
+    preNotes ? 'Pre-treatment: '+preNotes : '',
+    ...FACIAL_STEPS.map(s => { const d=facialData[s.id]; const p=d.product||d.custom; return p ? s.label+': '+p+(d.notes?' — '+d.notes:'') : ''; }).filter(Boolean),
+    postNotes ? 'Post-treatment: '+postNotes : ''
+  ].filter(Boolean).join('\n');
+  if (clientId) {
+    await saveTreatmentRecord({
+      clientId, service,
+      date: dt || new Date().toISOString(),
+      conditions: conditions.join(', '),
+      preNotes, postNotes,
+      products: productsList,
+      steps: FACIAL_STEPS.map(s=>({label:s.label,icon:s.icon,...facialData[s.id]})),
+      next: postNotes
+    });
+    if (postNotes) {
+      const existing = await getEstheNotes(clientId);
+      await saveEstheNotes(clientId, (existing ? existing+'\n\n' : '') + `[${new Date().toLocaleDateString()}] ${postNotes}`);
+    }
+  }
+  toast('✦', `Facial record saved for ${clientName}!`);
+  renderFacialHistory();
+  renderFacialSummary();
+}
+
+function resetFacialForm() {
+  facialCurrentStep = 0;
+  initFacialForm();
+  document.querySelectorAll('.sc-chip').forEach(c => c.classList.remove('selected'));
+  document.getElementById('preNotes').value = '';
+  document.getElementById('facialSummaryCard').style.display = 'none';
+  toast('↺', 'Form reset — ready for next client');
+}
+
+function toggleCondition(el) { el.classList.toggle('selected'); }
+
+function onFacialClientChange() {
+  const email = document.getElementById('facialClient').value;
+  const wf = document.getElementById('facialWalkIn');
+  wf.style.opacity = email ? '0.3' : '1';
+  wf.disabled = !!email;
+}
+
+async function renderDrawerFacials(client) {
+  const records = await getTreatmentHistory(client.id);
+  const el = document.getElementById('drawerFacialRecords');
+  if (!el) return;
+
+  if (!records.length) {
+    el.innerHTML = `<div style="text-align:center;padding:28px;color:rgba(232,213,255,.25);">
+      <div style="font-size:28px;margin-bottom:8px;">🌸</div>
+      No facial records yet for ${client.first_name}.<br>
+      <span style="font-size:11px;">Use the Facial Form to log their next treatment.</span>
+    </div>`;
+    return;
+  }
+
+  el.innerHTML = records.map((r, idx) => `
+    <div class="summary-card" style="margin-bottom:12px;">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:10px;">
+        <div>
+          <div style="font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--aurora);margin-bottom:4px;">
+            ${new Date(r.date).toLocaleDateString('en-US',{weekday:'short',month:'long',day:'numeric',year:'numeric'})}
+          </div>
+          <div style="font-size:15px;color:var(--starlight);">${r.service}</div>
+          ${r.conditions?.length ? `<div style="font-size:11px;color:rgba(168,85,247,.6);margin-top:3px;">Condition: ${r.conditions.join(', ')}</div>` : ''}
+        </div>
+        <button class="fhi-expand-toggle" onclick="toggleFacialDetail('drawer-facial-${idx}')">View Details ↓</button>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">
+        ${r.steps.filter(s=>s.product||s.custom).map(s =>
+          `<span class="pill pill-purple" style="font-size:9px;">${s.icon} ${s.product||s.custom}</span>`
+        ).join('')}
+      </div>
+      <div class="fhi-expand" id="drawer-facial-${idx}">
+        ${r.preNotes ? `<div style="font-size:12px;color:rgba(232,213,255,.4);margin-bottom:10px;padding:8px 12px;background:rgba(168,85,247,.06);border-radius:8px;border-left:2px solid rgba(168,85,247,.3);">📋 ${r.preNotes}</div>` : ''}
+        ${r.steps.filter(s=>s.product||s.custom||s.notes).map(s => `
+          <div class="fhi-expand-step">
+            <span class="fhi-step-icon">${s.icon}</span>
+            <div class="fhi-step-detail">
+              <div class="fhi-step-name">${s.label}</div>
+              ${(s.product||s.custom) ? `<div class="fhi-step-product">Bioelements® ${s.product||s.custom}</div>` : ''}
+              ${s.notes ? `<div class="fhi-step-notes">${s.notes}</div>` : ''}
+            </div>
+          </div>`).join('')}
+        ${r.postNotes ? `<div style="font-size:12px;color:rgba(52,211,153,.7);margin-top:10px;padding:8px 12px;background:rgba(52,211,153,.06);border-radius:8px;border-left:2px solid rgba(52,211,153,.3);">✦ ${r.postNotes}</div>` : ''}
+      </div>
+    </div>`).join('');
+}
+
+function toggleFacialDetail(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const isOpen = el.classList.contains('open');
+  el.classList.toggle('open', !isOpen);
+  // Update toggle button text
+  const btn = el.previousElementSibling?.querySelector?.('.fhi-expand-toggle') ||
+              el.closest('.summary-card')?.querySelector('.fhi-expand-toggle');
+  if (btn) btn.textContent = isOpen ? 'View Details ↓' : 'Hide Details ↑';
+}
+
+async function renderFacialHistory() {
+  // Build history from all treatment records across all clients
+  const all = await Promise.all(clientsCache.map(c => getTreatmentHistory(c.id)));
+  const records = all.flat().sort((a,b) => new Date(b.treatment_date) - new Date(a.treatment_date));
+  const query = (document.getElementById('facialHistorySearch')?.value || '').toLowerCase();
+  const filtered = records.filter(r =>
+    !query ||
+    (r.service||'').toLowerCase().includes(query) ||
+    (r.products_used||'').toLowerCase().includes(query)
+  );
+  const el = document.getElementById('facialHistoryList');
+  if (!el) return;
+
+  if (!filtered.length) {
+    el.innerHTML = '<div style="color:rgba(232,213,255,.25);font-size:13px;text-align:center;padding:24px;">No facial records yet — save your first treatment above.</div>';
+    return;
+  }
+
+  el.innerHTML = filtered.map((r, idx) => {
+    const clientProfile = clientsCache.find(c => c.id === r.client_id);
+    const clientName = clientProfile ? (clientProfile.first_name+' '+(clientProfile.last_name||'')) : 'Walk-in Client';
+    const steps = Array.isArray(r.steps) ? r.steps : [];
+    return `
+    <div class="facial-history-item">
+      <div class="fhi-top">
+        <div class="fhi-date">
+          ${new Date(r.treatment_date).toLocaleDateString('en-US',{month:'short',day:'numeric'})}<br>
+          <span style="font-size:9px;color:rgba(168,85,247,.4);">${new Date(r.treatment_date).getFullYear()}</span>
+        </div>
+        <div class="fhi-info">
+          <div class="fhi-client" onclick="event.stopPropagation();${r.client_id ? `openClientDrawer('${r.client_id}')` : ''}"
+            style="${r.client_id ? '' : 'color:var(--starlight);text-decoration:none;cursor:default;'}">
+            ${clientName}${r.client_id ? ' ↗' : ' · Walk-in'}
+          </div>
+          <div class="fhi-service">${r.service||''}</div>
+          <div class="fhi-steps">
+            ${steps.filter(s=>s.product||s.custom).map(s =>
+              `<span class="pill pill-purple" style="font-size:9px;">${s.icon||''} ${s.product||s.custom}</span>`
+            ).join('')}
+          </div>
+        </div>
+        <div class="fhi-actions">
+          ${r.client_id ? `<button class="rsr-edit" onclick="openClientDrawer('${r.client_id}')" title="Open client profile" style="font-size:18px;color:var(--aurora);">👤</button>` : ''}
+          <button class="fhi-expand-toggle" onclick="toggleFacialDetail('facial-hist-${idx}')">Details ↓</button>
+        </div>
+      </div>
+      <div class="fhi-expand" id="facial-hist-${idx}">
+        ${r.conditions ? `<div style="font-size:11px;color:rgba(168,85,247,.6);margin-bottom:8px;">Condition observed: ${r.conditions}</div>` : ''}
+        ${r.pre_notes ? `<div style="font-size:12px;color:rgba(232,213,255,.4);margin-bottom:10px;padding:8px 12px;background:rgba(168,85,247,.06);border-radius:8px;border-left:2px solid rgba(168,85,247,.3);">📋 ${r.pre_notes}</div>` : ''}
+        ${steps.filter(s=>s.product||s.custom||s.notes).map(s => `
+          <div class="fhi-expand-step">
+            <span class="fhi-step-icon">${s.icon||''}</span>
+            <div class="fhi-step-detail">
+              <div class="fhi-step-name">${s.label||''}</div>
+              ${(s.product||s.custom) ? `<div class="fhi-step-product">Bioelements® ${s.product||s.custom}</div>` : ''}
+              ${s.notes ? `<div class="fhi-step-notes">${s.notes}</div>` : ''}
+            </div>
+          </div>`).join('')}
+        ${r.post_notes ? `<div style="font-size:12px;color:rgba(52,211,153,.7);margin-top:10px;padding:8px 12px;background:rgba(52,211,153,.06);border-radius:8px;border-left:2px solid rgba(52,211,153,.3);">✦ Post-treatment: ${r.post_notes}</div>` : ''}
+        ${r.client_id ? `<button class="btn-primary" style="margin-top:12px;font-size:10px;" onclick="openClientDrawer('${r.client_id}')">Open Full Client Profile →</button>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function printFacialRecord() {
+  toast('🖨️','Opening print view…');
+  setTimeout(() => window.print(), 400);
+}
+
+// ═══════════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════════
+function toast(icon, text) {
+  const t = document.getElementById('toast');
+  document.getElementById('ti').textContent = icon;
+  document.getElementById('tt').textContent = text;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+// ═══════════════════════════════════════════════════
+// REVIEWS MANAGEMENT
+// ═══════════════════════════════════════════════════
+let rvAllAdmin  = [];    // full list from DB
+let rvShowFilter = 'all';
+let rvEditingId  = null; // id of review being edited, or null
+
+async function loadReviewsPanel() {
+  document.getElementById('rvList').innerHTML = '<div style="color:var(--muted);font-size:13px;padding:20px 0;">Loading…</div>';
+  try {
+    rvAllAdmin = await getAllReviews();
+  } catch (e) {
+    document.getElementById('rvList').innerHTML = `<div style="color:#f87171;font-size:13px;">${e.message}</div>`;
+    return;
+  }
+  document.getElementById('rvCountBadge').textContent = rvAllAdmin.length;
+  renderReviewList();
+}
+
+function rvFilterPanel(platform) {
+  rvShowFilter = platform;
+  renderReviewList();
+}
+
+function renderReviewList() {
+  const list = document.getElementById('rvList');
+  const items = rvShowFilter === 'all'
+    ? rvAllAdmin
+    : rvAllAdmin.filter(r => r.platform === rvShowFilter);
+
+  if (!items.length) {
+    list.innerHTML = '<div style="color:var(--muted);font-size:13px;padding:16px 0;">No reviews yet.</div>';
+    return;
+  }
+
+  const STAR_STR = n => '★'.repeat(n) + '☆'.repeat(5 - n);
+  const PLAT_COLOR = { Google: '#60a5fa', Facebook: '#818cf8', GlossGenius: '#a855f7' };
+
+  list.innerHTML = items.map(r => `
+    <div style="border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:12px;background:rgba(255,255,255,0.02);">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <span style="font-size:11px;padding:3px 10px;border-radius:100px;background:rgba(255,255,255,0.05);color:${PLAT_COLOR[r.platform]||'var(--muted)'};">${r.platform}</span>
+          <span style="color:#fbbf24;font-size:13px;letter-spacing:2px;">${STAR_STR(r.rating)}</span>
+          <span style="font-size:12px;color:var(--muted);">${r.reviewer_name}</span>
+          ${r.review_date ? `<span style="font-size:11px;color:var(--muted);">${r.review_date}</span>` : ''}
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;flex-shrink:0;">
+          <label style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);cursor:pointer;" title="${r.is_featured ? 'Showing on website — click to hide' : 'Hidden — click to show'}">
+            <input type="checkbox" ${r.is_featured ? 'checked' : ''} onchange="toggleFeatured('${r.id}', this.checked)" style="accent-color:var(--accent);"> On Site
+          </label>
+          <button class="btn-ghost" style="font-size:11px;padding:4px 10px;" onclick="startEditReview('${r.id}')">Edit</button>
+          <button class="btn-ghost" style="font-size:11px;padding:4px 10px;color:#f87171;border-color:rgba(248,113,113,0.3);" onclick="removeReview('${r.id}')">Delete</button>
+        </div>
+      </div>
+      <div style="margin-top:10px;font-size:13px;color:var(--starlight);font-style:italic;line-height:1.6;">"${r.review_text}"</div>
+      <div style="margin-top:8px;font-size:11px;color:var(--muted);">Display order: ${r.display_order}</div>
+    </div>
+  `).join('');
+}
+
+async function saveReviewForm() {
+  const platform = document.getElementById('rv-platform').value;
+  const name     = document.getElementById('rv-name').value.trim();
+  const text     = document.getElementById('rv-text').value.trim();
+  const rating   = parseInt(document.getElementById('rv-rating').value);
+  const date     = document.getElementById('rv-date').value || null;
+  const featured = document.getElementById('rv-featured').checked;
+  const msg      = document.getElementById('rvFormMsg');
+
+  if (!platform || !name || !text) {
+    msg.style.color = '#f87171';
+    msg.textContent = 'Platform, reviewer name, and review text are required.';
+    return;
+  }
+
+  document.getElementById('rvSaveBtn').disabled = true;
+  msg.textContent = '';
+
+  try {
+    if (rvEditingId) {
+      await updateReview(rvEditingId, {
+        platform, reviewerName: name, reviewText: text,
+        rating, reviewDate: date, isFeatured: featured
+      });
+      showToast('✓', 'Review updated');
+    } else {
+      const saved = await saveReview({ platform, reviewerName: name, rating, reviewText: text, reviewDate: date });
+      if (!featured) await updateReview(saved.id, { isFeatured: false });
+      showToast('★', 'Review added');
+    }
+    cancelReviewEdit();
+    await loadReviewsPanel();
+  } catch (e) {
+    msg.style.color = '#f87171';
+    msg.textContent = e.message;
+  } finally {
+    document.getElementById('rvSaveBtn').disabled = false;
+  }
+}
+
+function startEditReview(id) {
+  const r = rvAllAdmin.find(x => x.id === id);
+  if (!r) return;
+  rvEditingId = id;
+  document.getElementById('rv-platform').value  = r.platform;
+  document.getElementById('rv-rating').value    = r.rating;
+  document.getElementById('rv-name').value      = r.reviewer_name;
+  document.getElementById('rv-date').value      = r.review_date || '';
+  document.getElementById('rv-text').value      = r.review_text;
+  document.getElementById('rv-featured').checked = r.is_featured;
+  document.getElementById('rvSaveBtn').textContent = 'Save Changes ✦';
+  document.getElementById('rvCancelBtn').style.display = 'inline-block';
+  document.getElementById('rvFormMsg').textContent = '';
+  document.querySelector('#panel-reviews .card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function cancelReviewEdit() {
+  rvEditingId = null;
+  ['rv-platform','rv-name','rv-text','rv-date'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('rv-rating').value    = '5';
+  document.getElementById('rv-featured').checked = true;
+  document.getElementById('rvSaveBtn').textContent = 'Add Review ✦';
+  document.getElementById('rvCancelBtn').style.display = 'none';
+  document.getElementById('rvFormMsg').textContent = '';
+}
+
+async function toggleFeatured(id, isFeatured) {
+  try {
+    await updateReview(id, { isFeatured });
+    const r = rvAllAdmin.find(x => x.id === id);
+    if (r) r.is_featured = isFeatured;
+    showToast('✓', isFeatured ? 'Review shown on site' : 'Review hidden from site');
+  } catch (e) {
+    showToast('✗', e.message);
+  }
+}
+
+async function removeReview(id) {
+  if (!confirm('Delete this review? This cannot be undone.')) return;
+  try {
+    await deleteReview(id);
+    rvAllAdmin = rvAllAdmin.filter(r => r.id !== id);
+    document.getElementById('rvCountBadge').textContent = rvAllAdmin.length;
+    renderReviewList();
+    showToast('✓', 'Review deleted');
+  } catch (e) {
+    showToast('✗', e.message);
+  }
+}
+
+// ═══════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════
+window.addEventListener('DOMContentLoaded', async () => {
+  await cbsInitSession(
+    async (user, profile) => {
+      if (profile.is_admin) {
+        adminUser = user;
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('mainArea').style.display = 'block';
+        CosmicAuth.injectAuthBar(['esthetician'], 'dashboard');
+        await initDashboard();
+      } else {
+        // Signed in but not admin — sign them out
+        await cbsLogout();
+        document.getElementById('loginScreen').style.display = 'flex';
+      }
+    },
+    () => {
+      document.getElementById('loginScreen').style.display = 'flex';
+    }
+  );
+});
+</script>
+</body>
+</html>

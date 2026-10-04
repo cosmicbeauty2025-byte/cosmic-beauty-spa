@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LUMINOS · Bioelements Shop</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Syncopate:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--void:#030612;--deep:#0a0820;--nebula:#1a0a3d;--violet:#6b2fa0;--electric:#7c3aed;--aurora:#a855f7;--sky:#60a5fa;--ice:#bae6fd;--starlight:#e8d5ff;--pearl:#f5f0ff;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--void);color:var(--pearl);font-family:'DM Sans',sans-serif;font-weight:300;overflow-x:hidden;cursor:none;}
+::selection{background:var(--aurora);color:var(--void);}
+
+.cursor{width:10px;height:10px;background:var(--aurora);border-radius:50%;position:fixed;pointer-events:none;z-index:9999;mix-blend-mode:screen;transition:transform .15s;}
+.cursor-trail{width:32px;height:32px;border:1px solid rgba(168,85,247,.4);border-radius:50%;position:fixed;pointer-events:none;z-index:9998;transition:all .3s ease;}
+
+#starfield{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;}
+.nebula-blob{position:fixed;border-radius:50%;filter:blur(110px);pointer-events:none;z-index:0;animation:drift 20s ease-in-out infinite alternate;}
+.nb1{width:550px;height:550px;background:radial-gradient(circle,rgba(107,47,160,.3) 0%,transparent 70%);top:-100px;left:-80px;}
+.nb2{width:450px;height:450px;background:radial-gradient(circle,rgba(61,47,160,.25) 0%,transparent 70%);bottom:10%;right:-80px;animation-delay:-8s;}
+.nb3{width:350px;height:350px;background:radial-gradient(circle,rgba(96,165,250,.15) 0%,transparent 70%);top:50%;left:40%;animation-delay:-14s;}
+@keyframes drift{0%{transform:translate(0,0) scale(1);}100%{transform:translate(30px,25px) scale(1.08);}}
+@keyframes twinkle{0%,100%{opacity:1;}50%{opacity:.3;}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:200;padding:18px 48px;display:flex;align-items:center;justify-content:space-between;backdrop-filter:blur(20px);background:rgba(3,6,18,.7);border-bottom:1px solid rgba(168,85,247,.12);}
+.logo{font-family:'Syncopate',sans-serif;font-size:18px;letter-spacing:.25em;color:var(--starlight);text-decoration:none;position:relative;}
+.logo::after{content:'✦';font-size:7px;position:absolute;top:0;right:-14px;color:var(--aurora);animation:twinkle 2s infinite;}
+.nav-right{display:flex;align-items:center;gap:12px;}
+.back-link{color:rgba(232,213,255,.5);text-decoration:none;font-size:12px;letter-spacing:.15em;text-transform:uppercase;transition:color .3s;}
+.back-link:hover{color:var(--aurora);}
+.nav-btn{border:1px solid rgba(168,85,247,.3);background:transparent;color:rgba(232,213,255,.7);padding:8px 16px;border-radius:100px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;cursor:none;transition:all .3s;font-family:'DM Sans',sans-serif;}
+.nav-btn:hover{border-color:var(--aurora);color:var(--aurora);}
+.nav-btn.accent{background:rgba(168,85,247,.1);}
+.cart-btn{background:linear-gradient(135deg,var(--electric),var(--sky));color:#fff;border:none;padding:10px 22px;border-radius:100px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;cursor:none;display:flex;align-items:center;gap:8px;transition:all .3s;box-shadow:0 0 20px rgba(124,58,237,.4);font-family:'DM Sans',sans-serif;}
+.cart-btn:hover{box-shadow:0 0 40px rgba(124,58,237,.7);transform:translateY(-1px);}
+.cart-count{background:rgba(255,255,255,.25);border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;}
+#navUserGreeting{font-size:11px;color:var(--aurora);letter-spacing:.05em;}
+
+/* PAGE HEADER */
+.shop-header{position:relative;z-index:1;text-align:center;padding:52px 48px 36px;}
+.shop-tag{display:inline-block;font-size:10px;letter-spacing:.4em;text-transform:uppercase;color:var(--aurora);border:1px solid rgba(168,85,247,.3);padding:7px 18px;border-radius:100px;margin-bottom:20px;background:rgba(168,85,247,.07);animation:fadeUp .8s ease both;}
+.shop-header h1{font-family:'Cormorant Garamond',serif;font-size:clamp(38px,6vw,72px);font-weight:300;line-height:.95;margin-bottom:12px;animation:fadeUp .8s .15s ease both;}
+.shop-header h1 em{font-style:italic;background:linear-gradient(135deg,var(--aurora),var(--sky),var(--ice));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.shop-header p{color:rgba(232,213,255,.5);font-size:14px;line-height:1.8;max-width:480px;margin:0 auto;animation:fadeUp .8s .3s ease both;}
+
+/* ── FILTER BAR ── */
+.filter-zone{position:sticky;top:34px;z-index:100;background:rgba(3,6,18,.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(168,85,247,.15);padding:14px 48px;}
+.filter-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px;}
+.filter-row:last-child{margin-bottom:0;}
+.filter-label{font-size:9px;letter-spacing:.4em;text-transform:uppercase;color:rgba(168,85,247,.6);white-space:nowrap;width:68px;flex-shrink:0;}
+.filter-pills{display:flex;gap:6px;flex-wrap:wrap;}
+.concern-pill,.skin-pill{padding:7px 15px;border-radius:100px;border:1px solid rgba(168,85,247,.22);background:rgba(26,10,61,.5);color:rgba(232,213,255,.55);font-size:12px;cursor:none;transition:all .2s;white-space:nowrap;font-family:'DM Sans',sans-serif;font-weight:300;}
+.concern-pill:hover,.skin-pill:hover{border-color:rgba(168,85,247,.6);color:var(--starlight);background:rgba(107,47,160,.2);}
+.concern-pill.active,.skin-pill.active{border-color:var(--aurora);background:var(--aurora);color:#fff;font-weight:500;box-shadow:0 0 18px rgba(168,85,247,.4);}
+.filter-tools{display:flex;align-items:center;gap:10px;padding-top:10px;border-top:1px solid rgba(168,85,247,.1);}
+.search-wrap{position:relative;flex:1;max-width:300px;}
+.search-input{width:100%;background:rgba(26,10,61,.6);border:1px solid rgba(168,85,247,.2);border-radius:100px;padding:8px 16px 8px 34px;color:var(--pearl);font-family:'DM Sans',sans-serif;font-size:12px;outline:none;transition:border-color .2s;}
+.search-input:focus{border-color:rgba(168,85,247,.5);}
+.search-input::placeholder{color:rgba(232,213,255,.3);}
+.search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:rgba(168,85,247,.4);font-size:13px;pointer-events:none;}
+.sort-select{background:rgba(26,10,61,.6);border:1px solid rgba(168,85,247,.2);border-radius:100px;padding:8px 16px;color:var(--pearl);font-family:'DM Sans',sans-serif;font-size:12px;outline:none;appearance:none;cursor:none;}
+.sort-select option{background:var(--deep);}
+.result-count{font-size:11px;color:rgba(232,213,255,.35);margin-left:auto;}
+
+/* ── SHOP LAYOUT ── */
+.shop-layout{position:relative;z-index:1;max-width:1300px;margin:0 auto;padding:36px 40px 100px;}
+.sidebar{display:none;}
+.sidebar-section{display:none;}
+
+/* ── PRODUCT GRID ── */
+.product-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;}
+
+/* ── PRODUCT CARD ── */
+.prod-card{background:rgba(22,12,52,.85);border:1px solid rgba(168,85,247,.16);border-radius:18px;overflow:hidden;transition:transform .3s ease,box-shadow .3s ease,border-color .3s ease;position:relative;display:flex;flex-direction:column;}
+.prod-card:hover{transform:translateY(-6px);border-color:rgba(168,85,247,.45);box-shadow:0 20px 56px rgba(107,47,160,.35);}
+
+/* badge */
+.prod-badge{position:absolute;top:14px;left:14px;z-index:2;font-size:9px;letter-spacing:.15em;text-transform:uppercase;padding:5px 12px;border-radius:100px;font-family:'DM Sans',sans-serif;font-weight:500;color:#fff;}
+.prod-card.bestseller .prod-badge{background:linear-gradient(135deg,#7c3aed,#6b2fa0);}
+.prod-card.new-badge .prod-badge{background:linear-gradient(135deg,#60a5fa,#7c3aed);}
+
+/* product image */
+.prod-visual{height:240px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;flex-shrink:0;}
+.prod-visual img{width:100%;height:100%;object-fit:contain;padding:24px;position:relative;z-index:1;transition:transform .4s ease;}
+.prod-card:hover .prod-visual img{transform:scale(1.06);}
+.prod-visual .emoji{font-size:70px;position:relative;z-index:1;filter:drop-shadow(0 0 24px rgba(168,85,247,.6));}
+.pv-a{background:linear-gradient(155deg,rgba(107,47,160,.45) 0%,rgba(26,10,61,.8) 100%);}
+.pv-b{background:linear-gradient(155deg,rgba(61,47,160,.45) 0%,rgba(10,20,60,.8) 100%);}
+.pv-c{background:linear-gradient(155deg,rgba(96,165,250,.3) 0%,rgba(61,47,160,.7) 100%);}
+.pv-d{background:linear-gradient(155deg,rgba(168,85,247,.35) 0%,rgba(26,10,61,.8) 100%);}
+.pv-e{background:linear-gradient(155deg,rgba(186,230,253,.2) 0%,rgba(107,47,160,.6) 100%);}
+.pv-f{background:linear-gradient(155deg,rgba(124,58,237,.4) 0%,rgba(10,8,32,.8) 100%);}
+
+/* card body */
+.prod-body{padding:20px 22px 22px;display:flex;flex-direction:column;flex:1;}
+.prod-name{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:var(--starlight);line-height:1.15;margin-bottom:4px;}
+.prod-type{font-size:12px;color:rgba(168,85,247,.65);margin-bottom:12px;}
+.prod-desc{font-size:13px;color:rgba(232,213,255,.52);line-height:1.65;flex:1;margin-bottom:20px;}
+
+/* price + add */
+.prod-footer{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:auto;}
+.prod-price{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:400;color:var(--aurora);line-height:1;}
+.prod-size-label{font-size:10px;color:rgba(232,213,255,.3);margin-top:2px;}
+.add-btn{flex:1;background:linear-gradient(135deg,var(--electric),var(--violet));border:none;color:#fff;height:44px;border-radius:100px;font-family:'DM Sans',sans-serif;font-size:12px;letter-spacing:.12em;text-transform:uppercase;cursor:none;transition:all .25s;box-shadow:0 0 18px rgba(124,58,237,.3);}
+.add-btn:hover{box-shadow:0 0 32px rgba(124,58,237,.6);transform:translateY(-1px);}
+
+/* empty */
+.empty-state{text-align:center;padding:100px 40px;color:rgba(232,213,255,.3);}
+.empty-state .empty-icon{font-size:52px;margin-bottom:16px;}
+.empty-state p{font-size:14px;line-height:1.8;}
+
+/* ── SHARED DRAWER/OVERLAY ── */
+.overlay{position:fixed;inset:0;background:rgba(3,6,18,.6);backdrop-filter:blur(12px);z-index:400;display:none;}
+.overlay.open{display:block;}
+.drawer{position:fixed;top:0;right:-440px;width:420px;height:100%;background:linear-gradient(180deg,rgba(10,8,32,.97),rgba(26,10,61,.97));border-left:1px solid rgba(168,85,247,.2);z-index:401;transition:right .4s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;overflow:hidden;}
+.drawer.open{right:0;}
+.drawer-header{padding:28px 28px 20px;border-bottom:1px solid rgba(168,85,247,.12);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.drawer-header h3{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:var(--starlight);}
+.drawer-close{background:rgba(168,85,247,.1);border:1px solid rgba(168,85,247,.2);border-radius:50%;width:34px;height:34px;color:var(--starlight);font-size:16px;cursor:none;display:flex;align-items:center;justify-content:center;transition:all .3s;}
+.drawer-close:hover{background:rgba(168,85,247,.25);}
+.drawer-body{flex:1;overflow-y:auto;padding:20px 28px;scrollbar-width:thin;scrollbar-color:rgba(168,85,247,.3) transparent;}
+
+/* CART */
+.cart-item{display:flex;gap:14px;align-items:center;padding:14px 0;border-bottom:1px solid rgba(168,85,247,.08);}
+.ci-icon{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;overflow:hidden;}
+.ci-a{background:linear-gradient(135deg,rgba(107,47,160,.5),rgba(61,47,160,.4));}
+.ci-b{background:linear-gradient(135deg,rgba(61,47,160,.5),rgba(96,165,250,.4));}
+.ci-c{background:linear-gradient(135deg,rgba(96,165,250,.4),rgba(168,85,247,.5));}
+.ci-d{background:linear-gradient(135deg,rgba(168,85,247,.4),rgba(186,230,253,.3));}
+.ci-info{flex:1;}
+.ci-brand{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(168,85,247,.6);}
+.ci-name{font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--starlight);margin:2px 0;}
+.ci-price{font-size:13px;color:var(--aurora);}
+.ci-remove{background:none;border:none;color:rgba(232,213,255,.3);font-size:18px;cursor:none;transition:color .3s;padding:4px;}
+.ci-remove:hover{color:rgba(168,85,247,.8);}
+.cart-empty-msg{text-align:center;padding:60px 20px;color:rgba(232,213,255,.3);}
+.cart-empty-msg .ei{font-size:40px;margin-bottom:12px;}
+.cart-footer{padding:20px 28px 28px;border-top:1px solid rgba(168,85,247,.12);flex-shrink:0;}
+.cart-total-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.cart-total-row span:first-child{font-size:12px;letter-spacing:.15em;text-transform:uppercase;color:rgba(232,213,255,.5);}
+.cart-total-row span:last-child{font-family:'Cormorant Garamond',serif;font-size:26px;color:var(--aurora);}
+.cart-signin-prompt{font-size:11px;color:rgba(232,213,255,.35);text-align:center;margin-bottom:12px;}
+.cart-signin-prompt button{background:none;border:none;color:var(--aurora);cursor:none;font-size:11px;text-decoration:underline;font-family:'DM Sans',sans-serif;}
+.checkout-btn{width:100%;background:linear-gradient(135deg,var(--electric),var(--violet));color:#fff;border:none;padding:16px;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:13px;letter-spacing:.15em;text-transform:uppercase;cursor:none;transition:all .4s;box-shadow:0 0 30px rgba(124,58,237,.4);position:relative;overflow:hidden;}
+.checkout-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent,rgba(255,255,255,.15),transparent);transform:translateX(-100%);transition:transform .6s;}
+.checkout-btn:hover::before{transform:translateX(100%);}
+.checkout-btn:hover{box-shadow:0 0 60px rgba(124,58,237,.7);}
+.checkout-btn:disabled{opacity:.6;}
+
+/* ORDERS */
+.order-item{padding:16px 0;border-bottom:1px solid rgba(168,85,247,.08);}
+.order-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.order-date{font-size:12px;color:rgba(232,213,255,.5);}
+.order-status{font-size:10px;letter-spacing:.2em;text-transform:uppercase;padding:3px 10px;border-radius:100px;}
+.order-status.paid{color:#34d399;background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.2);}
+.order-lines{display:flex;flex-direction:column;gap:3px;margin-bottom:8px;}
+.order-line{font-size:12px;color:rgba(232,213,255,.6);}
+.order-amount{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--aurora);}
+
+/* AUTH MODAL */
+.auth-modal-overlay{position:fixed;inset:0;background:rgba(3,6,18,.75);backdrop-filter:blur(16px);z-index:500;display:none;align-items:center;justify-content:center;}
+.auth-modal-overlay.open{display:flex;}
+.auth-modal{background:linear-gradient(145deg,rgba(10,8,32,.98),rgba(26,10,61,.98));border:1px solid rgba(168,85,247,.25);border-radius:24px;padding:40px;width:90%;max-width:420px;position:relative;box-shadow:0 0 80px rgba(107,47,160,.3);}
+.auth-modal h3{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:var(--starlight);margin-bottom:8px;}
+.auth-modal p{font-size:13px;color:rgba(232,213,255,.45);margin-bottom:24px;line-height:1.6;}
+.auth-tabs{display:flex;gap:4px;background:rgba(168,85,247,.08);border-radius:10px;padding:4px;margin-bottom:20px;}
+.auth-tab{flex:1;padding:8px;border:none;background:transparent;color:rgba(232,213,255,.5);font-family:'DM Sans',sans-serif;font-size:12px;letter-spacing:.1em;text-transform:uppercase;border-radius:8px;cursor:none;transition:all .3s;}
+.auth-tab.active{background:rgba(168,85,247,.25);color:var(--starlight);}
+.auth-input{width:100%;background:rgba(26,10,61,.6);border:1px solid rgba(168,85,247,.2);border-radius:10px;padding:12px 16px;color:var(--pearl);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;transition:all .3s;margin-bottom:10px;display:block;}
+.auth-input:focus{border-color:rgba(168,85,247,.5);box-shadow:0 0 14px rgba(168,85,247,.1);}
+.auth-input::placeholder{color:rgba(232,213,255,.3);}
+.auth-submit{width:100%;background:linear-gradient(135deg,var(--electric),var(--violet));color:#fff;border:none;padding:14px;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:13px;letter-spacing:.12em;text-transform:uppercase;cursor:none;transition:all .3s;margin-top:6px;box-shadow:0 0 24px rgba(124,58,237,.3);}
+.auth-submit:hover{box-shadow:0 0 40px rgba(124,58,237,.6);}
+.auth-submit:disabled{opacity:.5;}
+.auth-error{font-size:12px;color:#f87171;margin-top:10px;min-height:18px;text-align:center;}
+.auth-divider{display:flex;align-items:center;gap:12px;margin:20px 0;}
+.auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:rgba(168,85,247,.15);}
+.auth-divider span{font-size:11px;color:rgba(232,213,255,.3);letter-spacing:.1em;text-transform:uppercase;}
+.auth-guest-btn{width:100%;background:transparent;border:1px solid rgba(168,85,247,.2);color:rgba(232,213,255,.6);padding:12px;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:12px;letter-spacing:.1em;text-transform:uppercase;cursor:none;transition:all .3s;}
+.auth-guest-btn:hover{border-color:rgba(168,85,247,.4);color:var(--starlight);}
+.auth-close{position:absolute;top:16px;right:16px;background:rgba(168,85,247,.1);border:1px solid rgba(168,85,247,.2);border-radius:50%;width:32px;height:32px;color:var(--starlight);font-size:14px;cursor:none;display:flex;align-items:center;justify-content:center;transition:all .3s;}
+.auth-close:hover{background:rgba(168,85,247,.25);}
+
+/* SUCCESS MODAL */
+.success-overlay{position:fixed;inset:0;background:rgba(3,6,18,.8);backdrop-filter:blur(20px);z-index:600;display:none;align-items:center;justify-content:center;}
+.success-overlay.open{display:flex;}
+.success-modal{background:linear-gradient(145deg,rgba(10,8,32,.99),rgba(26,10,61,.99));border:1px solid rgba(168,85,247,.3);border-radius:24px;padding:48px 40px;width:90%;max-width:480px;text-align:center;box-shadow:0 0 100px rgba(107,47,160,.4);}
+.success-icon{font-size:56px;margin-bottom:20px;}
+.success-modal h2{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;color:var(--starlight);margin-bottom:12px;}
+.success-modal p{font-size:14px;color:rgba(232,213,255,.5);line-height:1.8;margin-bottom:24px;}
+.success-items{background:rgba(168,85,247,.06);border:1px solid rgba(168,85,247,.12);border-radius:14px;padding:16px;margin-bottom:24px;text-align:left;}
+.success-item{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(168,85,247,.08);font-size:13px;color:rgba(232,213,255,.7);}
+.success-item:last-child{border-bottom:none;}
+.success-total{display:flex;justify-content:space-between;padding-top:12px;font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--aurora);}
+
+/* TOAST */
+.toast{position:fixed;bottom:36px;left:50%;transform:translateX(-50%) translateY(80px);background:linear-gradient(135deg,rgba(26,10,61,.97),rgba(13,26,74,.97));border:1px solid rgba(168,85,247,.35);border-radius:14px;padding:14px 22px;display:flex;align-items:center;gap:10px;z-index:1000;opacity:0;transition:all .4s ease;box-shadow:0 0 40px rgba(107,47,160,.3);white-space:nowrap;}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+.toast-icon{font-size:18px;}
+.toast-text{font-size:13px;color:var(--starlight);}
+
+.divider{width:100%;height:1px;background:linear-gradient(to right,transparent,rgba(168,85,247,.2),rgba(96,165,250,.2),transparent);margin:0;}
+
+@media(max-width:1100px){.product-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:800px){
+  .filter-zone{padding:12px 20px;}
+  .shop-layout{padding:24px 20px 80px;}
+}
+@media(max-width:600px){
+  nav{padding:14px 16px;}
+  .shop-header{padding:48px 20px 30px;}
+  .product-grid{grid-template-columns:1fr;}
+  .drawer{width:100%;right:-100%;}
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-client.js"></script>
+<script src="auth.js"></script>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-trail" id="trail"></div>
+<canvas id="starfield"></canvas>
+<div class="nebula-blob nb1"></div>
+<div class="nebula-blob nb2"></div>
+<div class="nebula-blob nb3"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="skincare-cosmos.html" class="logo">COSMIC BEAUTY SPA</a>
+  <div class="nav-right">
+    <span id="navUserGreeting" style="display:none;"></span>
+    <button class="nav-btn accent" id="ordersBtn" style="display:none;" onclick="toggleOrders()">📦 My Orders</button>
+    <button class="nav-btn" id="signInBtn" onclick="openAuth()">Sign In</button>
+    <button class="nav-btn" id="signOutBtn" style="display:none;" onclick="handleSignOut()">Sign Out</button>
+    <a href="https://www.cosmicreators.com" target="_blank" class="nav-btn accent">Book Now ✦</a>
+    <a href="skincare-cosmos.html" class="back-link">← Home</a>
+    <button class="cart-btn" onclick="toggleCart()">🛍️ Cart <span class="cart-count" id="cartCount">0</span></button>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="shop-header">
+  <div class="shop-tag">✦ Professional · Clean · Clinical · Vegan ✦</div>
+  <h1>Bioelements<br><em>Complete Collection</em></h1>
+  <p>Every formula crafted for real skin. Shop by step — Cleanse, Tone, Exfoliate, Moisturize and more — or filter by skin type.</p>
+</div>
+
+<div class="divider"></div>
+
+<!-- FILTER ZONE -->
+<div class="filter-zone">
+  <div class="filter-row">
+    <span class="filter-label">Step</span>
+    <div class="filter-pills" id="categoryList">
+      <button class="concern-pill active" data-cat="all"       onclick="setCategory('all',this)">All</button>
+      <button class="concern-pill" data-cat="cleanse"          onclick="setCategory('cleanse',this)">🫧 Cleanse</button>
+      <button class="concern-pill" data-cat="tone"             onclick="setCategory('tone',this)">💧 Tone</button>
+      <button class="concern-pill" data-cat="exfoliate"        onclick="setCategory('exfoliate',this)">✨ Exfoliate</button>
+      <button class="concern-pill" data-cat="serum"            onclick="setCategory('serum',this)">⚗️ Serums</button>
+      <button class="concern-pill" data-cat="moisturize"       onclick="setCategory('moisturize',this)">🌙 Moisturize</button>
+      <button class="concern-pill" data-cat="eye"              onclick="setCategory('eye',this)">👁️ Eye Care</button>
+      <button class="concern-pill" data-cat="mask"             onclick="setCategory('mask',this)">🌟 Masks</button>
+      <button class="concern-pill" data-cat="spf"              onclick="setCategory('spf',this)">☀️ SPF</button>
+      <button class="concern-pill" data-cat="sets"             onclick="setCategory('sets',this)">🎁 Sets &amp; Kits</button>
+      <button class="concern-pill" data-cat="lip"              onclick="setCategory('lip',this)">💋 Lip Care</button>
+    </div>
+  </div>
+  <div class="filter-row">
+    <span class="filter-label">Skin Type</span>
+    <div class="filter-pills" id="skinTypeList">
+      <button class="skin-pill active" data-skin="all" onclick="setSkinType('all',this)">All</button>
+      <button class="skin-pill" data-skin="Dry" onclick="setSkinType('Dry',this)">Dry</button>
+      <button class="skin-pill" data-skin="Normal" onclick="setSkinType('Normal',this)">Normal</button>
+      <button class="skin-pill" data-skin="Combination" onclick="setSkinType('Combination',this)">Combination</button>
+      <button class="skin-pill" data-skin="Oily" onclick="setSkinType('Oily',this)">Oily</button>
+      <button class="skin-pill" data-skin="Sensitive" onclick="setSkinType('Sensitive',this)">Sensitive</button>
+      <button class="skin-pill" data-skin="Acne-Prone" onclick="setSkinType('Acne-Prone',this)">Acne-Prone</button>
+    </div>
+  </div>
+  <div class="filter-tools">
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" class="search-input" id="searchInput" placeholder="Search products..." oninput="handleSearch()">
+    </div>
+    <select class="sort-select" id="sortSelect" onchange="renderAll()">
+      <option value="default">Featured</option>
+      <option value="price-asc">Price: Low → High</option>
+      <option value="price-desc">Price: High → Low</option>
+      <option value="name">Name A–Z</option>
+    </select>
+    <span class="result-count" id="resultCount"></span>
+  </div>
+</div>
+
+<!-- PRODUCT GRID -->
+<div class="shop-layout">
+  <div id="shopContent"></div>
+</div>
+
+<!-- CART DRAWER -->
+<div class="overlay" id="cartOverlay" onclick="toggleCart()"></div>
+<div class="drawer" id="cartDrawer">
+  <div class="drawer-header">
+    <h3>Your Ritual Cart ✦</h3>
+    <button class="drawer-close" onclick="toggleCart()">✕</button>
+  </div>
+  <div class="drawer-body" id="cartItems"></div>
+  <div class="cart-footer" id="cartFooter" style="display:none;">
+    <div class="cart-total-row"><span>Total</span><span id="cartTotal">$0</span></div>
+    <p class="cart-signin-prompt" id="cartSignInPrompt" style="display:none;">
+      <button onclick="openAuth(true)">Sign in</button> to track your order history
+    </p>
+    <button class="checkout-btn" onclick="initiateCheckout()">Proceed to Checkout ✦</button>
+  </div>
+</div>
+
+<!-- ORDERS DRAWER -->
+<div class="overlay" id="ordersOverlay" onclick="toggleOrders()"></div>
+<div class="drawer" id="ordersDrawer">
+  <div class="drawer-header">
+    <h3>My Orders ✦</h3>
+    <button class="drawer-close" onclick="toggleOrders()">✕</button>
+  </div>
+  <div class="drawer-body" id="ordersList">
+    <div class="cart-empty-msg"><div class="ei">📦</div><p>Loading your orders…</p></div>
+  </div>
+</div>
+
+<!-- AUTH MODAL -->
+<div class="auth-modal-overlay" id="authOverlay" onclick="handleAuthOverlayClick(event)">
+  <div class="auth-modal">
+    <button class="auth-close" onclick="closeAuth()">✕</button>
+    <h3>Welcome Back ✦</h3>
+    <p>Sign in to track orders, save your skin profile and get personalized product recommendations.</p>
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchAuthTab('login',this)">Sign In</button>
+      <button class="auth-tab" onclick="switchAuthTab('register',this)">Create Account</button>
+    </div>
+
+    <div id="loginForm">
+      <input type="email" id="authEmail" class="auth-input" placeholder="Email address" autocomplete="email">
+      <input type="password" id="authPassword" class="auth-input" placeholder="Password" autocomplete="current-password">
+      <button class="auth-submit" id="loginBtn" onclick="handleLogin()">Sign In ✦</button>
+    </div>
+
+    <div id="registerForm" style="display:none;">
+      <input type="text" id="regFirst" class="auth-input" placeholder="First name">
+      <input type="text" id="regLast" class="auth-input" placeholder="Last name">
+      <input type="email" id="regEmail" class="auth-input" placeholder="Email address" autocomplete="email">
+      <input type="password" id="regPassword" class="auth-input" placeholder="Password (8+ characters)" autocomplete="new-password">
+      <button class="auth-submit" id="registerBtn" onclick="handleRegister()">Create Account ✦</button>
+    </div>
+
+    <div class="auth-error" id="authError"></div>
+    <div class="auth-divider"><span>or</span></div>
+    <button class="auth-guest-btn" onclick="guestCheckout()">Continue as Guest — No Account Needed</button>
+  </div>
+</div>
+
+<!-- SUCCESS MODAL -->
+<div class="success-overlay" id="successOverlay">
+  <div class="success-modal">
+    <div class="success-icon">🎉</div>
+    <h2>Order Confirmed!</h2>
+    <p>Thank you for your Bioelements order. A confirmation email is on its way to you.</p>
+    <div class="success-items" id="successItems"></div>
+    <button class="checkout-btn" onclick="closeSuccess()">Continue Shopping ✦</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span class="toast-icon" id="toastIcon">✦</span>
+  <span class="toast-text" id="toastText"></span>
+</div>
+
+<script>
+// Auth guard
+document.addEventListener('DOMContentLoaded', () => {
+  CosmicAuth.injectAuthBar(['guest', 'esthetician'], 'shop');
+});
+
+// ─── PRODUCT DATABASE ────────────────────────────────────────────────────────
+const PRODUCTS = [
+  { id:1, name:'Sleepwear', type:'Overnight Retinol Creme', price:81, size:'1.5 oz', emoji:'🌙', vis:'pv-a',
+    img:'https://cdn.shopify.com/s/files/1/0113/0899/0522/products/1.5ozSleepwear-w-cap.jpg',
+    skinTypes:['Dry','Normal','Combination'], concerns:['Lines & Wrinkles','Loss of Firmness','Dehydration'],
+    desc:'Retinol + calcium + peptides + cranberry seed oil. Rebuilds collagen overnight and replenishes skin while you sleep.',
+    bestseller:true, newBadge:false },
+  { id:2, name:'Firmwear', type:'Firm + Lift Serum', price:68, size:'1 oz', emoji:'⚗️', vis:'pv-b',
+    img:'https://cdn.shopify.com/s/files/1/0113/0899/0522/files/firmwear-PDP-pos-1_bottle.jpg',
+    skinTypes:['All'], concerns:['Loss of Firmness','Lines & Wrinkles'],
+    desc:'Biotech serum with adaptogens and peptides that visibly tightens and sculpts facial contour.',
+    bestseller:false, newBadge:true },
+  { id:3, name:'vc10 Nightly Bright', type:'Vitamin C Night Creme', price:83, size:'1 oz', emoji:'💛', vis:'pv-c',
+    img:'https://cdn.shopify.com/s/files/1/0113/0899/0522/files/1ozVC10NightlyBright.jpg',
+    skinTypes:['All'], concerns:['Sun Damage','Lines & Wrinkles','Dull Skin'],
+    desc:'Triple-sourced 10% Vitamin C overnight creme. Brightens, corrects discoloration and smoothes texture while you sleep.',
+    howToUse:'Apply to face and neck each evening after cleansing and toning. Avoid eye area. Always wear SPF the next morning.',
+    bestseller:false, newBadge:false },
+  { id:4,  name:'Sleepwear for Eyes', brand:'Bioelements', type:'Eye Creme', price:66, size:'0.5 oz', emoji:'👁️', vis:'pv-d',
+    img:'https://bioelements.com/cdn/shop/products/0.5ozSleepwearForEyes-w-cap.jpg',
+    skinTypes:['All'], concerns:['Lines & Wrinkles','Dark Circles','Dehydration'],
+    desc:'Calcium, peptides + hyaluronic acid. Nourishes fragile eye-area skin and reduces crow\'s feet overnight.',
+    howToUse:'Gently tap a pearl-sized amount around the orbital eye area each evening. Do not rub or pull.',
+    bestseller:false, newBadge:false },
+  { id:5,  name:'Age Activist Clinical Youth Serum', brand:'Bioelements', type:'Clinical Serum', price:90, size:'1 oz', emoji:'🔬', vis:'pv-e',
+    img:'https://bioelements.com/cdn/shop/products/1ozAgeActivistClinicalYouthSerum_3d927293-0f3d-4da7-8f18-0a4036aa7b0b.jpg',
+    skinTypes:['All'], concerns:['Lines & Wrinkles','Dull Skin','Clogged Pores'],
+    desc:'Multi-action clinical serum that hydrates, exfoliates, minimizes pores and softens lines. Proven results for all skin types.',
+    howToUse:'Apply 2–3 drops to cleansed skin morning and evening before moisturizer. Allow 30 seconds to absorb.',
+    bestseller:false, newBadge:false },
+  { id:6,  name:'Skin Editor', brand:'Bioelements', type:'AHA Peel Creme', price:52, size:'1.7 oz', emoji:'✨', vis:'pv-f',
+    img:'https://bioelements.com/cdn/shop/products/1.7ozSkinEditor-w-cap.jpg',
+    skinTypes:['All'], concerns:['Lines & Wrinkles','Dull Skin','Sun Damage','Clogged Pores'],
+    desc:'Leave-on AHA peel creme targeting texture, dullness, congestion, discoloration and fine lines. No rinse needed.',
+    howToUse:'Apply a thin layer to clean dry face at night and leave on. Begin 2–3 nights per week. Always apply SPF every morning.',
+    bestseller:true, newBadge:false },
+  { id:34, name:'Time Sensitive', brand:'Bioelements', type:'Anti-Aging Serum', price:52, size:'1 oz', emoji:'⏳', vis:'pv-b',
+    img:'https://bioelements.com/cdn/shop/products/1ozTimeSensitive.jpg',
+    skinTypes:['All'], concerns:['Lines & Wrinkles','Dehydration'],
+    desc:'Bakuchiol (natural retinol alternative), peptides and hydrators. Age-defying and gentle enough for daily use.',
+    howToUse:'Smooth 2–3 drops onto cleansed face and neck morning or evening before moisturizer.',
+    bestseller:false, newBadge:false },
+
+  // DEHYDRATION / MOISTURE
+  { id:7,  name:'Crucial Moisture', brand:'Bioelements', type:'Moisturizer', price:44, size:'2.5 oz', emoji:'💧', vis:'pv-b',
+    img:'https://bioelements.com/cdn/shop/products/2.5ozCrucialMoisture-W-Cap.jpg',
+    skinTypes:['Dry'], concerns:['Dehydration','Lines & Wrinkles','Dull Skin'],
+    desc:'Emollient creme for dry skin. Deeply nourishing with shea, squalane and plant extracts. Relieves tightness instantly.',
+    howToUse:'Apply to face and neck morning and/or evening after toning and serum. Use more generously in cold or dry conditions.',
+    bestseller:true, newBadge:false },
+  { id:8,  name:'Absolute Moisture', brand:'Bioelements', type:'Moisturizer', price:44, size:'2.5 oz', emoji:'🌊', vis:'pv-c',
+    img:'https://bioelements.com/cdn/shop/files/2.5ozAbsoluteMoisture-W-Cap.jpg',
+    skinTypes:['Normal','Combination'], concerns:['Dehydration','Dull Skin'],
+    desc:'Lightweight moisturizer for normal-to-combination skin. Balances and smoothes with a breathable non-greasy finish.',
+    howToUse:'Apply to face and neck morning and evening after toning. Lightweight enough under SPF or makeup.',
+    bestseller:true, newBadge:false },
+  { id:9,  name:'Beyond Hydration', brand:'Bioelements', type:'Gel Moisturizer', price:49, size:'2.5 oz', emoji:'💦', vis:'pv-a',
+    img:'https://bioelements.com/cdn/shop/products/2.5ozBeyond-Hydration-W-Cap.jpg',
+    skinTypes:['Oily','Combination'], concerns:['Dehydration','Breakouts'],
+    desc:'Non-greasy gel moisturizer for oily skin with Vitamin B5 and essential oils. Hydrates without adding shine.',
+    howToUse:'Apply a small amount to cleansed face morning and evening. Allow to absorb fully before SPF or makeup.',
+    bestseller:false, newBadge:false },
+  { id:10, name:'Barrier Fix Daily Hydrator', brand:'Bioelements', type:'Hydrator', price:60, size:'1.7 oz', emoji:'🛡️', vis:'pv-d',
+    img:'https://bioelements.com/cdn/shop/products/1.7ozBarrierFixDailyHydrator-W-Cap-OnWhite.jpg',
+    skinTypes:['Sensitive','Dry','Normal'], concerns:['Sensitivity & Redness','Dehydration','Lines & Wrinkles'],
+    desc:'Ceramide-powered formula that restores and strengthens the skin barrier. Ideal for sensitive, reactive or compromised skin.',
+    howToUse:'Apply to face and neck morning and/or evening after toning. Layer before or after serum.',
+    bestseller:false, newBadge:false },
+  { id:11, name:'Really Rich Moisture', brand:'Bioelements', type:'Moisturizer', price:56, size:'2.5 oz', emoji:'🧴', vis:'pv-e',
+    img:'https://bioelements.com/cdn/shop/files/Artboard_1_202a128d-907b-46e6-b486-3b94a377a528.jpg',
+    skinTypes:['Dry'], concerns:['Dehydration','Lines & Wrinkles'],
+    desc:'Ultra-rich moisturizer for very dry, mature or environmentally stressed skin. Intensely nourishing and long-lasting.',
+    howToUse:'Apply generously to face and neck morning and/or evening. Ideal for cold weather or mature skin.',
+    bestseller:false, newBadge:false },
+  { id:12, name:'Hydroplunge', brand:'Bioelements', type:'Hydrating Mask', price:54, size:'1.7 oz', emoji:'💎', vis:'pv-f',
+    img:'https://bioelements.com/cdn/shop/products/1.7ozHydroplunge-W-Cap.jpg',
+    skinTypes:['All'], concerns:['Dehydration','Lines & Wrinkles','Dull Skin'],
+    desc:'Hyaluronic acid mask that visibly plumps, smoothes fine lines and deeply hydrates. No rinse needed.',
+    howToUse:'Apply a thin layer to cleansed face. Leave on 10–15 minutes then blend remaining product in. Use 2–3x per week.',
+    bestseller:false, newBadge:false },
+  { id:35, name:'Iconic Hyaluronic', brand:'Bioelements', type:'Hydrating Treatment', price:49, size:'1 oz', emoji:'💦', vis:'pv-c',
+    img:'https://bioelements.com/cdn/shop/files/iconic-hyaluronic-good-housekeeping-Award-Winner-PDP.jpg',
+    skinTypes:['All'], concerns:['Dehydration','Lines & Wrinkles','Sensitivity & Redness'],
+    desc:'Multi-weight hyaluronic acid treatment that plumps, hydrates and smoothes from surface to substructure.',
+    howToUse:'Apply 3–4 drops to slightly damp skin after cleansing. Layer under moisturizer morning and evening.',
+    bestseller:false, newBadge:false },
+
+  // DULL SKIN
+  { id:13, name:'Kerafole', brand:'Bioelements', type:'Treatment Mask', price:65, size:'2.5 oz', emoji:'⚡', vis:'pv-c',
+    img:'https://bioelements.com/cdn/shop/products/2.5ozKerafole-W-Cap_793ca7d0-8476-4db0-b2bc-c4f33bd77b90.jpg',
+    skinTypes:['Normal','Combination','Oily'], concerns:['Dull Skin','Clogged Pores','Lines & Wrinkles'],
+    desc:'Deep-purging AHA mask with citric & malic acids, algae, chamomile and orange oils. Reveals radiant skin instantly.',
+    howToUse:'Apply a thin even layer to cleansed face avoiding eyes and lips. Leave on 5–10 min. Rinse. Use 1–2x per week.',
+    bestseller:true, newBadge:false },
+  { id:14, name:'Measured Micrograins+', brand:'Bioelements', type:'Exfoliator', price:55, size:'2.5 oz', emoji:'🌟', vis:'pv-a',
+    img:'https://bioelements.com/cdn/shop/products/2.5ozMeasuredMicrograinsPlus-W-Cap.jpg',
+    skinTypes:['Normal','Combination','Oily'], concerns:['Dull Skin','Clogged Pores'],
+    desc:'Gentle micro-exfoliating scrub that buffs away dead skin cells and stimulates circulation for a glowing complexion.',
+    howToUse:'Apply a small amount to damp face. Massage in gentle circular motions for 60 seconds. Rinse thoroughly. Use 2–3x per week.',
+    bestseller:false, newBadge:false },
+  { id:16, name:'Aminoderm Mask', brand:'Bioelements', type:'Treatment Mask', price:62, size:'2.5 oz', emoji:'🌸', vis:'pv-d',
+    img:'https://bioelements.com/cdn/shop/products/2.5ozAminodermMask-W-Cap.jpg',
+    skinTypes:['Dry','Sensitive','Normal'], concerns:['Dull Skin','Sensitivity & Redness','Dehydration'],
+    desc:'Amino acid treatment mask that nourishes depleted skin and boosts radiance. Ideal for post-treatment recovery.',
+    howToUse:'Apply a generous layer to cleansed face and neck. Leave on 10–15 min. Rinse with warm water. Use 1–2x per week.',
+    bestseller:false, newBadge:false },
+
+  // BREAKOUTS
+  { id:17, name:'Decongestant Cleanser', brand:'Bioelements', type:'Cleanser', price:47, size:'6 oz', emoji:'🫧', vis:'pv-e',
+    img:'https://bioelements.com/cdn/shop/products/6ozDecongestantCleanser-W-Cap.jpg',
+    skinTypes:['Oily','Combination'], concerns:['Breakouts','Clogged Pores','Cleanse & Tone'],
+    desc:'Deep-cleansing formula with thyme and eucalyptus. Clears congestion, excess oil and impurities without stripping.',
+    howToUse:'Massage onto damp face for 30–60 seconds. Rinse with warm water. Use morning and evening.',
+    bestseller:false, newBadge:false },
+  { id:18, name:'Equalizer', brand:'Bioelements', type:'Oil Control', price:38, size:'6 oz', emoji:'⚖️', vis:'pv-f',
+    img:'https://bioelements.com/cdn/shop/products/6ozEqualizer-W-Cap.jpg',
+    skinTypes:['Oily','Combination'], concerns:['Breakouts','Clogged Pores'],
+    desc:'Oil control formula that balances sebum production and minimizes enlarged pores without dehydrating.',
+    howToUse:'After toning, apply a thin layer focusing on the T-zone. Use morning and/or evening under moisturizer.',
+    bestseller:false, newBadge:false },
+  { id:19, name:'Oil Control Sleepwear', brand:'Bioelements', type:'Overnight Creme', price:77, size:'1.5 oz', emoji:'🌙', vis:'pv-a',
+    img:'https://bioelements.com/cdn/shop/products/1.5ozOilControlSleepwear-w-cap.jpg',
+    skinTypes:['Oily','Combination'], concerns:['Breakouts','Lines & Wrinkles','Dehydration'],
+    desc:'Overnight retinol creme for oily and combination skin. Calcium and peptides firm and balance while you sleep.',
+    howToUse:'Apply to face and neck as the last step of your evening routine. Start 2–3 nights/week if new to retinol.',
+    bestseller:false, newBadge:false },
+  { id:20, name:'Shine Stopper', brand:'Bioelements', type:'Oil Control', price:36, size:'1 oz', emoji:'🎯', vis:'pv-b',
+    img:'https://bioelements.com/cdn/shop/products/1ozShineStopper-W-Cap.jpg',
+    skinTypes:['Oily','Combination'], concerns:['Breakouts','Clogged Pores'],
+    desc:'Instant-action mattifier that absorbs excess oil and keeps skin shine-free for hours. Invisible under makeup.',
+    howToUse:'Apply a thin layer over moisturizer to oily areas before makeup. Reapply as needed throughout the day.',
+    bestseller:false, newBadge:false },
+  { id:41, name:'Spot Defy', brand:'Bioelements', type:'Spot Treatment', price:38, size:'0.5 oz', emoji:'🎯', vis:'pv-c',
+    img:'https://bioelements.com/cdn/shop/files/Glamour-spot-defy-Award-Winner-B2C-PDP.jpg',
+    skinTypes:['All'], concerns:['Breakouts','Sun Damage'],
+    desc:'Targeted spot treatment that visibly reduces active blemishes and lingering dark spots. Fast-acting.',
+    howToUse:'Apply directly to individual blemishes or dark spots morning and evening. Can be used under makeup.',
+    bestseller:false, newBadge:true },
+
+  // SENSITIVITY
+  { id:38, name:'Soothing Reset Mist', brand:'Bioelements', type:'Facial Mist', price:39, size:'3.7 oz', emoji:'🌿', vis:'pv-d',
+    img:'https://bioelements.com/cdn/shop/files/3.7ozSoothingResetMist-W-Cap.jpg',
+    skinTypes:['All'], concerns:['Sensitivity & Redness','Dehydration'],
+    desc:'Refreshing soothing mist that instantly calms and hydrates. For reactive skin, setting makeup or midday refreshment.',
+    howToUse:'Mist over clean or made-up face from 8–10 inches. Use anytime throughout the day.',
+    bestseller:false, newBadge:false },
+  { id:40, name:'Sensitive Eye Smoother', brand:'Bioelements', type:'Eye Creme', price:49, size:'0.5 oz', emoji:'👁️', vis:'pv-a',
+    img:'https://bioelements.com/cdn/shop/products/0.5ozSensitiveEyeSmoother-W-Cap-OnWhite.jpg',
+    skinTypes:['Sensitive','All'], concerns:['Dark Circles','Sensitivity & Redness'],
+    desc:'Ultra-gentle eye creme for sensitive skin. Soothes puffiness and minimizes dark circles without irritation.',
+    howToUse:'Using your ring finger, gently tap around the orbital eye area morning and evening. Refrigerate for extra de-puffing.',
+    bestseller:false, newBadge:false },
+
+  // CLEANSE & TONE
+  { id:23, name:'Power Peptide Toner', brand:'Bioelements', type:'Toner', price:52, size:'6 oz', emoji:'💜', vis:'pv-e',
+    img:'https://bioelements.com/cdn/shop/products/6ozPowerPeptide-W-Cap.jpg',
+    skinTypes:['All'], concerns:['Cleanse & Tone','Lines & Wrinkles','Dehydration'],
+    desc:'Age-fighting alcohol-free toner for all skin types. Peptides prep, prime and protect after cleansing.',
+    howToUse:'After cleansing, apply to a cotton pad and sweep across face, or mist directly. Use morning and evening.',
+    bestseller:true, newBadge:false },
+  { id:24, name:'Flash Foam Cleanser', brand:'Bioelements', type:'Cleanser', price:45, size:'6.5 oz', emoji:'🫧', vis:'pv-f',
+    img:'https://bioelements.com/cdn/shop/products/6.5ozFlashFoamCleanser-W-Cap_1f5a1bce-c745-4896-b1a4-ebb8aee82edd.jpg',
+    skinTypes:['Normal','Combination','Oily'], concerns:['Cleanse & Tone'],
+    desc:'Fast-foaming gel cleanser that sweeps away impurities, excess oil and makeup. Leaves skin fresh and balanced.',
+    howToUse:'Pump a small amount onto damp hands. Lather and massage onto face for 30–60 seconds. Rinse.',
+    bestseller:false, newBadge:false },
+  { id:33, name:'Moisture Positive Cleanser', brand:'Bioelements', type:'Cleanser', price:47, size:'6 oz', emoji:'💧', vis:'pv-c',
+    img:'https://bioelements.com/cdn/shop/products/6ozMoisturePositiveCleanser-W-Cap.jpg',
+    skinTypes:['Dry','Sensitive'], concerns:['Cleanse & Tone','Dehydration'],
+    desc:'Creamy cleanser for dry skin that removes impurities while preserving the skin\'s natural moisture barrier.',
+    howToUse:'Massage a small amount onto dry or damp face in gentle circular motions. Rinse or remove with a damp cloth.',
+    bestseller:false, newBadge:false },
+  { id:37, name:'Makeup Dissolver Perfected', brand:'Bioelements', type:'Makeup Remover', price:37, size:'3.7 oz', emoji:'✨', vis:'pv-d',
+    img:'https://bioelements.com/cdn/shop/products/3.7ozMakeupDissolverPerfected.jpg',
+    skinTypes:['All'], concerns:['Cleanse & Tone'],
+    desc:'Non-stinging, oil-free makeup remover that dissolves all makeup including waterproof formulas. Safe for eyes.',
+    howToUse:'Apply to a damp cotton pad and sweep over closed eyes and face. Follow with your regular cleanser.',
+    bestseller:false, newBadge:false },
+  { id:43, name:'Urban Undo', brand:'Bioelements', type:'City Skin Cleanser', price:47, size:'6 oz', emoji:'🌿', vis:'pv-e',
+    img:'https://bioelements.com/cdn/shop/products/3.5ozUrbanUndoCleanser.jpg',
+    skinTypes:['All'], concerns:['Cleanse & Tone','Dull Skin'],
+    desc:'Pollution-fighting gel cleanser that removes city grime, heavy metals and environmental toxins. Detoxifies and restores daily.',
+    howToUse:'Massage onto damp face for 60 seconds. Rinse with cool water. Use morning and evening — especially after time in urban environments.',
+    bestseller:false, newBadge:true },
+  { id:42, name:'Facial Cleansing Puffs', brand:'Bioelements', type:'Cleansing Tool', price:22, size:'Pack', emoji:'🌸', vis:'pv-f',
+    img:'https://bioelements.com/cdn/shop/files/CleansingPuffs.jpg',
+    skinTypes:['All'], concerns:['Cleanse & Tone'],
+    desc:'Ultra-soft reusable cleansing puffs for gentle daily cleansing and removing excess cleanser without irritation.',
+    howToUse:'Dampen with water or cleanser. Gently cleanse in circular motions. Rinse and hang to air dry after each use.',
+    bestseller:false, newBadge:false },
+
+  // LOSS OF FIRMNESS
+  { id:27, name:'Remineralist Daily Moisture', brand:'Bioelements', type:'Moisturizer', price:53, size:'1.7 oz', emoji:'🪨', vis:'pv-c',
+    img:'https://bioelements.com/cdn/shop/products/1.7ozRemineralistDailyMoisture-W-Cap.jpg',
+    skinTypes:['Normal','Combination'], concerns:['Loss of Firmness','Lines & Wrinkles','Dehydration'],
+    desc:'Mineral-powered daily moisturizer that restores resilience and delivers a youthful plumped appearance.',
+    howToUse:'Apply to face and neck morning and/or evening after toning and serums. Light enough for daytime under SPF.',
+    bestseller:false, newBadge:false },
+  { id:39, name:'Collagen Rehab', brand:'Bioelements', type:'Treatment Mask', price:68, size:'1.7 oz', emoji:'⚗️', vis:'pv-f',
+    img:'https://bioelements.com/cdn/shop/products/1.7ozCollagenRehab-W-Cap.jpg',
+    skinTypes:['Dry','Normal'], concerns:['Loss of Firmness','Lines & Wrinkles'],
+    desc:'Intensive collagen-infused face and lip mask that firms, lifts and deeply nourishes. Visible results from first use.',
+    howToUse:'Apply a generous layer to face and lips. Leave on 15–20 min. Remove with warm damp cloth or blend in. Use 1–2x per week.',
+    bestseller:false, newBadge:false },
+
+  // SUN DAMAGE
+  { id:28, name:'RayDefense', brand:'Bioelements', type:'Sunscreen SPF 30', price:54, size:'4 oz', emoji:'☀️', vis:'pv-d',
+    img:'https://bioelements.com/cdn/shop/products/4ozRayDefense_6ee0b869-adfc-4eb4-9d46-567c8b2fb62d.jpg',
+    skinTypes:['All'], concerns:['Sun Damage','Lines & Wrinkles','Dehydration'],
+    desc:'Broad spectrum SPF 30 daily sunscreen. Antioxidant-rich formula that protects against UVA/UVB while hydrating.',
+    howToUse:'Apply generously to face and neck as the final step of your morning routine. Reapply every 2 hours in direct sun.',
+    bestseller:false, newBadge:false },
+
+  // DARK CIRCLES
+  { id:29, name:'Multi-Task Eye Creme', brand:'Bioelements', type:'Eye Creme', price:50, size:'0.5 oz', emoji:'⭐', vis:'pv-e',
+    img:'https://bioelements.com/cdn/shop/products/0.5ozMultiTaskEyeCreme-w-cap.jpg',
+    skinTypes:['All'], concerns:['Dark Circles','Lines & Wrinkles'],
+    desc:'Vitamin C-powered eye creme that targets dark circles, crow\'s feet and puffiness in one step.',
+    howToUse:'Using your ring finger, gently pat around the full orbital eye area morning and evening. Allow to absorb before makeup.',
+    bestseller:false, newBadge:false },
+  { id:36, name:'vc10 Eye Bright Contour', brand:'Bioelements', type:'Eye Treatment', price:62, size:'0.5 oz', emoji:'💛', vis:'pv-f',
+    img:'https://bioelements.com/cdn/shop/files/0.5ozVC10EyeBrightContour.jpg',
+    skinTypes:['All'], concerns:['Dark Circles','Lines & Wrinkles'],
+    desc:'Triple-action Vitamin C eye treatment that brightens dark circles, smoothes crow\'s feet and firms the contour.',
+    howToUse:'Apply around the orbital eye area morning and evening using your ring finger. Layer over serums.',
+    bestseller:false, newBadge:false },
+
+  // SETS & KITS
+  { id:30, name:'Sleepwear + Eyes Bundle', brand:'Bioelements', type:'Bundle Set', price:128, size:'Bundle', emoji:'🎁', vis:'pv-f',
+    img:'https://bioelements.com/cdn/shop/files/sleepwear-sleepwear-for-eyes-1.jpg',
+    skinTypes:['Dry','Normal','Combination'], concerns:['Sets & Kits','Lines & Wrinkles','Dehydration'],
+    desc:'Sleepwear retinol creme + Sleepwear for Eyes. The complete overnight anti-aging ritual for face and eye area.',
+    howToUse:'Apply Sleepwear to face and neck, then gently tap Sleepwear for Eyes around the orbital area. Leave on overnight.',
+    bestseller:false, newBadge:false },
+  { id:31, name:'3-Step Starter Set: Combination Skin', brand:'Bioelements', type:'Starter Set', price:95, size:'Full Size', emoji:'✨', vis:'pv-a',
+    img:'https://bioelements.com/cdn/shop/files/Combo-w-prod.jpg',
+    skinTypes:['Combination'], concerns:['Sets & Kits','Dull Skin','Dehydration'],
+    desc:'Complete 3-step starter kit curated for combination skin: the right cleanser, treatment and moisturizer.',
+    howToUse:'Step 1: Cleanse. Step 2: Apply the treatment serum. Step 3: Moisturize. Use morning and evening.',
+    bestseller:false, newBadge:false },
+  { id:32, name:'Sensitive Skin Ritual', brand:'Bioelements', type:'Collection Set', price:110, size:'Set', emoji:'🌸', vis:'pv-b',
+    img:'https://bioelements.com/cdn/shop/files/Sens-w-prod.jpg',
+    skinTypes:['Sensitive'], concerns:['Sets & Kits','Sensitivity & Redness','Dehydration'],
+    desc:'Complete regimen for reactive skin: barrier repair, soothing moisturizer and calming toner in one curated set.',
+    howToUse:'Tone with Calm Skin Arnica Toner after cleansing, then apply Barrier Fix, then Soothing Creme morning and evening.',
+    bestseller:false, newBadge:false },
+
+  // ── CLEANSING OIL (SENSITIVE) ────────────────────────────────────────────────
+  { id:44, name:'Sensitive Skin Cleansing Oil', brand:'Bioelements', type:'Cleansing Oil', price:59, size:'3.7 oz', emoji:'🫒', vis:'pv-a',
+    img:'https://bioelements.com/cdn/shop/products/3.7ozSensitiveSkinCleansingOil-W-Cap-OnWhite.jpg',
+    skinTypes:['Sensitive','Dry'], concerns:['Cleanse & Tone','Sensitivity & Redness','Dehydration'],
+    desc:'Gentle plant and olive oil blend that melts away makeup and impurities while repairing the skin barrier. Barrier-strengthening hemp seed oil and antioxidant vitamin E reduce inflammation and fight free-radicals.',
+    howToUse:'Apply a small amount to dry skin and massage gently. Emulsify with a splash of water and rinse thoroughly. Use morning or evening.',
+    bestseller:false, newBadge:true },
+
+  // ── BREAKOUTS / ACNE-PRONE LINE ──────────────────────────────────────────────
+  { id:45, name:'Pore Thing', brand:'Bioelements', type:'Pore-Clarifying Cleanser', price:43, size:'4 oz', emoji:'🫧', vis:'pv-b',
+    img:'https://bioelements.com/cdn/shop/files/PoreThing_4oz-PDP.jpg',
+    skinTypes:['Oily','Combination','Acne-Prone'], concerns:['Cleanse & Tone','Clogged Pores','Breakouts'],
+    desc:'Barrier-friendly daily cleansing gel with salicylic acid that targets problem pores and clarifies skin. Sebum-soluble BHA penetrates through excess oil and clogging debris for a deep — but never stripping — cleanse.',
+    howToUse:'Wet face and apply a small amount. Lather and massage for 60 seconds, focusing on the T-zone. Rinse thoroughly. Use morning and/or evening.',
+    bestseller:false, newBadge:true },
+  { id:46, name:'Peel Breaker', brand:'Bioelements', type:'Leave-On Liquid Exfoliator', price:42, size:'1 oz', emoji:'⚡', vis:'pv-c',
+    img:'https://bioelements.com/cdn/shop/files/PeelBreaker-PDP.jpg',
+    skinTypes:['Oily','Combination','Acne-Prone'], concerns:['Clogged Pores','Breakouts','Dull Skin'],
+    desc:'2% BHA + PHA liquid leave-on exfoliator. Salicylic acid dissolves pore-blocking oils while gluconolactone gently releases dead skin cells. Balanced with barrier-building aloe, willowherb, hibiscus, oregano and thyme.',
+    howToUse:'After cleansing and toning, apply with a cotton pad or fingertips across the full face. Allow to absorb — do not rinse. Use in PM or as directed.',
+    bestseller:false, newBadge:true },
+  { id:47, name:'Daily Meds', brand:'Bioelements', type:'Acne-Clearing Serum', price:64, size:'1 oz', emoji:'💊', vis:'pv-d',
+    img:'https://bioelements.com/cdn/shop/files/PDP_-_newbeauty_award_winner.jpg',
+    skinTypes:['Oily','Combination','Acne-Prone'], concerns:['Breakouts','Clogged Pores','Dull Skin'],
+    desc:'2% medicinal salicylic acid daily serum that clears blackheads and whiteheads while diminishing lines and uneven skin tone. Niacinamide and lilac extract target post-acne dark spots without over-drying.',
+    howToUse:'Apply a thin layer to cleansed face, avoiding the eye area. Layer under moisturizer. Start nightly and build frequency as skin adjusts.',
+    bestseller:false, newBadge:true },
+  // ── BARRIER REPAIR SERUM ─────────────────────────────────────────────────────
+  { id:49, name:'Recovery Serum', brand:'Bioelements', type:'Barrier-Repair Serum', price:82, size:'1 oz', emoji:'🛡️', vis:'pv-f',
+    img:'https://bioelements.com/cdn/shop/files/1ozRecoverySerum.jpg',
+    skinTypes:['Dry','Sensitive','Normal'], concerns:['Dehydration','Sensitivity & Redness','Lines & Wrinkles'],
+    desc:'Moisture-sealing serum with ultra-smoothing ceramides and emollient lubricants that rebuild hydration and skin texture. Ideal for dry, visibly aging or over-exfoliated skin that needs deep barrier repair.',
+    howToUse:'After cleansing and toning, apply 3–5 drops to face and neck. Press gently into skin. Layer under your moisturizer morning and/or evening.',
+    bestseller:false, newBadge:true },
+
+  // ── ADDITIONAL STARTER SETS ──────────────────────────────────────────────────
+  { id:50, name:'3-Step Starter Set: Acne-Prone Skin', brand:'Bioelements', type:'Starter Set', price:95, size:'Full Size', emoji:'🎁', vis:'pv-a',
+    img:'https://bioelements.com/cdn/shop/files/1-acne-starter-kit_PDP_c44a85b2-2c0f-4092-a66f-441b5d6e8e29.jpg',
+    skinTypes:['Acne-Prone','Oily'], concerns:['Sets & Kits','Breakouts','Clogged Pores'],
+    desc:'Complete 3-step starter kit curated for acne-prone skin: professional-grade cleanse, treat and control routine to clear breakouts and prevent new ones.',
+    howToUse:'Step 1: Cleanse with Pore Thing. Step 2: Apply Daily Meds serum. Step 3: Moisturize with Beyond Hydration. Use morning and evening.',
+    bestseller:false, newBadge:false },
+  { id:51, name:'3-Step Starter Set: Sensitive Skin', brand:'Bioelements', type:'Starter Set', price:112, size:'Full Size', emoji:'🌸', vis:'pv-b',
+    img:'https://bioelements.com/cdn/shop/files/Sens-w-prod.jpg',
+    skinTypes:['Sensitive'], concerns:['Sets & Kits','Sensitivity & Redness','Dehydration'],
+    desc:'Complete 3-step starter kit for sensitive skin: gentle cleansing, calming treatment and barrier-repairing moisturizer in one curated set.',
+    howToUse:'Step 1: Cleanse with Sensitive Skin Cleansing Oil. Step 2: Tone with Calm Skin Arnica Toner. Step 3: Moisturize with Soothing Creme. Use morning and evening.',
+    bestseller:false, newBadge:false },
+  { id:52, name:'3-Step Starter Set: Oily Skin', brand:'Bioelements', type:'Starter Set', price:99, size:'Full Size', emoji:'⚖️', vis:'pv-c',
+    img:'https://bioelements.com/cdn/shop/files/Oliy-w-prod.jpg',
+    skinTypes:['Oily','Combination'], concerns:['Sets & Kits','Clogged Pores','Breakouts'],
+    desc:'Complete 3-step starter kit for oily skin: deep-cleansing, oil-balancing and lightweight moisturizing for a shine-free, healthy glow.',
+    howToUse:'Step 1: Cleanse with Decongestant Cleanser. Step 2: Apply Equalizer serum. Step 3: Moisturize with Beyond Hydration. Use morning and evening.',
+    bestseller:false, newBadge:false },
+  { id:53, name:'3-Step Starter Set: Dry Skin', brand:'Bioelements', type:'Starter Set', price:104, size:'Full Size', emoji:'💧', vis:'pv-d',
+    img:'https://bioelements.com/cdn/shop/files/Dry-w-prod.jpg',
+    skinTypes:['Dry'], concerns:['Sets & Kits','Dehydration','Lines & Wrinkles'],
+    desc:'Complete 3-step starter kit for dry skin: gentle cleansing, hydrating toner and rich moisture to quench and replenish from morning to night.',
+    howToUse:'Step 1: Cleanse with Moisture Positive Cleanser. Step 2: Tone with Remineralist Toner. Step 3: Moisturize with Crucial Moisture or Really Rich Moisture. Use morning and evening.',
+    bestseller:false, newBadge:false },
+  { id:54, name:'4-Step Complete Set: Acne-Prone Skin', brand:'Bioelements', type:'Complete Set', price:130, size:'Full Size', emoji:'✨', vis:'pv-e',
+    img:'https://bioelements.com/cdn/shop/files/1-Acne-bundle-PDP-bundle-and-save.jpg',
+    skinTypes:['Acne-Prone','Oily'], concerns:['Sets & Kits','Breakouts','Clogged Pores'],
+    desc:'The ultimate 4-step acne system: Pore Thing cleanser, Peel Breaker exfoliator, Daily Meds serum and Spot Defy spot treatment — all working together for continuously clear skin. Save vs. buying individually.',
+    howToUse:'Step 1: Pore Thing AM+PM. Step 2: Peel Breaker PM only. Step 3: Daily Meds serum daily. Step 4: Spot Defy on active blemishes as needed.',
+    bestseller:false, newBadge:true },
+  { id:55, name:'3-Step Starter Set: vc10 24-hr Brightening', brand:'Bioelements', type:'Starter Set', price:95, size:'Full Size', emoji:'💛', vis:'pv-f',
+    img:'https://bioelements.com/cdn/shop/files/vc10-3-step-kit-PDP-pos-1.jpg',
+    skinTypes:['All','Normal','Dry','Combination'], concerns:['Sets & Kits','Dull Skin','Sun Damage'],
+    desc:'24-hour Vitamin C brightening system: three curated vc10 products that correct dark spots, boost radiance and even skin tone around the clock.',
+    howToUse:'Follow the 3 vc10 steps morning and evening for maximum 24-hour brightening results.',
+    bestseller:false, newBadge:true },
+
+  // ── EXFOLIATORS ─────────────────────────────────────────────────────────────
+  { id:56, name:'Pumice Peel', brand:'Bioelements', type:'Manual Exfoliator', price:68, size:'2.5 oz', emoji:'🌋', vis:'pv-a',
+    img:'https://bioelements.com/cdn/shop/products/2.5ozPumicePeel-W-Cap.jpg',
+    skinTypes:['All'], concerns:['Dull Skin','Clogged Pores','Lines & Wrinkles'],
+    desc:'Manual microdermabrasion treatment with volcanic pumice granules. Physically buffs away dead skin cells and surface buildup to reveal visibly smoother, brighter skin immediately.',
+    howToUse:'Wet face. Apply and massage in gentle circular motions for 60 seconds. Rinse thoroughly. Use 1–2x per week. Avoid over-exfoliation.',
+    bestseller:false, newBadge:false },
+  { id:59, name:'Quick Refiner', brand:'Bioelements', type:'Leave-On AHA Gel', price:37, size:'1 oz', emoji:'✨', vis:'pv-b',
+    img:'https://bioelements.com/cdn/shop/products/1ozQuickRefiner.jpg',
+    skinTypes:['All'], concerns:['Dull Skin','Clogged Pores','Lines & Wrinkles'],
+    desc:'Leave-on gel exfoliator with powerful AHAs that targets pores and fine lines without rinsing. Smoothes texture and boosts radiance overnight.',
+    howToUse:'Apply a thin layer to cleansed face at night. Leave on — do not rinse. Start 2–3x per week. Always use SPF the next morning.',
+    bestseller:false, newBadge:false },
+
+  // ── HYDRATION / PLUMPING ─────────────────────────────────────────────────────
+  { id:57, name:'Plump Start', brand:'Bioelements', type:'Plumping Moisturizer', price:59, size:'2 oz', emoji:'💧', vis:'pv-c',
+    img:'https://bioelements.com/cdn/shop/products/2ozPlumpStart.jpg',
+    skinTypes:['All'], concerns:['Dehydration','Lines & Wrinkles'],
+    desc:'Hyaluronic acid-powered moisturizer that visibly plumps and smoothes the look of fine lines in seconds. Lightweight, fast-absorbing formula.',
+    howToUse:'Apply to cleansed face and neck morning and/or evening. Can be layered over serums or used alone for a dewy, plump finish.',
+    bestseller:false, newBadge:false },
+  { id:58, name:'Moisture x10', brand:'Bioelements', type:'Hydrating Serum', price:55, size:'1 oz', emoji:'💎', vis:'pv-d',
+    img:'https://bioelements.com/cdn/shop/products/1ozMoistureX10.jpg',
+    skinTypes:['All'], concerns:['Dehydration','Lines & Wrinkles','Sensitivity & Redness'],
+    desc:'10x hydration serum with multi-weight hyaluronic acid that delivers deep, lasting moisture at every layer of the skin. Instantly softens and quenches.',
+    howToUse:'Apply 3–4 drops to slightly damp skin after cleansing. Press gently into face and neck. Layer under moisturizer morning and evening.',
+    bestseller:false, newBadge:false },
+
+  // ── SUN PROTECTION ───────────────────────────────────────────────────────────
+  { id:60, name:'SPF 50 FaceScreen', brand:'Bioelements', type:'Sunscreen SPF 50', price:66, size:'1.7 oz', emoji:'🌞', vis:'pv-e',
+    img:'https://bioelements.com/cdn/shop/files/B2B_PDP_-_Facescreen_Press_Celebration.jpg',
+    skinTypes:['All'], concerns:['Sun Damage','Lines & Wrinkles'],
+    desc:'Broad-spectrum SPF 50 facial sunscreen with antioxidant protection. Lightweight, non-greasy formula that blends invisibly and layers perfectly under makeup.',
+    howToUse:'Apply generously to face and neck as the final step of your morning routine. Reapply every 2 hours during sun exposure.',
+    bestseller:false, newBadge:false },
+
+  // ── NECK + BODY ───────────────────────────────────────────────────────────────
+  { id:61, name:'V-Neck Smoothing Creme', brand:'Bioelements', type:'Neck + Décolleté Creme', price:78, size:'1.7 oz', emoji:'🌟', vis:'pv-f',
+    img:'https://bioelements.com/cdn/shop/files/1.5ozV-NeckSmoothingCreme-w-cap.jpg',
+    skinTypes:['All'], concerns:['Lines & Wrinkles','Loss of Firmness'],
+    desc:'Targeted creme for the neck, jaw and décolleté. Peptides, retinol alternatives and firming actives visibly smooth and firm this often-neglected area.',
+    howToUse:'Apply to neck and décolleté morning and/or evening using upward strokes. Follow with SPF in the morning.',
+    bestseller:false, newBadge:false },
+
+  // ── SPECIALTY TREATMENTS ─────────────────────────────────────────────────────
+  { id:62, name:'Oxygen Boost Barrier Treatment', brand:'Bioelements', type:'Oxygenating Treatment', price:46, size:'1 oz', emoji:'⚡', vis:'pv-a',
+    img:'https://bioelements.com/cdn/shop/files/1ozOxygenBoostBarrierTreatment.jpg',
+    skinTypes:['All'], concerns:['Dull Skin','Clogged Pores','Sensitivity & Redness'],
+    desc:'2.5% triple oxygenating complex that amplifies cellular respiration, purifies skin and energizes a dull, fatigued complexion. Barrier-boosting botanicals protect as oxygen activates.',
+    howToUse:'Apply 2–3 drops to cleansed face and neck. Allow to absorb before moisturizer. Use morning or evening for an instant radiance boost.',
+    bestseller:false, newBadge:false },
+  { id:63, name:'vc10 Daily Glow', brand:'Bioelements', type:'Vitamin C Treatment', price:52, size:'1 oz', emoji:'💛', vis:'pv-b',
+    img:'https://bioelements.com/cdn/shop/products/1ozVC10DailyGlow.jpg',
+    skinTypes:['All'], concerns:['Dull Skin','Sun Damage','Lines & Wrinkles'],
+    desc:'Daily Vitamin C brightening treatment that delivers a steady glow, fades dark spots and boosts antioxidant defense. Lightweight and layerable.',
+    howToUse:'Apply a few drops to cleansed face and neck morning and/or evening before moisturizer. Pair with SPF every morning.',
+    bestseller:false, newBadge:false },
+  { id:64, name:'Radiance Rescue', brand:'Bioelements', type:'Brightening Mask', price:63, size:'1.7 oz', emoji:'🌟', vis:'pv-c',
+    img:'https://bioelements.com/cdn/shop/products/1.7ozRadianceRescue-W-Cap.jpg',
+    skinTypes:['All'], concerns:['Dull Skin','Sun Damage','Lines & Wrinkles'],
+    desc:'Brightening treatment mask that rapidly resurfaces and illuminates. AHAs, Vitamin C derivatives and antioxidants work together to erase dullness and reveal a radiant complexion.',
+    howToUse:'Apply a generous layer to cleansed face. Leave on 10 minutes then rinse thoroughly. Use 1–2x per week. Follow with SPF next morning.',
+    bestseller:false, newBadge:false },
+
+  // ── LIP CARE ─────────────────────────────────────────────────────────────────
+  { id:65, name:'Lip Clinic Hydrating Serum', brand:'Bioelements', type:'Lip Serum', price:27, size:'0.5 oz', emoji:'💋', vis:'pv-d',
+    img:'https://bioelements.com/cdn/shop/files/0.3ozLC-HydSerum.jpg',
+    skinTypes:['All'], concerns:['Lines & Wrinkles','Dehydration'],
+    desc:'Hydrating lip serum that plumps, smoothes fine lines around the mouth and delivers lasting moisture. Peptides and hyaluronic acid keep lips soft all day.',
+    howToUse:'Apply a small amount to lips and the surrounding area morning and/or evening. Can be worn alone or under lip color.',
+    bestseller:false, newBadge:false },
+];
+
+// ─── CATEGORY MAP ─────────────────────────────────────────────────────────────
+const PRODUCT_CATEGORIES = {
+  1:'moisturize', 2:'serum',     3:'moisturize', 4:'eye',       5:'serum',
+  6:'exfoliate',  7:'moisturize',8:'moisturize', 9:'moisturize',10:'serum',
+  11:'moisturize',12:'mask',     13:'mask',      14:'exfoliate',15:'eye',
+  16:'mask',      17:'cleanse',  18:'tone',      19:'moisturize',20:'tone',
+  21:'moisturize',22:'tone',     23:'tone',      24:'cleanse',  25:'cleanse',
+  26:'tone',      27:'moisturize',28:'spf',      29:'eye',      30:'sets',
+  31:'sets',      32:'sets',     33:'cleanse',   34:'serum',    35:'serum',
+  36:'eye',       37:'cleanse',  38:'tone',      39:'mask',     40:'eye',
+  41:'serum',     42:'cleanse',  43:'cleanse',   44:'cleanse',  45:'cleanse',
+  46:'exfoliate', 47:'serum',    49:'serum',     50:'sets',     51:'sets',
+  52:'sets',      53:'sets',     54:'sets',      55:'sets',     56:'exfoliate',
+  57:'moisturize',58:'serum',    59:'exfoliate', 60:'spf',      61:'moisturize',
+  62:'serum',     63:'serum',    64:'mask',      65:'lip'
+};
+
+// ─── STATE ────────────────────────────────────────────────────────────────────
+let activeCategory = 'all';
+let activeSkinType = 'all';
+let searchQuery    = '';
+let cart           = [];
+let shopUser       = null;
+let shopProfile    = null;
+let pendingCheckout = false;
+
+// ─── CART PERSISTENCE ─────────────────────────────────────────────────────────
+function saveCart() {
+  try { localStorage.setItem('cbs_shop_cart', JSON.stringify(cart)); } catch(e) {}
+}
+function loadCart() {
+  try {
+    const saved = localStorage.getItem('cbs_shop_cart');
+    cart = saved ? JSON.parse(saved) : [];
+  } catch { cart = []; }
+}
+
+// ─── FILTER ───────────────────────────────────────────────────────────────────
+function getFiltered() {
+  let list = [...PRODUCTS];
+  if (activeCategory !== 'all')
+    list = list.filter(p => PRODUCT_CATEGORIES[p.id] === activeCategory);
+  if (activeSkinType !== 'all')
+    list = list.filter(p => p.skinTypes.includes(activeSkinType) || p.skinTypes.includes('All'));
+  if (searchQuery) {
+    const q = searchQuery.toLowerCase();
+    list = list.filter(p =>
+      p.name.toLowerCase().includes(q) ||
+      p.desc.toLowerCase().includes(q) ||
+      p.type.toLowerCase().includes(q) ||
+      p.skinTypes.some(s => s.toLowerCase().includes(q))
+    );
+  }
+  const sort = document.getElementById('sortSelect').value;
+  if (sort === 'price-asc')  list.sort((a,b) => a.price - b.price);
+  else if (sort === 'price-desc') list.sort((a,b) => b.price - a.price);
+  else if (sort === 'name')  list.sort((a,b) => a.name.localeCompare(b.name));
+  return list;
+}
+
+// ─── RENDER ───────────────────────────────────────────────────────────────────
+function renderAll() {
+  const filtered = getFiltered();
+  const content  = document.getElementById('shopContent');
+  document.getElementById('resultCount').textContent =
+    `${filtered.length} product${filtered.length !== 1 ? 's' : ''} found`;
+
+  if (!filtered.length) {
+    content.innerHTML = `<div class="empty-state"><div class="empty-icon">🌌</div><p>No products match your filters.<br>Try adjusting the step, skin type or search.</p></div>`;
+    return;
+  }
+
+  content.innerHTML = `<div class="product-grid">${filtered.map(productCard).join('')}</div>`;
+  updateCounts();
+}
+
+function productCard(p) {
+  const badgeText = p.bestseller ? '★ Best Seller' : p.newBadge ? '✦ New' : '';
+  const visual = p.img
+    ? `<img src="${p.img}" alt="${p.name}" loading="lazy"
+         onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+       <span class="emoji" style="display:none">${p.emoji}</span>`
+    : `<span class="emoji">${p.emoji}</span>`;
+  return `<div class="prod-card${p.bestseller?' bestseller':''}${p.newBadge?' new-badge':''}" data-id="${p.id}">
+    <div class="prod-visual ${p.vis}">
+      ${badgeText ? `<span class="prod-badge">${badgeText}</span>` : ''}
+      ${visual}
+    </div>
+    <div class="prod-body">
+      <div class="prod-name">${p.name}</div>
+      <div class="prod-type">${p.type} &nbsp;·&nbsp; ${p.size}</div>
+      <div class="prod-desc">${p.desc}</div>
+      <div class="prod-footer">
+        <div>
+          <div class="prod-price">$${p.price}</div>
+          <div class="prod-size-label">${p.size}</div>
+        </div>
+        <button class="add-btn" onclick="addToCart(${p.id})">Add to Cart</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function updateCounts() { /* counts removed with sidebar */ }
+
+// ─── FILTER CONTROLS ──────────────────────────────────────────────────────────
+function setCategory(cat, el) {
+  activeCategory = cat;
+  document.querySelectorAll('#categoryList .concern-pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  updateFilterBar(); renderAll();
+}
+function setSkinType(type, el) {
+  activeSkinType = type;
+  document.querySelectorAll('#skinTypeList .skin-pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  updateFilterBar(); renderAll();
+}
+function handleSearch() {
+  searchQuery = document.getElementById('searchInput').value.trim();
+  updateFilterBar(); renderAll();
+}
+function updateFilterBar() {
+  const af = document.getElementById('activeFilters');
+  let tags = '';
+  const catLabels = { cleanse:'Cleanse', tone:'Tone', exfoliate:'Exfoliate', serum:'Serums', moisturize:'Moisturize', eye:'Eye Care', mask:'Masks', spf:'SPF', spot:'Spot Care', sets:'Sets & Kits', lip:'Lip Care' };
+  if (activeCategory !== 'all')
+    tags += `<div class="active-tag">${catLabels[activeCategory] || activeCategory}
+      <button onclick="setCategory('all',document.querySelector('#categoryList [data-cat=all]'))">×</button></div>`;
+  if (activeSkinType !== 'all')
+    tags += `<div class="active-tag skin-tag">${activeSkinType} Skin
+      <button onclick="setSkinType('all',document.querySelector('#skinTypeList [data-skin=all]'))">×</button></div>`;
+  if (searchQuery)
+    tags += `<div class="active-tag">Search: "${searchQuery}"
+      <button onclick="document.getElementById('searchInput').value='';searchQuery='';updateFilterBar();renderAll();">×</button></div>`;
+  if (af) af.innerHTML = tags;
+}
+
+// ─── CART ─────────────────────────────────────────────────────────────────────
+const ciColors = ['ci-a','ci-b','ci-c','ci-d'];
+
+function addToCart(id) {
+  const p = PRODUCTS.find(x => x.id === id);
+  const existing = cart.find(x => x.id === id);
+  if (existing) existing.qty++;
+  else cart.push({...p, qty:1});
+  saveCart();
+  renderCart();
+  showToast('✦', `${p.name} added to your ritual cart!`);
+}
+function removeFromCart(id) {
+  cart = cart.filter(x => x.id !== id);
+  saveCart();
+  renderCart();
+}
+function renderCart() {
+  const count = cart.reduce((s,x) => s + x.qty, 0);
+  document.getElementById('cartCount').textContent = count;
+  const itemsEl  = document.getElementById('cartItems');
+  const footerEl = document.getElementById('cartFooter');
+
+  if (!cart.length) {
+    itemsEl.innerHTML = `<div class="cart-empty-msg"><div class="ei">🌙</div><p>Your cart is empty.<br>Add some cosmic skincare!</p></div>`;
+    footerEl.style.display = 'none';
+    return;
+  }
+
+  itemsEl.innerHTML = cart.map((item, i) => {
+    const thumb = item.img
+      ? `<img src="${item.img}" alt="${item.name}" style="width:100%;height:100%;object-fit:contain;padding:6px;"
+           onerror="this.parentNode.innerHTML='<span style=&quot;font-size:22px&quot;>${item.emoji}</span>'">`
+      : `<span style="font-size:22px">${item.emoji}</span>`;
+    return `<div class="cart-item">
+      <div class="ci-icon ${ciColors[i%4]}">${thumb}</div>
+      <div class="ci-info">
+        <div class="ci-brand">BIOELEMENTS®</div>
+        <div class="ci-name">${item.name}</div>
+        <div class="ci-price">$${item.price} × ${item.qty}</div>
+      </div>
+      <button class="ci-remove" onclick="removeFromCart(${item.id})">×</button>
+    </div>`;
+  }).join('');
+
+  document.getElementById('cartTotal').textContent = '$' + cart.reduce((s,x) => s + x.price * x.qty, 0);
+
+  // Show sign-in prompt only when user is not logged in
+  const prompt = document.getElementById('cartSignInPrompt');
+  if (prompt) prompt.style.display = shopUser ? 'none' : 'block';
+
+  footerEl.style.display = 'block';
+}
+function toggleCart() {
+  document.getElementById('cartOverlay').classList.toggle('open');
+  document.getElementById('cartDrawer').classList.toggle('open');
+}
+
+// ─── CHECKOUT ─────────────────────────────────────────────────────────────────
+const EDGE_URL = 'https://umqqouzqmknvvabdtclq.supabase.co/functions/v1';
+
+function initiateCheckout() {
+  if (!cart.length) return;
+  // If not logged in, show auth modal with option to continue as guest
+  if (!shopUser) {
+    pendingCheckout = true;
+    toggleCart();
+    openAuth();
+  } else {
+    checkout();
+  }
+}
+
+async function checkout() {
+  if (!cart.length) return;
+  const btn = document.querySelector('.checkout-btn');
+  if (btn) { btn.textContent = 'Preparing… ✦'; btn.disabled = true; }
+  try {
+    const res = await fetch(`${EDGE_URL}/create-checkout`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        items:      cart.map(i => ({ name:i.name, type:i.type, price:i.price, qty:i.qty })),
+        userId:     shopUser?.id    || null,
+        userEmail:  shopUser?.email || null,
+        successUrl: window.location.origin + '/bioelements-shop.html?payment=success',
+        cancelUrl:  window.location.origin + '/bioelements-shop.html',
+      }),
+    });
+    const data = await res.json();
+    if (data.url) { window.location.href = data.url; }
+    else throw new Error(data.error || 'Could not create checkout session');
+  } catch (err) {
+    console.error(err);
+    showToast('⚠️', 'Checkout failed — please try again');
+    if (btn) { btn.textContent = 'Proceed to Checkout ✦'; btn.disabled = false; }
+  }
+}
+
+async function checkPaymentStatus() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('payment') !== 'success') return;
+  window.history.replaceState({}, '', window.location.pathname);
+
+  // Build success modal content from saved cart before clearing
+  const completedCart = [...cart];
+  cart = [];
+  saveCart();
+  renderCart();
+
+  // Populate success modal
+  if (completedCart.length) {
+    const total = completedCart.reduce((s,x) => s + x.price * x.qty, 0);
+    document.getElementById('successItems').innerHTML =
+      completedCart.map(i => `<div class="success-item"><span>${i.name} × ${i.qty}</span><span>$${i.price * i.qty}</span></div>`).join('') +
+      `<div class="success-total"><span>Total</span><span>$${total}</span></div>`;
+  }
+  document.getElementById('successOverlay').classList.add('open');
+
+  // Also reload orders if user is logged in
+  if (shopUser) {
+    const ordersEl = document.getElementById('ordersList');
+    if (ordersEl) loadOrders();
+  }
+}
+
+function closeSuccess() {
+  document.getElementById('successOverlay').classList.remove('open');
+}
+
+// ─── ORDERS ───────────────────────────────────────────────────────────────────
+function toggleOrders() {
+  document.getElementById('ordersOverlay').classList.toggle('open');
+  const drawer = document.getElementById('ordersDrawer');
+  drawer.classList.toggle('open');
+  if (drawer.classList.contains('open')) loadOrders();
+}
+
+async function loadOrders() {
+  if (!shopUser) return;
+  const el = document.getElementById('ordersList');
+  el.innerHTML = `<div class="cart-empty-msg"><div class="ei">⏳</div><p>Loading your orders…</p></div>`;
+  try {
+    const orders = await getMyOrders(shopUser.id);
+    if (!orders.length) {
+      el.innerHTML = `<div class="cart-empty-msg"><div class="ei">📦</div><p>No orders yet.<br>Your first purchase will appear here.</p></div>`;
+      return;
+    }
+    el.innerHTML = orders.map(o => {
+      const date   = new Date(o.created_at).toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
+      const items  = Array.isArray(o.items) ? o.items : [];
+      const amount = o.amount_total > 10000 // cents from Stripe?
+        ? `$${(o.amount_total/100).toFixed(2)}`
+        : `$${o.amount_total}`;
+      return `<div class="order-item">
+        <div class="order-meta">
+          <span class="order-date">${date}</span>
+          <span class="order-status paid">✦ ${o.status}</span>
+        </div>
+        <div class="order-lines">${items.map(i=>`<span class="order-line">${i.name} × ${i.qty||1}</span>`).join('') || '<span class="order-line" style="color:rgba(232,213,255,.4);">Details unavailable</span>'}</div>
+        <div class="order-amount">${amount}</div>
+      </div>`;
+    }).join('');
+  } catch (e) {
+    console.error(e);
+    el.innerHTML = `<div class="cart-empty-msg"><div class="ei">⚠️</div><p>Could not load orders.<br>Please try again.</p></div>`;
+  }
+}
+
+// ─── AUTH MODAL ───────────────────────────────────────────────────────────────
+function openAuth(forCheckout = false) {
+  pendingCheckout = forCheckout;
+  document.getElementById('authError').textContent = '';
+  document.getElementById('authOverlay').classList.add('open');
+}
+function closeAuth() {
+  document.getElementById('authOverlay').classList.remove('open');
+  pendingCheckout = false;
+}
+function handleAuthOverlayClick(e) {
+  if (e.target === document.getElementById('authOverlay')) closeAuth();
+}
+function switchAuthTab(tab, el) {
+  document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('loginForm').style.display    = tab === 'login'    ? 'block' : 'none';
+  document.getElementById('registerForm').style.display = tab === 'register' ? 'block' : 'none';
+  document.getElementById('authError').textContent = '';
+}
+async function handleLogin() {
+  const email    = document.getElementById('authEmail').value.trim();
+  const password = document.getElementById('authPassword').value;
+  const errEl    = document.getElementById('authError');
+  const btn      = document.getElementById('loginBtn');
+  errEl.textContent = '';
+  if (!email || !password) { errEl.textContent = 'Please enter your email and password.'; return; }
+  btn.disabled = true; btn.textContent = 'Signing in…';
+  try {
+    await cbsLogin(email, password);
+    closeAuth();
+    showToast('✦', 'Welcome back!');
+    if (pendingCheckout) { pendingCheckout = false; await checkout(); }
+  } catch (e) {
+    errEl.textContent = e.message || 'Sign in failed. Check your credentials.';
+  } finally {
+    btn.disabled = false; btn.textContent = 'Sign In ✦';
+  }
+}
+async function handleRegister() {
+  const firstName = document.getElementById('regFirst').value.trim();
+  const lastName  = document.getElementById('regLast').value.trim();
+  const email     = document.getElementById('regEmail').value.trim();
+  const password  = document.getElementById('regPassword').value;
+  const errEl     = document.getElementById('authError');
+  const btn       = document.getElementById('registerBtn');
+  errEl.textContent = '';
+  if (!firstName || !email || !password) { errEl.textContent = 'Please fill in all required fields.'; return; }
+  if (password.length < 8) { errEl.textContent = 'Password must be at least 8 characters.'; return; }
+  btn.disabled = true; btn.textContent = 'Creating account…';
+  try {
+    await cbsRegister({ firstName, lastName, email, phone:'', password });
+    closeAuth();
+    showToast('🌸', 'Account created! Check your email to confirm.');
+  } catch (e) {
+    errEl.textContent = e.message || 'Registration failed. Please try again.';
+  } finally {
+    btn.disabled = false; btn.textContent = 'Create Account ✦';
+  }
+}
+async function guestCheckout() {
+  closeAuth();
+  await checkout();
+}
+async function handleSignOut() {
+  try {
+    await cbsLogout();
+    shopUser = null; shopProfile = null;
+    updateNavForAuth(null, null);
+    showToast('✦', 'Signed out. See you next time!');
+  } catch (e) { console.error(e); }
+}
+
+// ─── NAV AUTH STATE ───────────────────────────────────────────────────────────
+function updateNavForAuth(user, profile) {
+  const greeting  = document.getElementById('navUserGreeting');
+  const ordersBtn = document.getElementById('ordersBtn');
+  const signInBtn = document.getElementById('signInBtn');
+  const signOutBtn= document.getElementById('signOutBtn');
+  if (user && profile) {
+    greeting.textContent  = `Hi, ${profile.first_name} ✦`;
+    greeting.style.display= 'inline';
+    ordersBtn.style.display = 'inline-flex';
+    signInBtn.style.display = 'none';
+    signOutBtn.style.display= 'inline-flex';
+    // Auto-apply skin type filter if profile has one
+    if (profile.skin_type) {
+      const pill = document.querySelector(`#skinTypeList [data-skin="${profile.skin_type}"]`);
+      if (pill) setSkinType(profile.skin_type, pill);
+    }
+  } else {
+    greeting.style.display  = 'none';
+    ordersBtn.style.display = 'none';
+    signInBtn.style.display = 'inline-flex';
+    signOutBtn.style.display= 'none';
+  }
+}
+
+// ─── SESSION INIT ─────────────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', async () => {
+  loadCart();
+  renderCart();
+  renderAll();
+  await checkPaymentStatus();
+
+  await cbsInitSession(
+    (user, profile) => {
+      shopUser    = user;
+      shopProfile = profile;
+      updateNavForAuth(user, profile);
+      if (profile && profile.skin_type) highlightForSkinType(profile.skin_type);
+    },
+    () => updateNavForAuth(null, null)
+  );
+});
+
+function highlightForSkinType(skinType) {
+  const recIds = new Set(
+    PRODUCTS
+      .filter(p => p.skinTypes.includes(skinType) || p.skinTypes.includes('All'))
+      .map(p => p.id)
+  );
+  document.querySelectorAll('.prod-card[data-id]').forEach(card => {
+    if (recIds.has(parseInt(card.dataset.id, 10))) {
+      card.style.borderColor = 'rgba(168,85,247,0.5)';
+      card.style.boxShadow   = '0 0 24px rgba(168,85,247,0.2)';
+      if (!card.querySelector('.for-you-badge')) {
+        const b = document.createElement('div');
+        b.className = 'for-you-badge';
+        b.style.cssText = 'position:absolute;top:10px;left:12px;background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;font-size:8px;letter-spacing:.2em;padding:3px 9px;border-radius:100px;text-transform:uppercase;z-index:2;';
+        b.textContent = '✦ For You';
+        card.prepend(b);
+      }
+    }
+  });
+}
+
+// ─── TOAST ────────────────────────────────────────────────────────────────────
+function showToast(icon, text) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastIcon').textContent = icon;
+  document.getElementById('toastText').textContent = text;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ─── STARS ────────────────────────────────────────────────────────────────────
+const canvas = document.getElementById('starfield'), ctx = canvas.getContext('2d');
+let stars = [];
+function resize() {
+  canvas.width = innerWidth; canvas.height = innerHeight;
+  stars = Array.from({length:180}, () => ({
+    x:Math.random()*canvas.width, y:Math.random()*canvas.height,
+    r:Math.random()*1.3+.2, alpha:Math.random(),
+    ts:Math.random()*.02+.004, color:Math.random()>.7?'#60a5fa':'#e8d5ff'
+  }));
+}
+function animateStars(t) {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  stars.forEach(s => {
+    s.alpha = .15+.85*(.5+.5*Math.sin(t*s.ts));
+    ctx.globalAlpha=s.alpha; ctx.fillStyle=s.color;
+    ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2); ctx.fill();
+  });
+  ctx.globalAlpha=1; requestAnimationFrame(animateStars);
+}
+resize(); window.addEventListener('resize', resize); requestAnimationFrame(animateStars);
+
+// ─── CURSOR ───────────────────────────────────────────────────────────────────
+const cur = document.getElementById('cursor'), trail = document.getElementById('trail');
+let mx=-100, my=-100, tx=-100, ty=-100;
+document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; cur.style.left=mx-5+'px'; cur.style.top=my-5+'px'; });
+(function loop(){ tx+=(mx-tx)*.12; ty+=(my-ty)*.12; trail.style.left=tx-16+'px'; trail.style.top=ty-16+'px'; requestAnimationFrame(loop); })();
+document.addEventListener('mousedown', ()=> cur.style.transform='scale(1.8)');
+document.addEventListener('mouseup',   ()=> cur.style.transform='scale(1)');
+
+// Guaranteed initial render — script is at bottom of body so DOM is ready
+loadCart();
+renderCart();
+renderAll();
+</script>
+</body>
+</html>

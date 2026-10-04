@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet the Team · Cosmic Beauty Spa · Hudson, Florida</title>
+<meta name="description" content="Meet the talented estheticians behind Cosmic Beauty Spa in Hudson, FL. Professional, licensed, and passionate about your skin.">
+<script src="auth.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Syncopate:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --void:#030612;--deep:#0a0820;
+  --violet:#6b2fa0;--indigo:#3d2fa0;--electric:#7c3aed;
+  --aurora:#a855f7;--sky:#60a5fa;--ice:#bae6fd;
+  --starlight:#e8d5ff;--pearl:#f5f0ff;
+  --rose:#f472b6;
+  --border:rgba(168,85,247,.15);--border-hi:rgba(168,85,247,.45);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+::selection{background:var(--aurora);color:var(--void);}
+body{background:var(--void);color:var(--pearl);font-family:'DM Sans',sans-serif;font-weight:300;overflow-x:hidden;cursor:none;}
+
+/* CURSOR */
+.cursor{width:10px;height:10px;background:var(--aurora);border-radius:50%;position:fixed;pointer-events:none;z-index:9999;mix-blend-mode:screen;transition:transform .15s;}
+.cursor-trail{width:32px;height:32px;border:1px solid rgba(168,85,247,.35);border-radius:50%;position:fixed;pointer-events:none;z-index:9998;transition:all .3s ease;}
+
+/* BG */
+#starfield{position:fixed;inset:0;z-index:0;pointer-events:none;}
+.nb{position:fixed;border-radius:50%;filter:blur(110px);pointer-events:none;z-index:0;}
+.nb1{width:580px;height:580px;background:radial-gradient(circle,rgba(107,47,160,.28) 0%,transparent 70%);top:-100px;left:-70px;animation:drift 22s ease-in-out infinite alternate;}
+.nb2{width:440px;height:440px;background:radial-gradient(circle,rgba(61,47,160,.22) 0%,transparent 70%);bottom:12%;right:-60px;animation:drift 28s ease-in-out infinite alternate-reverse;}
+.nb3{width:320px;height:320px;background:radial-gradient(circle,rgba(244,114,182,.1) 0%,transparent 70%);top:40%;left:30%;animation:drift 35s ease-in-out infinite alternate;}
+@keyframes drift{0%{transform:translate(0,0);}100%{transform:translate(28px,20px);}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+@keyframes twinkle{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.3;transform:scale(.8);}}
+@keyframes floatUp{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+@keyframes shimmer{from{transform:translateX(-100%);}to{transform:translateX(100%);}}
+
+/* LAYOUT */
+.site{position:relative;z-index:1;}
+.container{max-width:1160px;margin:0 auto;padding:0 56px;}
+.divider{width:100%;height:1px;background:linear-gradient(to right,transparent,rgba(168,85,247,.22),rgba(244,114,182,.12),transparent);}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:0 56px;height:66px;display:flex;align-items:center;justify-content:space-between;backdrop-filter:blur(20px);background:rgba(3,6,18,.65);border-bottom:1px solid var(--border);transition:background .3s;}
+.nav-logo{font-family:'Syncopate',sans-serif;font-size:11px;letter-spacing:.28em;color:var(--starlight);text-decoration:none;line-height:1.4;position:relative;}
+.nav-logo span{display:block;font-size:7px;letter-spacing:.45em;color:rgba(168,85,247,.48);margin-top:1px;}
+.nav-logo::after{content:'✦';font-size:7px;position:absolute;top:-1px;right:-13px;color:var(--aurora);animation:twinkle 2s infinite;}
+.nav-right{display:flex;align-items:center;gap:28px;}
+.nav-link{color:rgba(232,213,255,.5);text-decoration:none;font-size:12px;letter-spacing:.12em;text-transform:uppercase;transition:color .3s;}
+.nav-link:hover,.nav-link.active{color:var(--aurora);}
+.nav-book{background:linear-gradient(135deg,var(--electric),var(--violet));color:#fff;padding:9px 22px;border-radius:100px;font-size:11px;letter-spacing:.13em;text-transform:uppercase;text-decoration:none;transition:all .3s;box-shadow:0 0 18px rgba(124,58,237,.35);}
+.nav-book:hover{box-shadow:0 0 36px rgba(124,58,237,.65);transform:translateY(-1px);color:#fff;}
+
+/* HERO */
+.team-hero{padding-top:66px;min-height:42vh;display:flex;align-items:center;text-align:center;padding-bottom:60px;}
+.team-hero .container{width:100%;}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:9px;letter-spacing:.45em;text-transform:uppercase;color:var(--aurora);border:1px solid rgba(168,85,247,.28);padding:7px 18px;border-radius:100px;margin-bottom:24px;background:rgba(168,85,247,.07);animation:fadeUp .8s ease both;}
+.team-hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(48px,8vw,96px);font-weight:300;line-height:.92;letter-spacing:-.02em;margin-bottom:18px;animation:fadeUp .8s .15s ease both;}
+.team-hero h1 em{font-style:italic;background:linear-gradient(135deg,var(--rose),var(--aurora),var(--sky));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.team-hero p{font-size:16px;color:rgba(232,213,255,.5);line-height:1.8;max-width:520px;margin:0 auto;animation:fadeUp .8s .3s ease both;}
+
+/* TEAM GRID */
+.team-section{padding:70px 0 100px;}
+.team-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;}
+
+/* TEAM CARD */
+.team-card{background:linear-gradient(145deg,rgba(18,10,45,.9),rgba(13,26,74,.8));border:1px solid var(--border);border-radius:28px;overflow:hidden;transition:all .45s ease;position:relative;cursor:none;}
+.team-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(to right,transparent,rgba(168,85,247,.5),transparent);z-index:1;}
+.team-card:hover{transform:translateY(-10px);border-color:rgba(168,85,247,.42);box-shadow:0 30px 70px rgba(107,47,160,.28);}
+.team-card a{text-decoration:none;color:inherit;display:block;}
+
+.tc-photo{height:280px;position:relative;overflow:hidden;}
+.tc-photo-placeholder{width:100%;height:100%;background:linear-gradient(145deg,rgba(107,47,160,.4),rgba(61,47,160,.3),rgba(244,114,182,.12));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;position:relative;overflow:hidden;}
+.tc-photo-placeholder::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent,rgba(168,85,247,.06),transparent);transform:translateX(-100%);animation:shimmer 4s ease-in-out infinite 1s;}
+.tc-photo img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s ease;}
+.team-card:hover .tc-photo img{transform:scale(1.06);}
+.tc-avatar{font-size:72px;filter:drop-shadow(0 0 22px rgba(168,85,247,.5));animation:floatUp 4s ease-in-out infinite;}
+.tc-role-badge{position:absolute;bottom:14px;left:14px;background:rgba(3,6,18,.8);border:1px solid rgba(168,85,247,.3);border-radius:100px;padding:5px 14px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--aurora);backdrop-filter:blur(8px);}
+
+.tc-body{padding:26px 28px 28px;}
+.tc-name{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:300;color:var(--starlight);margin-bottom:4px;}
+.tc-title{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:rgba(168,85,247,.6);margin-bottom:14px;}
+.tc-bio{font-size:13px;color:rgba(232,213,255,.5);line-height:1.8;margin-bottom:18px;}
+.tc-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:22px;}
+.tc-tag{font-size:9px;letter-spacing:.12em;padding:4px 11px;border-radius:100px;background:rgba(168,85,247,.09);border:1px solid rgba(168,85,247,.18);color:rgba(168,85,247,.82);}
+.tc-link{display:inline-flex;align-items:center;gap:8px;color:var(--aurora);font-size:11px;letter-spacing:.2em;text-transform:uppercase;transition:gap .3s;}
+.tc-link::after{content:'→';}
+.team-card:hover .tc-link{gap:14px;}
+
+/* COMING SOON CARD */
+.team-card-soon{background:rgba(18,10,45,.4);border:2px dashed rgba(168,85,247,.18);border-radius:28px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:60px 32px;min-height:480px;transition:all .4s;}
+.team-card-soon:hover{border-color:rgba(168,85,247,.38);background:rgba(107,47,160,.08);}
+.soon-icon{font-size:48px;color:rgba(168,85,247,.3);}
+.soon-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:rgba(232,213,255,.3);text-align:center;}
+.soon-sub{font-size:11px;color:rgba(168,85,247,.35);letter-spacing:.2em;text-transform:uppercase;text-align:center;}
+
+/* FOOTER */
+footer{padding:50px 56px 32px;border-top:1px solid var(--border);}
+.foot-bottom{display:flex;justify-content:space-between;align-items:center;color:rgba(232,213,255,.2);font-size:11px;flex-wrap:wrap;gap:10px;}
+.foot-bottom a{color:rgba(168,85,247,.4);text-decoration:none;transition:color .3s;}
+.foot-bottom a:hover{color:var(--aurora);}
+
+/* RESPONSIVE */
+@media(max-width:1024px){.team-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:640px){
+  nav{padding:0 20px;}
+  .container{padding:0 22px;}
+  .team-grid{grid-template-columns:1fr;}
+  footer{padding:36px 22px 24px;}
+}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-trail" id="cursorTrail"></div>
+<canvas id="starfield"></canvas>
+<div class="nb nb1"></div><div class="nb nb2"></div><div class="nb nb3"></div>
+
+<div class="site">
+
+<nav id="mainNav">
+  <a href="skincare-cosmos.html" class="nav-logo">COSMIC BEAUTY SPA <span>Hudson · Florida</span></a>
+  <div class="nav-right">
+    <a href="skincare-cosmos.html" class="nav-link">Home</a>
+    <a href="meet-the-team.html" class="nav-link active">Meet the Team</a>
+    <a href="bioelements-shop.html" class="nav-link">Shop</a>
+    <a href="client-portal.html" class="nav-link">My Portal</a>
+    <a href="https://www.cosmicreators.com" target="_blank" class="nav-book">Book Now</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="team-hero">
+  <div class="container">
+    <div class="hero-eyebrow">✦ Cosmic Beauty Spa · Hudson, FL ✦</div>
+    <h1>Meet the<br><em>Team</em></h1>
+    <p>Licensed estheticians passionate about your skin — each bringing expert care, professional results, and a personal touch to every visit.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- TEAM -->
+<section class="team-section">
+  <div class="container">
+    <div class="team-grid">
+
+      <!-- Christina -->
+      <div class="team-card">
+        <a href="about-christina.html">
+          <div class="tc-photo">
+            <div class="tc-photo-placeholder">
+              <div class="tc-avatar">🌸</div>
+            </div>
+            <div class="tc-role-badge">Owner &amp; Lead Esthetician</div>
+          </div>
+          <div class="tc-body">
+            <div class="tc-name">Christina</div>
+            <div class="tc-title">FL Licensed Esthetician · Bioelements® Certified</div>
+            <div class="tc-bio">Born and raised in Hudson, FL, Christina founded Cosmic Beauty Spa with one goal — bringing professional, personalized skincare to every client, wherever they are.</div>
+            <div class="tc-tags">
+              <span class="tc-tag">✦ Bioelements® Certified</span>
+              <span class="tc-tag">✦ Facials</span>
+              <span class="tc-tag">✦ Waxing</span>
+              <span class="tc-tag">✦ Virtual Consults</span>
+            </div>
+            <span class="tc-link">Meet Christina</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- Coming soon #1 -->
+      <div class="team-card-soon">
+        <div class="soon-icon">✦</div>
+        <div class="soon-title">Joining the Team<br>Soon</div>
+        <div class="soon-sub">Stay tuned</div>
+      </div>
+
+      <!-- Coming soon #2 -->
+      <div class="team-card-soon">
+        <div class="soon-icon">✦</div>
+        <div class="soon-title">Joining the Team<br>Soon</div>
+        <div class="soon-sub">Stay tuned</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+</div><!-- end site -->
+
+<footer>
+  <div class="foot-bottom">
+    <span>© 2025 Cosmic Beauty Spa · Hudson, Florida · <a href="tel:3524109634">(352) 410-9634</a></span>
+    <span style="color:rgba(168,85,247,.28);">✦ Get the glow your skin deserves ✦</span>
+    <span><a href="https://www.cosmicreators.com" target="_blank">cosmicreators.com</a> · <a href="https://www.instagram.com/cosmicbeauty2025" target="_blank">@cosmicbeauty2025</a></span>
+  </div>
+</footer>
+
+<script>
+// STARS
+const canvas = document.getElementById('starfield');
+const ctx = canvas.getContext('2d');
+let stars = [];
+function resizeStars(){
+  canvas.width=innerWidth; canvas.height=innerHeight;
+  stars=Array.from({length:180},()=>({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*1.4+.2,ts:Math.random()*.02+.004,color:Math.random()>.7?'#60a5fa':'#e8d5ff'}));
+}
+function drawStars(t){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  stars.forEach(s=>{ctx.globalAlpha=.14+.7*(.5+.5*Math.sin(t*s.ts));ctx.fillStyle=s.color;ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fill();});
+  ctx.globalAlpha=1; requestAnimationFrame(drawStars);
+}
+resizeStars(); window.addEventListener('resize',resizeStars); requestAnimationFrame(drawStars);
+
+// CURSOR
+const cur=document.getElementById('cursor'),trail=document.getElementById('cursorTrail');
+let mx=-100,my=-100,tx=-100,ty=-100;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx-5+'px';cur.style.top=my-5+'px';});
+(function loop(){tx+=(mx-tx)*.12;ty+=(my-ty)*.12;trail.style.left=tx-16+'px';trail.style.top=ty-16+'px';requestAnimationFrame(loop);})();
+document.addEventListener('mousedown',()=>cur.style.transform='scale(1.8)');
+document.addEventListener('mouseup',()=>cur.style.transform='scale(1)');
+
+// NAV scroll
+window.addEventListener('scroll',()=>{
+  document.getElementById('mainNav').style.background = window.scrollY>60 ? 'rgba(3,6,18,.92)' : 'rgba(3,6,18,.65)';
+});
+
+// Auth guard
+document.addEventListener('DOMContentLoaded', () => {
+  CosmicAuth.injectAuthBar(['guest','esthetician'], 'about');
+});
+</script>
+</body>
+</html>

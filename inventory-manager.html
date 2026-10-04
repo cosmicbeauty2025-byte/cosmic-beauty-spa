@@ -1,0 +1,1932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cosmic Beauty Spa · Inventory Manager</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Syncopate:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --void: #030612;
+  --deep: #0a0820;
+  --card: rgba(18,10,45,0.92);
+  --violet: #6b2fa0;
+  --electric: #7c3aed;
+  --aurora: #a855f7;
+  --sky: #60a5fa;
+  --starlight: #e8d5ff;
+  --pearl: #f5f0ff;
+  --success: #34d399;
+  --warning: #fbbf24;
+  --danger: #f87171;
+  --border: rgba(168,85,247,0.15);
+  --border-hi: rgba(168,85,247,0.5);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--void);color:var(--pearl);font-family:'DM Sans',sans-serif;font-weight:300;min-height:100vh;overflow-x:hidden;}
+::selection{background:var(--aurora);color:var(--void);}
+
+#starfield{position:fixed;inset:0;z-index:0;pointer-events:none;}
+.nb{position:fixed;border-radius:50%;filter:blur(110px);pointer-events:none;z-index:0;}
+.nb1{width:500px;height:500px;background:radial-gradient(circle,rgba(107,47,160,.2) 0%,transparent 70%);top:-80px;left:-60px;animation:drift 20s ease-in-out infinite alternate;}
+.nb2{width:380px;height:380px;background:radial-gradient(circle,rgba(61,47,160,.16) 0%,transparent 70%);bottom:10%;right:-40px;animation:drift 25s ease-in-out infinite alternate-reverse;}
+@keyframes drift{0%{transform:translate(0,0);}100%{transform:translate(28px,18px);}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+
+/* LAYOUT */
+#app{position:relative;z-index:1;display:flex;min-height:100vh;}
+
+/* SIDEBAR */
+.sidebar{width:220px;min-height:100vh;background:rgba(5,3,18,.96);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:50;}
+.sb-logo{padding:24px 20px 18px;border-bottom:1px solid var(--border);}
+.sb-logo-name{font-family:'Syncopate',sans-serif;font-size:10px;letter-spacing:.25em;color:var(--aurora);}
+.sb-logo-sub{font-size:8px;letter-spacing:.35em;text-transform:uppercase;color:rgba(168,85,247,.35);margin-top:3px;}
+.sb-badge{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,rgba(107,47,160,.35),rgba(61,47,160,.25));border:1px solid rgba(168,85,247,.3);border-radius:100px;padding:3px 10px;font-size:8px;letter-spacing:.2em;color:var(--aurora);margin-top:8px;}
+.sb-nav{flex:1;padding:16px 10px;overflow-y:auto;}
+.sb-section{font-size:8px;letter-spacing:.4em;text-transform:uppercase;color:rgba(168,85,247,.3);padding:0 8px;margin:16px 0 6px;}
+.sb-item{display:flex;align-items:center;gap:10px;padding:10px 10px;border-radius:10px;cursor:pointer;transition:all .3s;color:rgba(232,213,255,.5);font-size:13px;border:1px solid transparent;margin-bottom:2px;}
+.sb-item:hover{background:rgba(168,85,247,.08);color:var(--starlight);}
+.sb-item.active{background:linear-gradient(135deg,rgba(107,47,160,.35),rgba(61,47,160,.25));border-color:rgba(168,85,247,.2);color:var(--starlight);}
+.sb-item .si{font-size:15px;width:18px;text-align:center;}
+.sb-badge-num{margin-left:auto;background:var(--warning);color:#000;font-size:9px;padding:2px 6px;border-radius:100px;font-weight:600;}
+.sb-badge-red{background:var(--danger) !important;color:#fff !important;}
+.sb-footer{padding:14px 10px;border-top:1px solid var(--border);}
+.sb-footer a{display:block;text-align:center;font-size:11px;color:rgba(232,213,255,.3);text-decoration:none;padding:8px;border-radius:8px;transition:all .3s;border:1px solid rgba(168,85,247,.1);}
+.sb-footer a:hover{color:var(--aurora);border-color:rgba(168,85,247,.3);}
+
+/* MAIN */
+.main{margin-left:220px;flex:1;min-height:100vh;}
+.top-bar{padding:16px 28px;background:rgba(3,6,18,.75);border-bottom:1px solid var(--border);backdrop-filter:blur(16px);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:40;}
+.top-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:var(--starlight);}
+.top-title em{font-style:italic;color:var(--aurora);}
+.top-actions{display:flex;gap:10px;align-items:center;}
+
+/* BUTTONS */
+.btn-primary{background:linear-gradient(135deg,var(--electric),rgba(107,47,160,.9));color:#fff;border:none;padding:9px 20px;border-radius:100px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .3s;box-shadow:0 0 16px rgba(124,58,237,.3);}
+.btn-primary:hover{box-shadow:0 0 30px rgba(124,58,237,.6);transform:translateY(-1px);}
+.btn-ghost{background:rgba(168,85,247,.08);border:1px solid var(--border);color:rgba(232,213,255,.6);padding:9px 18px;border-radius:100px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .3s;}
+.btn-ghost:hover{border-color:var(--border-hi);color:var(--starlight);}
+.btn-danger{background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.25);color:#f87171;padding:7px 16px;border-radius:100px;font-size:10px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .3s;}
+.btn-danger:hover{background:rgba(248,113,113,.22);}
+.btn-sm{padding:7px 14px;font-size:10px;letter-spacing:.1em;}
+.btn-icon{background:rgba(168,85,247,.1);border:1px solid var(--border);width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .3s;font-size:15px;}
+.btn-icon:hover{border-color:var(--border-hi);background:rgba(168,85,247,.2);}
+
+/* PANELS */
+.page{padding:24px 28px 60px;animation:fadeUp .4s ease both;}
+.panel{display:none;}
+.panel.active{display:block;}
+
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:20px;backdrop-filter:blur(12px);transition:border-color .3s;}
+.card:hover{border-color:rgba(168,85,247,.25);}
+.card-title{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:300;color:var(--starlight);margin-bottom:2px;}
+.card-sub{font-size:11px;color:rgba(232,213,255,.35);margin-bottom:14px;}
+
+/* STAT CARDS */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;position:relative;overflow:hidden;transition:all .3s;}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(to right,var(--aurora),var(--sky));opacity:.5;}
+.stat-card:hover{border-color:rgba(168,85,247,.3);transform:translateY(-2px);}
+.stat-num{font-family:'Cormorant Garamond',serif;font-size:36px;color:var(--aurora);display:block;line-height:1;}
+.stat-label{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:rgba(232,213,255,.35);display:block;margin-top:5px;}
+.stat-sub{font-size:11px;margin-top:3px;display:block;}
+
+/* PILLS */
+.pill{display:inline-flex;align-items:center;gap:3px;font-size:10px;padding:3px 9px;border-radius:100px;white-space:nowrap;}
+.p-green{background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.2);color:#34d399;}
+.p-yellow{background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.2);color:#fbbf24;}
+.p-red{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.2);color:#f87171;}
+.p-purple{background:rgba(168,85,247,.1);border:1px solid rgba(168,85,247,.2);color:rgba(168,85,247,.9);}
+.p-blue{background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.2);color:#60a5fa;}
+
+/* SEARCH & FILTER */
+.toolbar{display:flex;gap:10px;align-items:center;margin-bottom:18px;flex-wrap:wrap;}
+.search-input{background:rgba(26,10,61,.6);border:1px solid var(--border);border-radius:10px;padding:10px 16px;color:var(--pearl);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;transition:all .3s;min-width:240px;flex:1;}
+.search-input:focus{border-color:var(--border-hi);}
+.search-input::placeholder{color:rgba(232,213,255,.2);}
+.filter-chip{padding:7px 14px;border-radius:100px;border:1px solid var(--border);background:rgba(26,10,61,.4);color:rgba(232,213,255,.5);font-size:11px;cursor:pointer;transition:all .3s;font-family:'DM Sans',sans-serif;white-space:nowrap;}
+.filter-chip.active{background:linear-gradient(135deg,rgba(107,47,160,.4),rgba(61,47,160,.3));border-color:rgba(168,85,247,.45);color:var(--starlight);}
+
+/* INVENTORY TABLE */
+.inv-table{width:100%;border-collapse:collapse;}
+.inv-table th{font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:rgba(168,85,247,.5);padding:8px 12px;text-align:left;border-bottom:1px solid var(--border);}
+.inv-table td{padding:12px;border-bottom:1px solid rgba(168,85,247,.06);vertical-align:middle;}
+.inv-table tr:last-child td{border-bottom:none;}
+.inv-table tr:hover td{background:rgba(168,85,247,.03);}
+.inv-table tr.low-stock td{background:rgba(251,191,36,.03);}
+.inv-table tr.out-stock td{background:rgba(248,113,113,.04);}
+
+.prod-thumb{width:44px;height:44px;border-radius:10px;object-fit:cover;border:1px solid var(--border);}
+.prod-thumb-placeholder{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,rgba(107,47,160,.4),rgba(61,47,160,.3));border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.prod-name-cell{font-size:13px;color:var(--starlight);}
+.prod-sku{font-size:10px;color:rgba(168,85,247,.5);letter-spacing:.08em;margin-top:2px;}
+
+/* STOCK COUNTER */
+.stock-counter{display:flex;align-items:center;gap:8px;}
+.stock-btn{width:26px;height:26px;border-radius:50%;background:rgba(168,85,247,.1);border:1px solid var(--border);color:var(--starlight);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .3s;line-height:1;}
+.stock-btn:hover{background:rgba(168,85,247,.25);border-color:var(--border-hi);}
+.stock-num{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--starlight);min-width:32px;text-align:center;}
+.stock-num.low{color:var(--warning);}
+.stock-num.out{color:var(--danger);}
+
+/* RESTOCK BAR */
+.restock-bar-wrap{width:80px;height:5px;background:rgba(168,85,247,.1);border-radius:100px;overflow:hidden;display:inline-block;}
+.restock-bar{height:100%;border-radius:100px;transition:width .4s;}
+
+/* PRODUCT EDIT MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(3,6,18,.85);backdrop-filter:blur(16px);z-index:200;display:none;align-items:flex-start;justify-content:center;padding:32px 20px;overflow-y:auto;}
+.modal-overlay.open{display:flex;}
+.modal{background:linear-gradient(145deg,rgba(14,8,36,.98),rgba(10,20,60,.95));border:1px solid rgba(168,85,247,.3);border-radius:24px;width:100%;max-width:680px;box-shadow:0 0 80px rgba(107,47,160,.3);animation:fadeUp .35s ease both;position:relative;}
+.modal-header{padding:24px 28px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.modal-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;color:var(--starlight);}
+.modal-close{background:rgba(168,85,247,.1);border:1px solid var(--border);border-radius:50%;width:32px;height:32px;color:var(--starlight);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .3s;}
+.modal-close:hover{background:rgba(168,85,247,.25);}
+.modal-body{padding:24px 28px;}
+.modal-footer{padding:16px 28px 24px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end;}
+
+/* FORM FIELDS */
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
+.field label{font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--aurora);}
+.field input,.field select,.field textarea{background:rgba(26,10,61,.55);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--pearl);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;transition:all .3s;width:100%;}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--border-hi);box-shadow:0 0 12px rgba(168,85,247,.1);}
+.field input::placeholder,.field textarea::placeholder{color:rgba(232,213,255,.2);}
+.field textarea{resize:vertical;min-height:80px;line-height:1.7;}
+.field select option{background:var(--deep);}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+
+/* IMAGE UPLOAD */
+.image-upload-area{border:2px dashed rgba(168,85,247,.25);border-radius:14px;padding:28px;text-align:center;cursor:pointer;transition:all .3s;background:rgba(26,10,61,.3);}
+.image-upload-area:hover{border-color:rgba(168,85,247,.5);background:rgba(107,47,160,.1);}
+.image-upload-area.has-image{border-style:solid;border-color:rgba(168,85,247,.35);padding:0;overflow:hidden;position:relative;}
+.image-upload-area.has-image img{width:100%;height:180px;object-fit:cover;display:block;}
+.image-upload-overlay{position:absolute;inset:0;background:rgba(3,6,18,.6);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;opacity:0;transition:opacity .3s;}
+.image-upload-area.has-image:hover .image-upload-overlay{opacity:1;}
+.upload-icon{font-size:32px;color:rgba(168,85,247,.5);}
+.upload-text{font-size:12px;color:rgba(232,213,255,.5);}
+.upload-hint{font-size:10px;color:rgba(232,213,255,.3);}
+
+/* CONCERN TAGS */
+.concern-tags{display:flex;flex-wrap:wrap;gap:6px;}
+.concern-tag{padding:5px 12px;border-radius:100px;border:1px solid var(--border);background:rgba(26,10,61,.5);font-size:11px;color:rgba(232,213,255,.5);cursor:pointer;transition:all .3s;}
+.concern-tag.selected{border-color:rgba(168,85,247,.5);background:rgba(107,47,160,.25);color:var(--starlight);}
+
+/* RESTOCK PANEL */
+.restock-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;display:flex;align-items:center;gap:14px;margin-bottom:10px;transition:all .3s;}
+.restock-card:hover{border-color:rgba(168,85,247,.25);}
+.restock-card.urgent{border-color:rgba(248,113,113,.25);background:rgba(248,113,113,.04);}
+.restock-card.low{border-color:rgba(251,191,36,.25);background:rgba(251,191,36,.04);}
+.rc-thumb{width:46px;height:46px;border-radius:10px;object-fit:cover;flex-shrink:0;}
+.rc-thumb-placeholder{width:46px;height:46px;border-radius:10px;background:linear-gradient(135deg,rgba(107,47,160,.4),rgba(61,47,160,.3));display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.rc-info{flex:1;}
+.rc-name{font-size:13px;color:var(--starlight);margin-bottom:3px;}
+.rc-sku{font-size:10px;color:rgba(168,85,247,.5);}
+.rc-stock{font-size:12px;margin-top:3px;}
+.rc-actions{display:flex;gap:8px;align-items:center;flex-shrink:0;}
+.restock-input{width:60px;background:rgba(26,10,61,.5);border:1px solid var(--border);border-radius:8px;padding:6px 10px;color:var(--pearl);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;text-align:center;}
+
+/* CATEGORY SECTION HEADERS */
+.cat-header{display:flex;align-items:center;gap:12px;padding:10px 0 8px;margin-top:24px;margin-bottom:2px;border-bottom:1px solid rgba(168,85,247,.1);}
+.cat-header:first-of-type{margin-top:0;}
+.cat-icon{font-size:18px;}
+.cat-name{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;color:var(--starlight);}
+.cat-count{font-size:10px;color:rgba(168,85,247,.5);letter-spacing:.15em;margin-left:auto;}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:linear-gradient(135deg,rgba(14,8,36,.97),rgba(10,20,60,.97));border:1px solid rgba(168,85,247,.35);border-radius:14px;padding:12px 20px;display:flex;align-items:center;gap:10px;z-index:500;transform:translateY(50px);opacity:0;transition:all .4s;box-shadow:0 0 40px rgba(107,47,160,.3);max-width:320px;}
+.toast.show{transform:translateY(0);opacity:1;}
+.ti{font-size:17px;} .tt{font-size:13px;color:var(--starlight);}
+
+/* ── SUBSCRIPTIONS ── */
+.sub-header-card{background:linear-gradient(135deg,rgba(107,47,160,.25),rgba(61,47,160,.2));border:1px solid rgba(168,85,247,.25);border-radius:18px;padding:22px 24px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+.sub-header-card h2{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:var(--starlight);}
+.sub-header-card p{font-size:12px;color:rgba(232,213,255,.45);margin-top:3px;}
+
+.sub-timeline{display:flex;gap:8px;margin-bottom:24px;overflow-x:auto;padding-bottom:4px;}
+.sub-week{min-width:90px;text-align:center;cursor:pointer;}
+.sw-label{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(168,85,247,.5);margin-bottom:6px;}
+.sw-bar{height:6px;border-radius:100px;background:rgba(168,85,247,.12);overflow:hidden;}
+.sw-fill{height:100%;border-radius:100px;background:linear-gradient(to right,var(--aurora),var(--sky));}
+.sw-count{font-size:10px;color:rgba(232,213,255,.4);margin-top:4px;}
+
+.sub-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:24px;}
+
+.sub-client-card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:all .3s;}
+.sub-client-card:hover{border-color:rgba(168,85,247,.3);box-shadow:0 8px 32px rgba(107,47,160,.2);}
+.scc-header{padding:16px 18px 12px;border-bottom:1px solid rgba(168,85,247,.08);display:flex;align-items:center;gap:12px;}
+.scc-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--electric),var(--violet));display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;border:1px solid rgba(168,85,247,.3);}
+.scc-info{flex:1;}
+.scc-name{font-size:14px;color:var(--starlight);}
+.scc-date{font-size:10px;color:rgba(168,85,247,.6);margin-top:2px;}
+.scc-due{font-size:10px;font-weight:600;padding:3px 10px;border-radius:100px;margin-left:auto;white-space:nowrap;}
+.due-soon{background:rgba(251,191,36,.15);color:var(--warning);border:1px solid rgba(251,191,36,.25);}
+.due-today{background:rgba(168,85,247,.15);color:var(--aurora);border:1px solid rgba(168,85,247,.3);}
+.due-overdue{background:rgba(248,113,113,.12);color:var(--danger);border:1px solid rgba(248,113,113,.2);}
+.due-upcoming{background:rgba(52,211,153,.1);color:var(--success);border:1px solid rgba(52,211,153,.2);}
+
+.scc-products{padding:12px 18px;}
+.scc-prod-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid rgba(168,85,247,.06);}
+.scc-prod-row:last-child{border-bottom:none;}
+.spr-thumb{width:32px;height:32px;border-radius:7px;object-fit:cover;flex-shrink:0;}
+.spr-thumb-ph{width:32px;height:32px;border-radius:7px;background:linear-gradient(135deg,rgba(107,47,160,.4),rgba(61,47,160,.3));display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.spr-name{flex:1;font-size:12px;color:var(--starlight);}
+.spr-qty{font-size:11px;color:rgba(168,85,247,.7);background:rgba(168,85,247,.1);padding:2px 8px;border-radius:100px;}
+.spr-stock{font-size:10px;padding:2px 7px;border-radius:100px;}
+.stock-ok{background:rgba(52,211,153,.1);color:#34d399;}
+.stock-low{background:rgba(251,191,36,.1);color:var(--warning);}
+.stock-out{background:rgba(248,113,113,.1);color:var(--danger);}
+
+.scc-footer{padding:10px 18px 14px;display:flex;align-items:center;justify-content:space-between;}
+.scc-total{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--aurora);}
+.scc-actions{display:flex;gap:8px;}
+
+/* Order Summary card */
+.order-summary-card{background:linear-gradient(135deg,rgba(26,10,61,.8),rgba(13,26,74,.7));border:1px solid rgba(168,85,247,.2);border-radius:18px;padding:22px;}
+.os-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(168,85,247,.07);}
+.os-row:last-child{border-bottom:none;}
+.os-thumb{width:38px;height:38px;border-radius:9px;object-fit:cover;flex-shrink:0;}
+.os-thumb-ph{width:38px;height:38px;border-radius:9px;background:linear-gradient(135deg,rgba(107,47,160,.4),rgba(61,47,160,.3));display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.os-info{flex:1;}
+.os-name{font-size:13px;color:var(--starlight);}
+.os-sub{font-size:10px;color:rgba(232,213,255,.35);margin-top:2px;}
+.os-qty-needed{font-size:13px;color:var(--aurora);font-weight:500;white-space:nowrap;}
+.os-have{font-size:10px;color:rgba(232,213,255,.3);text-align:right;margin-top:2px;}
+
+/* Subscription form */
+.sub-form{display:flex;flex-direction:column;gap:14px;}
+.sub-products-builder{border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.spb-row{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid rgba(168,85,247,.07);}
+.spb-row:last-child{border-bottom:none;}
+.spb-name{flex:1;font-size:13px;color:var(--starlight);}
+.spb-qty-wrap{display:flex;align-items:center;gap:6px;}
+.spb-qty{width:44px;background:rgba(26,10,61,.5);border:1px solid var(--border);border-radius:6px;padding:4px 8px;color:var(--pearl);font-size:12px;text-align:center;outline:none;}
+.spb-remove{background:none;border:none;color:rgba(248,113,113,.5);cursor:pointer;font-size:16px;transition:color .3s;}
+.spb-remove:hover{color:var(--danger);}
+
+@media(max-width:900px){
+  .sidebar{transform:translateX(-100%);}
+  .main{margin-left:0;}
+  .stats-row{grid-template-columns:repeat(2,1fr);}
+  .grid-2,.grid-3{grid-template-columns:1fr;}
+  .modal{max-width:100%;}
+  .sub-grid{grid-template-columns:1fr;}
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js"></script>
+</head>
+<body>
+<canvas id="starfield"></canvas>
+<div class="nb nb1"></div>
+<div class="nb nb2"></div>
+
+<div id="app">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sb-logo">
+    <div class="sb-logo-name">COSMIC BEAUTY SPA</div>
+    <div class="sb-logo-sub">Inventory Manager</div>
+    <div class="sb-badge">✦ Admin</div>
+  </div>
+  <nav class="sb-nav">
+    <div class="sb-section">Inventory</div>
+    <div class="sb-item active" onclick="showPanel('products',this)"><span class="si">📦</span> Inventory <span class="sb-badge-num" id="totalBadge">0</span></div>
+    <div class="sb-item" onclick="showPanel('pro',this)"><span class="si">🔬</span> Pro Products <span class="sb-badge-num" id="proBadge">0</span></div>
+    <div class="sb-item" onclick="showPanel('restock',this)"><span class="si">⚠️</span> Restock Needed <span class="sb-badge-num sb-badge-red" id="restockBadge">0</span></div>
+    <div class="sb-item" onclick="showPanel('subscriptions',this)"><span class="si">🔄</span> Reorder Planning <span class="sb-badge-num" id="subBadge">0</span></div>
+    <div class="sb-item" onclick="showPanel('overview',this)"><span class="si">📊</span> Dashboard</div>
+    <div class="sb-section">Manage</div>
+    <div class="sb-item" onclick="openAddModal()"><span class="si">➕</span> Add Product</div>
+    <div class="sb-item" onclick="showPanel('categories',this)"><span class="si">🗂️</span> Categories</div>
+    <div class="sb-section">Links</div>
+    <div class="sb-item" onclick="window.open('bioelements-shop.html','_blank')"><span class="si">🌐</span> View Shop</div>
+    <div class="sb-item" onclick="window.open('esthetician-dashboard.html','_blank')"><span class="si">🌸</span> Dashboard</div>
+  </nav>
+  <div class="sb-footer">
+    <a href="skincare-cosmos.html">← Back to Website</a>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="top-bar">
+    <div class="top-title" id="topTitle">Inventory <em>Manager</em></div>
+    <div class="top-actions">
+      <button class="btn-ghost btn-sm" onclick="exportInventory()">⬇ Export CSV</button>
+      <button class="btn-primary btn-sm" onclick="openAddModal()">+ Add Product</button>
+    </div>
+  </div>
+
+  <div class="page">
+
+    <!-- OVERVIEW -->
+    <div class="panel" id="panel-overview">
+      <div class="stats-row" id="overviewStats"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;">
+        <div class="card">
+          <div class="card-title">Low Stock Alert</div>
+          <div class="card-sub">Products needing restock soon</div>
+          <div id="overviewLowStock"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Top Products</div>
+          <div class="card-sub">By retail value in stock</div>
+          <div id="overviewTopProducts"></div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:18px;">
+        <div class="card-title">Inventory by Step</div>
+        <div class="card-sub">How your stock is distributed</div>
+        <div id="overviewCategories" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:4px;"></div>
+      </div>
+      <div class="card" style="margin-top:18px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+          <div>
+            <div class="card-title">Reorder Planning</div>
+            <div class="card-sub">Client orders due this month</div>
+          </div>
+          <button class="btn-ghost btn-sm" onclick="showPanel('subscriptions',document.querySelectorAll('.sb-item')[3])">View All →</button>
+        </div>
+        <div id="overviewSubsPreview"></div>
+      </div>
+    </div>
+
+    <!-- ALL PRODUCTS -->
+    <div class="panel active" id="panel-products">
+      <div class="toolbar">
+        <input type="text" class="search-input" id="productSearch" placeholder="Search products by name, concern, or SKU…" oninput="renderProductTable()">
+        <div style="display:flex;gap:6px;flex-wrap:wrap;" id="filterChips"></div>
+        <div style="margin-left:auto;display:flex;gap:8px;">
+          <button class="btn-ghost btn-sm" onclick="renderProductTable('all')">Show All</button>
+          <select id="sortSelect" onchange="renderProductTable()" style="background:rgba(26,10,61,.6);border:1px solid var(--border);border-radius:8px;padding:7px 12px;color:var(--pearl);font-family:'DM Sans',sans-serif;font-size:12px;outline:none;">
+            <option value="name">Sort: Name</option>
+            <option value="stock-asc">Stock: Low to High</option>
+            <option value="stock-desc">Stock: High to Low</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+          </select>
+        </div>
+      </div>
+      <div class="card" style="padding:0;overflow:hidden;">
+        <table class="inv-table">
+          <thead>
+            <tr>
+              <th style="width:52px;"></th>
+              <th>Product</th>
+              <th>Step</th>
+              <th>Price</th>
+              <th>Stock</th>
+              <th>Status</th>
+              <th>Restock At</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="productTableBody"></tbody>
+        </table>
+        <div id="productTableEmpty" style="display:none;text-align:center;padding:48px;color:rgba(232,213,255,.25);">
+          <div style="font-size:36px;margin-bottom:12px;">🛍️</div>
+          <p>No products found. Add your first product above!</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESTOCK -->
+    <div class="panel" id="panel-restock">
+      <div class="card" style="margin-bottom:18px;background:rgba(248,113,113,.06);border-color:rgba(248,113,113,.2);">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <span style="font-size:24px;">⚠️</span>
+          <div>
+            <div class="card-title" style="color:#f87171;">Restock Needed</div>
+            <div class="card-sub" style="margin-bottom:0;">These products are at or below their restock threshold — order soon to avoid running out.</div>
+          </div>
+        </div>
+      </div>
+      <div id="restockList"></div>
+      <div class="card" style="margin-top:18px;background:rgba(251,191,36,.04);border-color:rgba(251,191,36,.15);">
+        <div class="card-title" style="color:var(--warning);">Running Low</div>
+        <div class="card-sub">Within 5 units of restock threshold</div>
+        <div id="lowStockList"></div>
+      </div>
+    </div>
+
+    <!-- SUBSCRIPTIONS -->
+    <div class="panel" id="panel-subscriptions">
+
+      <div class="sub-header-card">
+        <div>
+          <h2>Reorder Planning</h2>
+          <p>Track client subscriptions to know exactly what to order from Bioelements® — and when — so you're always stocked and ready.</p>
+        </div>
+        <button class="btn-primary" onclick="openSubModal()">+ Add Subscription</button>
+      </div>
+
+      <!-- Stats row -->
+      <div class="stats-row" id="subStats"></div>
+
+      <!-- Tabs: Upcoming / All / Order Summary -->
+      <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;">
+        <button class="filter-chip active" id="subtab-upcoming" onclick="setSubTab('upcoming',this)">📅 Due This Month</button>
+        <button class="filter-chip" id="subtab-all" onclick="setSubTab('all',this)">👥 All Subscriptions</button>
+        <button class="filter-chip" id="subtab-order" onclick="setSubTab('order',this)">📦 Order Summary</button>
+      </div>
+
+      <!-- UPCOMING / ALL VIEW -->
+      <div id="subClientsView">
+        <div class="sub-grid" id="subGrid"></div>
+        <div id="subEmpty" style="display:none;text-align:center;padding:60px;color:rgba(232,213,255,.25);">
+          <div style="font-size:36px;margin-bottom:12px;">🔄</div>
+          <p>No subscriptions yet — add your first client subscription above.</p>
+        </div>
+      </div>
+
+      <!-- ORDER SUMMARY VIEW -->
+      <div id="subOrderView" style="display:none;">
+        <div class="grid-2" style="gap:18px;">
+          <div>
+            <div class="card" style="margin-bottom:16px;background:rgba(168,85,247,.06);border-color:rgba(168,85,247,.2);">
+              <div class="card-title">📦 Combined Order List</div>
+              <div class="card-sub">Total products needed across all upcoming subscriptions — use this to place your Bioelements® order</div>
+              <div id="orderSummaryList" style="margin-top:8px;"></div>
+              <div style="margin-top:16px;padding-top:14px;border-top:1px solid rgba(168,85,247,.1);display:flex;align-items:center;justify-content:space-between;">
+                <div style="font-size:12px;color:rgba(232,213,255,.4);">Total order value (retail)</div>
+                <div style="font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--aurora);" id="orderTotalValue">$0</div>
+              </div>
+            </div>
+            <button class="btn-primary" style="width:100%;" onclick="exportOrderList()">⬇ Export Order List CSV</button>
+          </div>
+          <div class="card">
+            <div class="card-title">📊 Stock Impact</div>
+            <div class="card-sub">How upcoming orders will affect your inventory</div>
+            <div id="stockImpactList"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- PRO PRODUCTS -->
+    <div class="panel" id="panel-pro">
+      <div class="card" style="margin-bottom:18px;background:rgba(168,85,247,.06);border-color:rgba(168,85,247,.25);">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <span style="font-size:24px;">🔬</span>
+            <div>
+              <div class="card-title">Professional Use Products</div>
+              <div class="card-sub" style="margin-bottom:0;">Back bar, treatment supplies, and professional-only products. Never shown to clients.</div>
+            </div>
+          </div>
+          <button class="btn-primary btn-sm" onclick="openAddProModal()">+ Add Pro Product</button>
+        </div>
+      </div>
+      <div class="toolbar">
+        <input type="text" class="search-input" id="proSearch" placeholder="Search pro products…" oninput="renderProTable()">
+        <select id="proSort" onchange="renderProTable()" style="background:rgba(26,10,61,.6);border:1px solid var(--border);border-radius:8px;padding:7px 12px;color:var(--pearl);font-family:'DM Sans',sans-serif;font-size:12px;outline:none;">
+          <option value="name">Sort: Name</option>
+          <option value="stock-asc">Stock: Low → High</option>
+          <option value="stock-desc">Stock: High → Low</option>
+        </select>
+      </div>
+      <div class="card" style="padding:0;overflow:hidden;">
+        <table class="inv-table">
+          <thead>
+            <tr>
+              <th style="width:52px;"></th>
+              <th>Product</th>
+              <th>Type / Use</th>
+              <th>Price</th>
+              <th>Stock</th>
+              <th>Status</th>
+              <th>Restock At</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="proTableBody"></tbody>
+        </table>
+        <div id="proTableEmpty" style="display:none;text-align:center;padding:60px;color:rgba(232,213,255,.25);">
+          <div style="font-size:40px;margin-bottom:14px;">🔬</div>
+          <p style="margin-bottom:16px;">No professional products yet.</p>
+          <button class="btn-primary" onclick="openAddProModal()">Add Your First Pro Product ✦</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CATEGORIES -->
+    <div class="panel" id="panel-categories">
+      <div class="card">
+        <div class="card-title">Manage Step Categories</div>
+        <div class="card-sub">Step categories organize your shop by routine — add or rename as your line grows</div>
+        <div id="categoryList" style="margin-top:8px;"></div>
+        <div style="display:flex;gap:10px;margin-top:16px;">
+          <input type="text" id="newCatName" class="search-input" placeholder="New category name…" style="max-width:260px;">
+          <input type="text" id="newCatIcon" class="search-input" placeholder="Emoji icon" style="max-width:80px;">
+          <button class="btn-primary" onclick="addCategory()">Add ✦</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<!-- SUBSCRIPTION MODAL -->
+<div class="modal-overlay" id="subModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="subModalTitle">Add Client Subscription</div>
+      <button class="modal-close" onclick="closeSubModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="grid-2">
+        <div class="field"><label>Client Name *</label><input type="text" id="sf-name" placeholder="e.g. Maya Chen"></div>
+        <div class="field"><label>Email</label><input type="email" id="sf-email" placeholder="client@email.com"></div>
+      </div>
+      <div class="grid-2">
+        <div class="field"><label>Phone</label><input type="tel" id="sf-phone" placeholder="(727) 000-0000"></div>
+        <div class="field"><label>Frequency</label>
+          <select id="sf-freq">
+            <option value="monthly">Monthly</option>
+            <option value="bimonthly">Every 2 Months</option>
+            <option value="quarterly">Quarterly (Every 3 Months)</option>
+            <option value="custom">Custom</option>
+          </select>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="field"><label>Next Order Date *</label><input type="date" id="sf-nextdate"></div>
+        <div class="field"><label>Delivery Method</label>
+          <select id="sf-delivery">
+            <option>Pick Up at Spa</option>
+            <option>Ship to Client</option>
+            <option>Deliver at Appointment</option>
+          </select>
+        </div>
+      </div>
+      <div class="field"><label>Skin Notes (internal)</label><input type="text" id="sf-notes" placeholder="e.g. Dry skin · sensitive to fragrance · prefers unscented…"></div>
+      <div class="field">
+        <label>Products in This Subscription</label>
+        <div class="sub-products-builder" id="subProductsBuilder">
+          <div style="padding:14px;text-align:center;color:rgba(232,213,255,.3);font-size:13px;" id="subProdsEmpty">No products added yet — select below ↓</div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:10px;align-items:center;">
+          <select id="subProductPicker" style="flex:1;background:rgba(26,10,61,.6);border:1px solid var(--border);border-radius:10px;padding:10px 14px;color:var(--pearl);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;">
+            <option value="">— Select a product to add —</option>
+          </select>
+          <button class="btn-primary btn-sm" onclick="addSubProduct()">Add ✦</button>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-danger" id="subDeleteBtn" onclick="deleteSubscription()" style="display:none;margin-right:auto;">Delete</button>
+      <button class="btn-ghost" onclick="closeSubModal()">Cancel</button>
+      <button class="btn-primary" onclick="saveSubscription()">Save Subscription ✦</button>
+    </div>
+  </div>
+</div>
+
+<!-- PRODUCT EDIT/ADD MODAL -->
+<div class="modal-overlay" id="productModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle">Add Product</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+
+      <!-- Image upload -->
+      <div class="field">
+        <label>Product Image</label>
+        <div class="image-upload-area" id="imageUploadArea" onclick="document.getElementById('imageFileInput').click()">
+          <img id="imagePreview" src="" alt="" style="display:none;width:100%;height:180px;object-fit:cover;">
+          <div id="imageUploadPlaceholder">
+            <div class="upload-icon">🖼️</div>
+            <div class="upload-text">Click to upload product image</div>
+            <div class="upload-hint">JPG, PNG, WEBP · Max 5MB</div>
+          </div>
+          <div class="image-upload-overlay">
+            <span style="font-size:24px;">📷</span>
+            <span style="font-size:12px;color:#fff;">Change Image</span>
+          </div>
+        </div>
+        <input type="file" id="imageFileInput" accept="image/*" style="display:none;" onchange="handleImageUpload(event)">
+        <button class="btn-ghost btn-sm" style="margin-top:8px;font-size:10px;width:fit-content;" onclick="clearImage()">✕ Remove Image</button>
+      </div>
+
+      <div class="grid-2">
+        <div class="field"><label>Product Name *</label><input type="text" id="f-name" placeholder="e.g. Crucial Moisture"></div>
+        <div class="field"><label>Brand</label><input type="text" id="f-brand" placeholder="Bioelements®" value="Bioelements®"></div>
+      </div>
+      <div class="grid-2">
+        <div class="field"><label>Product Type</label>
+          <select id="f-type">
+            <option value="">Select type…</option>
+            <option>Cleanser</option><option>Cleansing Oil</option><option>Makeup Remover</option>
+            <option>Toner</option><option>Facial Mist</option><option>Oil Control</option>
+            <option>AHA Peel Creme</option><option>Exfoliator</option><option>Leave-On AHA Gel</option><option>Leave-On Liquid Exfoliator</option>
+            <option>Serum</option><option>Clinical Serum</option><option>Hydrating Treatment</option><option>Hydrator</option><option>Barrier-Repair Serum</option><option>Spot Treatment</option><option>Oxygenating Treatment</option><option>Vitamin C Treatment</option>
+            <option>Moisturizer</option><option>Gel Moisturizer</option><option>Overnight Retinol Creme</option><option>Overnight Creme</option><option>Plumping Moisturizer</option><option>Vitamin C Night Creme</option><option>Neck + Décolleté Creme</option>
+            <option>Eye Creme</option><option>Eye Treatment</option>
+            <option>Treatment Mask</option><option>Hydrating Mask</option><option>Brightening Mask</option>
+            <option>Sunscreen SPF 30</option><option>Sunscreen SPF 50</option>
+            <option>Starter Set</option><option>Bundle Set</option><option>Complete Set</option><option>Collection Set</option>
+            <option>Lip Serum</option><option>Other</option>
+          </select>
+        </div>
+        <div class="field"><label>Routine Step</label>
+          <select id="f-step">
+            <option value="">Select step…</option>
+            <option value="cleanse">🫧 Cleanse</option>
+            <option value="tone">💧 Tone</option>
+            <option value="exfoliate">✨ Exfoliate</option>
+            <option value="serum">⚗️ Serums & Treatments</option>
+            <option value="moisturize">🌙 Moisturize</option>
+            <option value="eye">👁️ Eye Care</option>
+            <option value="mask">🌟 Masks</option>
+            <option value="spf">☀️ SPF</option>
+            <option value="sets">🎁 Sets & Kits</option>
+            <option value="lip">💋 Lip Care</option>
+          </select>
+        </div>
+      </div>
+      <div class="field"><label>Description</label><textarea id="f-desc" rows="3" placeholder="Describe the product — key ingredients, benefits, who it's for…"></textarea></div>
+      <div class="field"><label>Key Ingredients (comma separated)</label><input type="text" id="f-ingredients" placeholder="e.g. Retinol, Peptides, Cranberry Seed Oil"></div>
+
+      <div class="grid-3">
+        <div class="field"><label>Size</label><input type="text" id="f-size" placeholder="e.g. 2.5 oz"></div>
+        <div class="field"><label>Retail Price ($)</label><input type="number" id="f-price" placeholder="49" min="0" step="0.01"></div>
+        <div class="field"><label>Cost Price ($)</label><input type="number" id="f-cost" placeholder="22" min="0" step="0.01"></div>
+      </div>
+
+      <div class="grid-3">
+        <div class="field"><label>SKU / Product Code</label><input type="text" id="f-sku" placeholder="BIO-001"></div>
+        <div class="field"><label>Current Stock (units)</label><input type="number" id="f-stock" placeholder="12" min="0"></div>
+        <div class="field"><label>Restock Alert At (units)</label><input type="number" id="f-restock" placeholder="3" min="0"></div>
+      </div>
+
+      <div class="field">
+        <label>Skin Types</label>
+        <div class="concern-tags" id="skinTypePicker">
+          <div class="concern-tag" onclick="this.classList.toggle('selected')">Oily</div>
+          <div class="concern-tag" onclick="this.classList.toggle('selected')">Dry</div>
+          <div class="concern-tag" onclick="this.classList.toggle('selected')">Combination</div>
+          <div class="concern-tag" onclick="this.classList.toggle('selected')">Normal</div>
+          <div class="concern-tag" onclick="this.classList.toggle('selected')">Sensitive</div>
+          <div class="concern-tag" onclick="this.classList.toggle('selected')">All Skin Types</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="field">
+          <label>Badges</label>
+          <div class="concern-tags">
+            <div class="concern-tag" id="badge-bestseller" onclick="this.classList.toggle('selected')">★ Bestseller</div>
+            <div class="concern-tag" id="badge-new" onclick="this.classList.toggle('selected')">✦ New</div>
+            <div class="concern-tag" id="badge-sale" onclick="this.classList.toggle('selected')">⚡ On Sale</div>
+          </div>
+        </div>
+        <div class="field">
+          <label>Visibility</label>
+          <div class="concern-tags">
+            <div class="concern-tag selected" id="vis-active" onclick="setVisibility('active')">✓ Active (visible)</div>
+            <div class="concern-tag" id="vis-hidden" onclick="setVisibility('hidden')">Hidden</div>
+          </div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Product Use</label>
+        <div class="concern-tags">
+          <div class="concern-tag selected" id="use-retail" onclick="setUse('retail')">🛍️ Retail (Client Shop)</div>
+          <div class="concern-tag" id="use-pro" onclick="setUse('pro')">🔬 Professional Use Only</div>
+        </div>
+        <div id="pro-use-note" style="display:none;margin-top:8px;font-size:11px;color:rgba(168,85,247,.6);padding:8px 12px;background:rgba(168,85,247,.06);border-radius:8px;border:1px solid rgba(168,85,247,.15);">This product will only appear in your Pro Products inventory — not in the client shop.</div>
+      </div>
+
+      <div class="field"><label>Notes (internal only — clients won't see this)</label><textarea id="f-notes" rows="2" placeholder="Supplier info, reorder notes, special instructions…"></textarea></div>
+
+    </div>
+    <div class="modal-footer">
+      <button class="btn-danger" id="deleteBtn" onclick="deleteProduct()" style="display:none;margin-right:auto;">Delete Product</button>
+      <button class="btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn-primary" onclick="saveProduct()">Save Product ✦</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><span class="ti" id="ti">✦</span><span class="tt" id="tt"></span></div>
+
+<script>
+// ═══════════════════════════════════════════════
+// SUPABASE CLIENT
+// ═══════════════════════════════════════════════
+const SUPABASE_URL = 'https://umqqouzqmknvvabdtclq.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_xePKBjrVQrCNu0Ll3mFRIQ_VoSBBWyF';
+const _sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// ═══════════════════════════════════════════════
+// IN-MEMORY CACHE
+// ═══════════════════════════════════════════════
+let _products = [];
+let _categories = [];
+let _subs = [];
+
+// ── Column mapping helpers ──
+function _productToRow(p) {
+  return {
+    id:          p.id,
+    name:        p.name,
+    brand:       p.brand,
+    type:        p.type,
+    step:        p.step,
+    description: p.desc,
+    ingredients: p.ingredients,
+    size:        p.size,
+    price:       p.price,
+    cost:        p.cost,
+    sku:         p.sku,
+    stock:       p.stock,
+    restock_at:  p.restockAt,
+    skin_types:  p.skinTypes  || [],
+    badges:      p.badges     || [],
+    visibility:  p.visibility,
+    pro_only:    p.proOnly    || false,
+    notes:       p.notes,
+    image:       p.image,
+    emoji:       p.emoji,
+  };
+}
+
+function _rowToProduct(r) {
+  return {
+    id:          r.id,
+    name:        r.name,
+    brand:       r.brand,
+    type:        r.type,
+    step:        r.step,
+    desc:        r.description,
+    ingredients: r.ingredients,
+    size:        r.size,
+    price:       r.price,
+    cost:        r.cost,
+    sku:         r.sku,
+    stock:       r.stock,
+    restockAt:   r.restock_at,
+    skinTypes:   r.skin_types  || [],
+    badges:      r.badges      || [],
+    visibility:  r.visibility,
+    proOnly:     r.pro_only    || false,
+    notes:       r.notes,
+    image:       r.image,
+    emoji:       r.emoji,
+  };
+}
+
+function _subToRow(s) {
+  return {
+    id:           s.id,
+    client_name:  s.name,
+    client_email: s.email,
+    client_phone: s.phone,
+    freq:         s.freq,
+    next_date:    s.nextDate,
+    delivery:     s.delivery,
+    notes:        s.notes,
+    products:     s.products || [],
+  };
+}
+
+function _rowToSub(r) {
+  return {
+    id:        r.id,
+    name:      r.client_name,
+    email:     r.client_email,
+    phone:     r.client_phone,
+    freq:      r.freq,
+    nextDate:  r.next_date,
+    delivery:  r.delivery,
+    notes:     r.notes,
+    products:  r.products || [],
+  };
+}
+
+// ═══════════════════════════════════════════════
+// STARS
+// ═══════════════════════════════════════════════
+const canvas = document.getElementById('starfield');
+const ctx = canvas.getContext('2d');
+let stars = [];
+function resizeStars(){ canvas.width=innerWidth; canvas.height=innerHeight; stars=Array.from({length:120},()=>({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*1.2+.2,ts:Math.random()*.02+.004,color:Math.random()>.7?'#60a5fa':'#e8d5ff'})); }
+function drawStars(t){ ctx.clearRect(0,0,canvas.width,canvas.height); stars.forEach(s=>{ctx.globalAlpha=.1+.65*(.5+.5*Math.sin(t*s.ts));ctx.fillStyle=s.color;ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fill();}); ctx.globalAlpha=1; requestAnimationFrame(drawStars); }
+resizeStars(); window.addEventListener('resize',resizeStars); requestAnimationFrame(drawStars);
+
+// ═══════════════════════════════════════════════
+// DEFAULT DATA
+// ═══════════════════════════════════════════════
+const DEFAULT_PRODUCTS = [
+  // ── CLEANSE ──
+  {id:1, name:'Flash Foam Cleanser', brand:'Bioelements®', type:'Cleanser', step:'cleanse', desc:'Fast-foaming gel cleanser for normal/combination/oily skin.', size:'6.5 oz', price:45, cost:20, sku:'BIO-FF-001', stock:6, restockAt:3, skinTypes:['Normal','Combination','Oily'], badges:[], visibility:'active', image:'https://bioelements.com/cdn/shop/products/6.5ozFlashFoamCleanser-W-Cap_1f5a1bce-c745-4896-b1a4-ebb8aee82edd.jpg', emoji:'🫧'},
+  {id:2, name:'Decongestant Cleanser', brand:'Bioelements®', type:'Cleanser', step:'cleanse', desc:'Deep-cleansing for oily/combination skin with thyme and eucalyptus.', size:'6 oz', price:47, cost:21, sku:'BIO-DC-002', stock:5, restockAt:3, skinTypes:['Oily','Combination'], badges:[], visibility:'active', image:'https://bioelements.com/cdn/shop/products/6ozDecongestantCleanser-W-Cap.jpg', emoji:'🫧'},
+  {id:3, name:'Moisture Positive Cleanser', brand:'Bioelements®', type:'Cleanser', step:'cleanse', desc:'Creamy cleanser for dry/sensitive skin.', size:'6 oz', price:47, cost:21, sku:'BIO-MP-003', stock:5, restockAt:3, skinTypes:['Dry','Sensitive'], badges:[], visibility:'active', image:'https://bioelements.com/cdn/shop/products/6ozMoisturePositiveCleanser-W-Cap.jpg', emoji:'💧'},
+  {id:4, name:'Urban Undo', brand:'Bioelements®', type:'City Skin Cleanser', step:'cleanse', desc:'Pollution-fighting gel cleanser that removes city grime.', size:'6 oz', price:47, cost:21, sku:'BIO-UU-004', stock:4, restockAt:3, skinTypes:['All'], badges:['✦ New'], visibility:'active', image:'https://bioelements.com/cdn/shop/products/3.5ozUrbanUndoCleanser.jpg', emoji:'🌿'},
+  {id:5, name:'Sensitive Skin Cleansing Oil', brand:'Bioelements®', type:'Cleansing Oil', step:'cleanse', desc:'Gentle oil cleanser that melts makeup while repairing the barrier.', size:'3.7 oz', price:59, cost:27, sku:'BIO-SC-005', stock:4, restockAt:3, skinTypes:['Sensitive','Dry'], badges:['✦ New'], visibility:'active', image:'https://bioelements.com/cdn/shop/products/3.7ozSensitiveSkinCleansingOil-W-Cap-OnWhite.jpg', emoji:'🫒'},
+  {id:6, name:'Pore Thing', brand:'Bioelements®', type:'Pore-Clarifying Cleanser', step:'cleanse', desc:'Salicylic acid daily cleanser for acne-prone/oily skin.', size:'4 oz', price:43, cost:19, sku:'BIO-PT-006', stock:5, restockAt:3, skinTypes:['Oily','Combination','Acne-Prone'], badges:['✦ New'], visibility:'active', image:'https://bioelements.com/cdn/shop/files/PoreThing_4oz-PDP.jpg', emoji:'🫧'},
+  {id:7, name:'Makeup Dissolver Perfected', brand:'Bioelements®', type:'Makeup Remover', step:'cleanse', desc:'Non-stinging oil-free makeup remover safe for eyes.', size:'3.7 oz', price:37, cost:16, sku:'BIO-MD-007', stock:6, restockAt:3, skinTypes:['All'], badges:[], visibility:'active', image:'https://bioelements.com/cdn/shop/products/3.7ozMakeupDissolverPerfected.jpg', emoji:'✨'},
+  {id:8, name:'Facial Cleansing Puffs', brand:'Bioelements®', type:'Cleansing Tool', step:'cleanse', desc:'Ultra-soft reusable cleansing puffs.', size:'Pack', price:22, cost:9, sku:'BIO-CP-008', stock:8, restockAt:3, skinTypes:['All'], badges:[], visibility:'active', image:'https://bioelements.com/cdn/shop/files/CleansingPuffs.jpg', emoji:'🌸'},
+  // ── TONE ──
+  {id:9, name:'Power Peptide Toner', brand:'Bioelements®', type:'Toner', step:'tone', desc:'Age-fighting alcohol-free peptide toner for all skin types.', size:'6 oz', price:52, cost:24, sku:'BIO-PP-009', stock:8, restockAt:3, skinTypes:['All'], badges:['★ Bestseller'], visibility:'active', image:'https://bioelements.com/cdn/shop/products/6ozPowerPeptide-W-Cap.jpg', emoji:'💜'},
+  {id:10, name:'Equalizer', brand:'Bioelements®', type:'Oil Control', step:'tone', desc:'Balances sebum and minimizes pores for oily/combination skin.', size:'6 oz', price:38, cost:17, sku:'BIO-EQ-010', stock:5, restockAt:3, skinTypes:['Oily','Combination'], badges:[], visibility:'active', image:'https://bioelements.com/cdn/shop/products/6ozEqualizer-W-Cap.jpg', emoji:'⚖️'},
+  {id:11, name:'Shine Stopper', brand:'Bioelements®', type:'Oil Control', step:'tone', desc:'Instant mattifier that absorbs oil and keeps skin shine-free.', size:'1 oz', price:36, cost:16, sku:'BIO-SS-011', stock:5, restockAt:3, skinTypes:['Oily','Combination'], badges:[], visibility:'active', image:'https://bioelements.com/cdn/shop/products/1ozShineStopper-W-Cap.jpg', emoji:'🎯'},
+  {id:12, name:'Soothing Reset Mist', brand:'Bioelements®', type:'Facial Mist', step:'tone', desc:'Refreshing mist that instantly calms and hydrates.', size:'3.7 oz', price:39, cost:17, sku:'BIO-SR-012', stock:5, restockAt:3, skinTypes:['All'], badges:[], visibility:'active', image:'https://bioelements.com/cdn/shop/files/3.7ozSoothingResetMist-W-Cap.jpg', emoji:'🌿'},
+  // ── EXFOLIATE ──
+  {id:13, name:'Skin Editor', brand:'Bioelements®', type:'AHA Peel Creme', step:'exfoliate', desc:'Leave-on AHA peel creme targeting texture, dullness and fine lines.', size:'1.7 oz', price:52, cost:24, sku:'BIO-SE-013', stock:7, restockAt:3, skinTypes:['All'], badges:['★ Bestseller'], visibility:'active', image:'https://bioelements.com/cdn/shop/products/1.7ozSkinEditor-w-cap.jpg', emoji:'✨'},
+  {id:14, name:'Measured Micrograins+', brand:'Bioelements®', type:'Exfoliator', step:'exfoliate', desc:'Gentle micro-exfoliating scrub for a glowing complexion.', size:'2.5 oz', price:55, cost:25, sku:'BIO-MM-014', stock:5, restockAt:3, skinTypes:['Normal','Combination','Oily'], badges:[], visibility:'active', image:'https://bioelements.com/cdn/shop/products/2.5ozMeasuredMicrograinsPlus-W-Cap.jpg', emoji:'🌟'},
+  {id:15, name:'Pumice Peel', brand:'Bioelements®', type:'Manual Exfoliator', step:'exfoliate', desc:'Volcanic pumice microdermabrasion treatment.', size:'2.5 oz', price:68, cost:31, sku:'BIO-PMP-015', stock:4, restockAt:3, skinTypes:['All'], badges:[], visibility:'active', image:'https://bioelements.com/cdn/shop/products/2.5ozPumicePeel-W-Cap.jpg', emoji:'🌋'},
+  {id:16, name:'Quick Refiner', brand:'Bioelements®', type:'Leave-On AHA Gel', step:'exfoliate', desc:'Leave-on AHA gel that targets pores and fine lines overnight.', size:'1 oz', price:37, cost:16, sku:'BIO-QR-016', stock:5, restockAt:3, skinTypes:['All'], badges:[], visibility:'active', image:'https://bioelements.com/cdn/shop/products/1ozQuickRefiner.jpg', emoji:'✨'},
+  {id:17, name:'Peel Breaker', brand:'Bioelements®', type:'Leave-On Liquid Exfoliator', step:'exfoliate', desc:'2% BHA + PHA liquid exfoliator for acne-prone skin.', size:'1 oz', price:42, cost:19, sku:'BIO-PB-017', stock:4, restockAt:3, skinTypes:['Oily','Combination','Acne-Prone'], badges:['✦ New'], visibility:'active', image:'https://bioelements.com/cdn/shop/files/PeelBreaker-PDP.jpg', emoji:'⚡'},
+  // ── SERUMS & TREATMENTS ──
+  {id:18, name:'Firmwear', brand:'Bioelements®', type:'Firm + Lift Serum', step:'serum', desc:'Biotech serum with adaptogens and peptides that visibly tightens.', size:'1 oz', price:68, cost:31, sku:'BIO-FW-018', stock:5, restockAt:3, skinTypes:['All'], badges:['✦ New'], visibility:'active', image:'https://cdn.shopify.com/s/files/1/0113/0899/0522/files/firmwear-PDP-pos-1_bottle.jpg', emoji:'⚗️'},
+  {id:19, name:'Age Activist Clinical Youth Serum', brand:'Bioelements®', type:'Clinical Serum', step:'serum', desc:'Multi-action clinical serum that hydrates, exfoliates and minimizes pores.', size:'1 oz', price:90, cost:42, sku:'BIO-AA-019', stock:4, restockAt:3, skinTypes:['All'], badges:[], visibility:'active', image:'https://bioelements.com/cdn/shop/products/1ozAgeActivistClinicalYouthSerum_3d927293-0f3d-4da7-8f18-0a4036aa7b0b.jpg', emoji:'🔬'},
+  {id:20, name:'Time Sensitive', brand:'Bioelements®', type:'Anti-Aging Serum', step:'serum', desc:'Bakuchiol (natural retinol alternative), peptides and hydrators.', size:'1 oz', price:52, cost:24, sku:'BIO-TS-020', stock:5, restockAt:3, skinTypes:['All'], badges:[], visibility:'active', image:'https://bioelements.com/cdn/shop/products/1ozTimeSensitive.jpg', emoji:'⏳'},
+  {id:21, name:'Iconic Hyaluronic', brand:'Bioelements®', type:'Hydrating Treatment', step:'serum', desc:'Multi-weight hyaluronic acid that plumps from surface to substructure.', size:'1 oz', price:49, cost:22, sku:'BIO-IH-021', stock:5, restockAt:3, skinTypes:['All'], badges:[], visibility:'active', image:'https://bioelements.com/cdn/shop/files/iconic-hyaluronic-good-housekeeping-Award-Winner-PDP.jpg', emoji:'💦'},
+  {id:22, name:'Barrier Fix Daily Hydrator', brand:'Bioelements®', type:'Hydrator', step:'serum', desc:'Ceramide-powered formula that restores and strengthens the barrier.', size:'1.7 oz', price:60, cost:28, sku:'BIO-BF-022', stock:5, restockAt:3, skinTypes:['Sensitive','Dry','Normal'], badges:[], visibility:'active', image:'https://bioelements.com/cdn/shop/products/1.7ozBarrierFixDailyHydrator-W-Cap-OnWhite.jpg', emoji:'🛡️'},
+  {id:23, name:'Daily Meds', brand:'Bioelements®', type:'Acne-Clearing Serum', step:'serum', desc:'2% salicylic acid serum that clears blackheads and whiteheads.', size:'1 oz', price:64, cost:29, sku:'BIO-DM-023', stock:4, restockAt:3, skinTypes:['Oily','Combination','Acne-Prone'], badges:['✦ New'], visibility:'active', image:'https://bioelements.com/cdn/shop/files/PDP_-_newbeauty_award_winner.jpg', emoji:'💊'},
+  {id:24, name:'Recovery Serum', brand:'Bioelements®', type:'Barrier-Repair Serum', step:'serum', desc:'Ceramide serum that rebuilds hydration and skin texture.', size:'1 oz', price:82, cost:38, sku:'BIO-RS-024', stock:4, restockAt:3, skinTypes:['Dry','Sensitive','Normal'], badges:['✦ New'], visibility:'active', image:'https://bioelements.com/cdn/shop/files/1ozRecoverySerum.jpg', emoji:'🛡️'},
+  {id:25, name:'Moisture x10', brand:'Bioelements®', type:'Hydrating Serum', step:'serum', desc:'10x hydration serum with multi-weight hyaluronic acid.', size:'1 oz', price:55, cost:25, sku:'BIO-MX-025', stock:5, restockAt:3, skinTypes:['All'], badges:[], visibility:'active', image:'https://bioelements.com/cdn/shop/products/1ozMoistureX10.jpg', emoji:'💎'},
+  {id:26, name:'Oxygen Boost Barrier Treatment', brand:'Bioelements®', type:'Oxygenating Treatment', step:'serum', desc:'2.5% oxygenating complex that energizes dull, fatigued skin.', size:'1 oz', price:46, cost:21, sku:'BIO-OB-026', stock:4, restockAt:3, skinTypes:['All'], badges:[], visibility:'active', image:'https://bioelements.com/cdn/shop/files/1ozOxygenBoostBarrierTreatment.jpg', emoji:'⚡'},
+  {id:27, name:'vc10 Daily Glow', brand:'Bioelements®', type:'Vitamin C Treatment', step:'serum', desc:'Daily Vitamin C brightening treatment that delivers a steady glow.', size:'1 oz', price:52, cost:24, sku:'BIO-VG-027', stock:5, restockAt:3, skinTypes:['All'], badges:[], visibility:'active', image:'https://bioelements.com/cdn/shop/products/1ozVC10DailyGlow.jpg', emoji:'💛'},
+  {id:28, name:'Spot Defy', brand:'Bioelements®', type:'Spot Treatment', step:'serum', desc:'Targeted treatment for active blemishes and dark spots.', size:'0.5 oz', price:38, cost:17, sku:'BIO-SD-028', stock:5, restockAt:3, skinTypes:['All'], badges:['✦ New'], visibility:'active', image:'https://bioelements.com/cdn/shop/files/Glamour-spot-defy-Award-Winner-B2C-PDP.jpg', emoji:'🎯'},
+  // ── MOISTURIZE ──
+  {id:29, name:'Sleepwear', brand:'Bioelements®', type:'Overnight Retinol Creme', step:'moisturize', desc:'Retinol + calcium + peptides + cranberry seed oil overnight creme.', size:'1.5 oz', price:81, cost:38, sku:'BIO-SW-029', stock:8, restockAt:3, skinTypes:['Dry','Normal','Combination'], badges:['★ Bestseller'], visibility:'active', image:'https://cdn.shopify.com/s/files/1/0113/0899/0522/products/1.5ozSleepwear-w-cap.jpg', emoji:'🌙'},
+  {id:30, name:'vc10 Nightly Bright', brand:'Bioelements®', type:'Vitamin C Night Creme', step:'moisturize', desc:'Triple-sourced 10% Vitamin C overnight creme.', size:'1 oz', price:83, cost:39, sku:'BIO-VN-030', stock:5, restockAt:3, skinTypes:['All'], badges:[], visibility:'active', image:'https://cdn.shopify.com/s/files/1/0113/0899/0522/files/1ozVC10NightlyBright.jpg', emoji:'💛'},
+  {id:31, name:'Crucial Moisture', brand:'Bioelements®', type:'Moisturizer', step:'moisturize', desc:'Emollient creme for dry skin with shea, squalane and plant extracts.', size:'2.5 oz', price:44, cost:20, sku:'BIO-CM-031', stock:8, restockAt:3, skinTypes:['Dry'], badges:['★ Bestseller'], visibility:'active', image:'https://bioelements.com/cdn/shop/products/2.5ozCrucialMoisture-W-Cap.jpg', emoji:'💧'},
+  {id:32, name:'Absolute Moisture', brand:'Bioelements®', type:'Moisturizer', step:'moisturize', desc:'Lightweight moisturizer for normal-to-combination skin.', size:'2.5 oz', price:44, cost:20, sku:'BIO-AM-032', stock:7, restockAt:3, skinTypes:['Normal','Combination'], badges:['★ Bestseller'], visibility:'active', image:'https://bioelements.com/cdn/shop/files/2.5ozAbsoluteMoisture-W-Cap.jpg', emoji:'🌊'},
+  {id:33, name:'Beyond Hydration', brand:'Bioelements®', type:'Gel Moisturizer', step:'moisturize', desc:'Non-greasy gel moisturizer for oily skin.', size:'2.5 oz', price:49, cost:22, sku:'BIO-BH-033', stock:5, restockAt:3, skinTypes:['Oily','Combination'], badges:[], visibility:'active', image:'https://bioelements.com/cdn/shop/products/2.5ozBeyond-Hydration-W-Cap.jpg', emoji:'💦'},
+  {id:34, name:'Really Rich Moisture', brand:'Bioelements®', type:'Moisturizer', step:'moisturize', desc:'Ultra-rich moisturizer for very dry or mature skin.', size:'2.5 oz', price:56, cost:26, sku:'BIO-RR-034', stock:4, restockAt:3, skinTypes:['Dry'], badges:[], visibility:'active', image:'https://bioelements.com/cdn/shop/files/Artboard_1_202a128d-907b-46e6-b486-3b94a377a528.jpg', emoji:'🧴'},
+  {id:35, name:'Remineralist Daily Moisture', brand:'Bioelements®', type:'Moisturizer', step:'moisturize', desc:'Mineral-powered moisturizer that restores resilience.', size:'1.7 oz', price:53, cost:24, sku:'BIO-RD-035', stock:5, restockAt:3, skinTypes:['Normal','Combination'], badges:[], visibility:'active', image:'https://bioelements.com/cdn/shop/products/1.7ozRemineralistDailyMoisture-W-Cap.jpg', emoji:'🪨'},
+  {id:36, name:'Plump Start', brand:'Bioelements®', type:'Plumping Moisturizer', step:'moisturize', desc:'Hyaluronic acid moisturizer that visibly plumps fine lines.', size:'2 oz', price:59, cost:27, sku:'BIO-PS-036', stock:5, restockAt:3, skinTypes:['All'], badges:[], visibility:'active', image:'https://bioelements.com/cdn/shop/products/2ozPlumpStart.jpg', emoji:'💧'},
+  {id:37, name:'Oil Control Sleepwear', brand:'Bioelements®', type:'Overnight Creme', step:'moisturize', desc:'Overnight retinol creme for oily and combination skin.', size:'1.5 oz', price:77, cost:36, sku:'BIO-OCS-037', stock:4, restockAt:3, skinTypes:['Oily','Combination'], badges:[], visibility:'active', image:'https://bioelements.com/cdn/shop/products/1.5ozOilControlSleepwear-w-cap.jpg', emoji:'🌙'},
+  {id:38, name:'V-Neck Smoothing Creme', brand:'Bioelements®', type:'Neck + Décolleté Creme', step:'moisturize', desc:'Targeted firming creme for the neck, jaw and décolleté.', size:'1.7 oz', price:78, cost:36, sku:'BIO-VNS-038', stock:4, restockAt:3, skinTypes:['All'], badges:[], visibility:'active', image:'https://bioelements.com/cdn/shop/files/1.5ozV-NeckSmoothingCreme-w-cap.jpg', emoji:'🌟'},
+  // ── EYE CARE ──
+  {id:39, name:'Sleepwear for Eyes', brand:'Bioelements®', type:'Eye Creme', step:'eye', desc:'Calcium, peptides + hyaluronic acid overnight eye creme.', size:'0.5 oz', price:66, cost:30, sku:'BIO-SWE-039', stock:5, restockAt:3, skinTypes:['All'], badges:[], visibility:'active', image:'https://bioelements.com/cdn/shop/products/0.5ozSleepwearForEyes-w-cap.jpg', emoji:'👁️'},
+  {id:40, name:'Multi-Task Eye Creme', brand:'Bioelements®', type:'Eye Creme', step:'eye', desc:'Vitamin C eye creme for dark circles, crow\'s feet and puffiness.', size:'0.5 oz', price:50, cost:23, sku:'BIO-ME-040', stock:5, restockAt:3, skinTypes:['All'], badges:[], visibility:'active', image:'https://bioelements.com/cdn/shop/products/0.5ozMultiTaskEyeCreme-w-cap.jpg', emoji:'⭐'},
+  {id:41, name:'Sensitive Eye Smoother', brand:'Bioelements®', type:'Eye Creme', step:'eye', desc:'Ultra-gentle eye creme for sensitive skin.', size:'0.5 oz', price:49, cost:22, sku:'BIO-SE2-041', stock:4, restockAt:3, skinTypes:['Sensitive','All'], badges:[], visibility:'active', image:'https://bioelements.com/cdn/shop/products/0.5ozSensitiveEyeSmoother-W-Cap-OnWhite.jpg', emoji:'👁️'},
+  {id:42, name:'vc10 Eye Bright Contour', brand:'Bioelements®', type:'Eye Treatment', step:'eye', desc:'Triple-action Vitamin C eye treatment that brightens and firms.', size:'0.5 oz', price:62, cost:28, sku:'BIO-VE-042', stock:4, restockAt:3, skinTypes:['All'], badges:[], visibility:'active', image:'https://bioelements.com/cdn/shop/files/0.5ozVC10EyeBrightContour.jpg', emoji:'💛'},
+  // ── MASKS ──
+  {id:43, name:'Kerafole', brand:'Bioelements®', type:'Treatment Mask', step:'mask', desc:'Deep-purging AHA mask with citric & malic acids and botanicals.', size:'2.5 oz', price:65, cost:30, sku:'BIO-KF-043', stock:8, restockAt:3, skinTypes:['Normal','Combination','Oily'], badges:['★ Bestseller'], visibility:'active', image:'https://bioelements.com/cdn/shop/products/2.5ozKerafole-W-Cap_793ca7d0-8476-4db0-b2bc-c4f33bd77b90.jpg', emoji:'⚡'},
+  {id:44, name:'Hydroplunge', brand:'Bioelements®', type:'Hydrating Mask', step:'mask', desc:'Hyaluronic acid mask that visibly plumps and deeply hydrates.', size:'1.7 oz', price:54, cost:25, sku:'BIO-HY-044', stock:5, restockAt:3, skinTypes:['All'], badges:[], visibility:'active', image:'https://bioelements.com/cdn/shop/products/1.7ozHydroplunge-W-Cap.jpg', emoji:'💎'},
+  {id:45, name:'Aminoderm Mask', brand:'Bioelements®', type:'Treatment Mask', step:'mask', desc:'Amino acid mask that nourishes and boosts radiance.', size:'2.5 oz', price:62, cost:28, sku:'BIO-AD-045', stock:4, restockAt:3, skinTypes:['Dry','Sensitive','Normal'], badges:[], visibility:'active', image:'https://bioelements.com/cdn/shop/products/2.5ozAminodermMask-W-Cap.jpg', emoji:'🌸'},
+  {id:46, name:'Collagen Rehab', brand:'Bioelements®', type:'Treatment Mask', step:'mask', desc:'Intensive collagen-infused face and lip mask that firms and lifts.', size:'1.7 oz', price:68, cost:31, sku:'BIO-CR-046', stock:4, restockAt:3, skinTypes:['Dry','Normal'], badges:[], visibility:'active', image:'https://bioelements.com/cdn/shop/products/1.7ozCollagenRehab-W-Cap.jpg', emoji:'⚗️'},
+  {id:47, name:'Radiance Rescue', brand:'Bioelements®', type:'Brightening Mask', step:'mask', desc:'AHA + Vitamin C brightening mask that rapidly resurfaces.', size:'1.7 oz', price:63, cost:29, sku:'BIO-RR2-047', stock:4, restockAt:3, skinTypes:['All'], badges:[], visibility:'active', image:'https://bioelements.com/cdn/shop/products/1.7ozRadianceRescue-W-Cap.jpg', emoji:'🌟'},
+  // ── SPF ──
+  {id:48, name:'RayDefense', brand:'Bioelements®', type:'Sunscreen SPF 30', step:'spf', desc:'Broad spectrum SPF 30 daily sunscreen with antioxidants.', size:'4 oz', price:54, cost:25, sku:'BIO-RD-048', stock:6, restockAt:3, skinTypes:['All'], badges:[], visibility:'active', image:'https://bioelements.com/cdn/shop/products/4ozRayDefense_6ee0b869-adfc-4eb4-9d46-567c8b2fb62d.jpg', emoji:'☀️'},
+  {id:49, name:'SPF 50 FaceScreen', brand:'Bioelements®', type:'Sunscreen SPF 50', step:'spf', desc:'Lightweight broad-spectrum SPF 50 for daily use.', size:'1.7 oz', price:66, cost:30, sku:'BIO-FS-049', stock:5, restockAt:3, skinTypes:['All'], badges:[], visibility:'active', image:'https://bioelements.com/cdn/shop/files/B2B_PDP_-_Facescreen_Press_Celebration.jpg', emoji:'🌞'},
+  // ── SETS & KITS ──
+  {id:50, name:'Sleepwear + Eyes Bundle', brand:'Bioelements®', type:'Bundle Set', step:'sets', desc:'Sleepwear retinol creme + Sleepwear for Eyes overnight bundle.', size:'Bundle', price:128, cost:58, sku:'BIO-SB-050', stock:3, restockAt:2, skinTypes:['Dry','Normal','Combination'], badges:[], visibility:'active', image:'https://bioelements.com/cdn/shop/files/sleepwear-sleepwear-for-eyes-1.jpg', emoji:'🎁'},
+  {id:51, name:'3-Step Starter Set: Combination Skin', brand:'Bioelements®', type:'Starter Set', step:'sets', desc:'Complete 3-step starter kit for combination skin.', size:'Full Size', price:95, cost:43, sku:'BIO-SC-051', stock:3, restockAt:2, skinTypes:['Combination'], badges:[], visibility:'active', image:'https://bioelements.com/cdn/shop/files/Combo-w-prod.jpg', emoji:'✨'},
+  {id:52, name:'Sensitive Skin Ritual', brand:'Bioelements®', type:'Collection Set', step:'sets', desc:'Complete regimen for reactive skin.', size:'Set', price:110, cost:50, sku:'BIO-SR-052', stock:2, restockAt:2, skinTypes:['Sensitive'], badges:[], visibility:'active', image:'https://bioelements.com/cdn/shop/files/Sens-w-prod.jpg', emoji:'🌸'},
+  {id:53, name:'3-Step Starter Set: Acne-Prone Skin', brand:'Bioelements®', type:'Starter Set', step:'sets', desc:'3-step kit for acne-prone skin.', size:'Full Size', price:95, cost:43, sku:'BIO-SA-053', stock:3, restockAt:2, skinTypes:['Acne-Prone','Oily'], badges:[], visibility:'active', image:'https://bioelements.com/cdn/shop/files/1-acne-starter-kit_PDP_c44a85b2-2c0f-4092-a66f-441b5d6e8e29.jpg', emoji:'🎁'},
+  {id:54, name:'3-Step Starter Set: Sensitive Skin', brand:'Bioelements®', type:'Starter Set', step:'sets', desc:'3-step kit for sensitive skin.', size:'Full Size', price:112, cost:51, sku:'BIO-SS2-054', stock:3, restockAt:2, skinTypes:['Sensitive'], badges:[], visibility:'active', image:'https://bioelements.com/cdn/shop/files/Sens-w-prod.jpg', emoji:'🌸'},
+  {id:55, name:'3-Step Starter Set: Oily Skin', brand:'Bioelements®', type:'Starter Set', step:'sets', desc:'3-step kit for oily skin.', size:'Full Size', price:99, cost:45, sku:'BIO-SO-055', stock:3, restockAt:2, skinTypes:['Oily','Combination'], badges:[], visibility:'active', image:'https://bioelements.com/cdn/shop/files/Oliy-w-prod.jpg', emoji:'⚖️'},
+  {id:56, name:'3-Step Starter Set: Dry Skin', brand:'Bioelements®', type:'Starter Set', step:'sets', desc:'3-step kit for dry skin.', size:'Full Size', price:104, cost:47, sku:'BIO-SD2-056', stock:3, restockAt:2, skinTypes:['Dry'], badges:[], visibility:'active', image:'https://bioelements.com/cdn/shop/files/Dry-w-prod.jpg', emoji:'💧'},
+  {id:57, name:'4-Step Complete Set: Acne-Prone Skin', brand:'Bioelements®', type:'Complete Set', step:'sets', desc:'Ultimate 4-step acne system.', size:'Full Size', price:130, cost:59, sku:'BIO-CA-057', stock:2, restockAt:2, skinTypes:['Acne-Prone','Oily'], badges:['✦ New'], visibility:'active', image:'https://bioelements.com/cdn/shop/files/1-Acne-bundle-PDP-bundle-and-save.jpg', emoji:'✨'},
+  {id:58, name:'3-Step Starter Set: vc10 Brightening', brand:'Bioelements®', type:'Starter Set', step:'sets', desc:'24-hour Vitamin C brightening system.', size:'Full Size', price:95, cost:43, sku:'BIO-VB-058', stock:3, restockAt:2, skinTypes:['All'], badges:['✦ New'], visibility:'active', image:'https://bioelements.com/cdn/shop/files/vc10-3-step-kit-PDP-pos-1.jpg', emoji:'💛'},
+  // ── LIP CARE ──
+  {id:59, name:'Lip Clinic Hydrating Serum', brand:'Bioelements®', type:'Lip Serum', step:'lip', desc:'Hydrating lip serum that plumps and smoothes fine lines.', size:'0.5 oz', price:27, cost:12, sku:'BIO-LC-059', stock:5, restockAt:3, skinTypes:['All'], badges:[], visibility:'active', image:'https://bioelements.com/cdn/shop/files/0.3ozLC-HydSerum.jpg', emoji:'💋'},
+];
+
+const DEFAULT_CATEGORIES = [
+  {id:'cleanse',    name:'Cleanse',             icon:'🫧'},
+  {id:'tone',       name:'Tone',                icon:'💧'},
+  {id:'exfoliate',  name:'Exfoliate',           icon:'✨'},
+  {id:'serum',      name:'Serums & Treatments', icon:'⚗️'},
+  {id:'moisturize', name:'Moisturize',          icon:'🌙'},
+  {id:'eye',        name:'Eye Care',            icon:'👁️'},
+  {id:'mask',       name:'Masks',               icon:'🌟'},
+  {id:'spf',        name:'SPF',                 icon:'☀️'},
+  {id:'sets',       name:'Sets & Kits',         icon:'🎁'},
+  {id:'lip',        name:'Lip Care',            icon:'💋'},
+];
+
+function getProducts(){ return _products; }
+function saveProducts(p){
+  _products = p;
+  updateBadges();
+  _sb.from('products').upsert(p.map(_productToRow), { onConflict: 'id' })
+    .then(({ error }) => { if (error) console.error('[saveProducts]', error); });
+}
+
+function getCategories(){ return _categories; }
+function saveCategories(c){
+  _categories = c;
+  _sb.from('categories').upsert(
+    c.map((cat, i) => ({ id: cat.id, name: cat.name, icon: cat.icon, sort_order: i })),
+    { onConflict: 'id' }
+  ).then(({ error }) => { if (error) console.error('[saveCategories]', error); });
+}
+
+// ═══════════════════════════════════════════════
+// NAV
+// ═══════════════════════════════════════════════
+function showPanel(name, el){
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  if(el) el.classList.add('active');
+  const titles = {overview:'<em>Dashboard</em>',products:'Inventory <em>Manager</em>',pro:'Pro <em>Products</em>',restock:'Restock <em>Needed</em>',subscriptions:'Reorder <em>Planning</em>',categories:'Step <em>Categories</em>'};
+  document.getElementById('topTitle').innerHTML = titles[name] || name;
+  if(name==='overview') renderOverview();
+  if(name==='products'){ renderFilterChips(); renderProductTable(); }
+  if(name==='pro') renderProTable();
+  if(name==='restock') renderRestockPanel();
+  if(name==='subscriptions') renderSubscriptions();
+  if(name==='categories') renderCategories();
+  window.scrollTo(0,0);
+}
+
+function updateBadges(){
+  const products = getProducts();
+  const retail = products.filter(p=>!p.proOnly);
+  const pro = products.filter(p=>p.proOnly);
+  document.getElementById('totalBadge').textContent = retail.filter(p=>p.visibility==='active').length;
+  document.getElementById('proBadge').textContent = pro.length;
+  const outOrLow = products.filter(p => p.stock <= p.restockAt);
+  document.getElementById('restockBadge').textContent = outOrLow.length;
+  const subs = getSubs();
+  const now = new Date();
+  const endOfMonth = new Date(now.getFullYear(), now.getMonth()+1, 0);
+  const subsDue = subs.filter(s => new Date(s.nextDate) <= endOfMonth);
+  document.getElementById('subBadge').textContent = subsDue.length;
+}
+
+// ═══════════════════════════════════════════════
+// OVERVIEW
+// ═══════════════════════════════════════════════
+function renderOverview(){
+  const products = getProducts();
+  const totalValue = products.reduce((s,p)=>s+(p.price*(p.stock||0)),0);
+  const totalCost = products.reduce((s,p)=>s+(p.cost*(p.stock||0)),0);
+  const outOfStock = products.filter(p=>p.stock===0).length;
+  const lowStock = products.filter(p=>p.stock>0 && p.stock<=p.restockAt).length;
+
+  document.getElementById('overviewStats').innerHTML = [
+    {num: products.length, label:'Total Products', sub:`${products.filter(p=>p.visibility==='active').length} active`, color:''},
+    {num: products.reduce((s,p)=>s+(p.stock||0),0), label:'Total Units in Stock', sub:`Across all products`, color:''},
+    {num: '$'+totalValue.toLocaleString(), label:'Retail Value', sub:`Cost: $${totalCost.toLocaleString()}`, color:''},
+    {num: outOfStock+lowStock, label:'Need Restock', sub:`${outOfStock} out · ${lowStock} low`, color:'color:var(--warning);'},
+  ].map(s=>`<div class="stat-card"><span class="stat-num" style="${s.color}">${s.num}</span><span class="stat-label">${s.label}</span><span class="stat-sub" style="color:rgba(232,213,255,.3);">${s.sub}</span></div>`).join('');
+
+  // Low stock
+  const lowProds = products.filter(p=>p.stock<=p.restockAt).sort((a,b)=>a.stock-b.stock).slice(0,5);
+  document.getElementById('overviewLowStock').innerHTML = lowProds.length
+    ? lowProds.map(p=>`
+        <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(168,85,247,.07);">
+          ${p.image ? `<img src="${p.image}" style="width:36px;height:36px;border-radius:8px;object-fit:cover;">` : `<div style="width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,rgba(107,47,160,.4),rgba(61,47,160,.3));display:flex;align-items:center;justify-content:center;font-size:18px;">${p.emoji||'🌸'}</div>`}
+          <div style="flex:1;"><div style="font-size:13px;color:var(--starlight);">${p.name}</div><div style="font-size:10px;color:rgba(232,213,255,.35);">${p.sku||''}</div></div>
+          <span class="pill ${p.stock===0?'p-red':p.stock<=p.restockAt?'p-yellow':'p-green'}">${p.stock===0?'Out of Stock':p.stock+' left'}</span>
+        </div>`).join('')
+    : '<p style="font-size:13px;color:rgba(232,213,255,.25);padding:16px 0;text-align:center;">All products are well stocked! ✦</p>';
+
+  // Top products by value
+  const topProds = [...products].sort((a,b)=>(b.price*b.stock)-(a.price*a.stock)).slice(0,5);
+  document.getElementById('overviewTopProducts').innerHTML = topProds.map(p=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(168,85,247,.07);">
+      ${p.image ? `<img src="${p.image}" style="width:36px;height:36px;border-radius:8px;object-fit:cover;">` : `<div style="width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,rgba(107,47,160,.4),rgba(61,47,160,.3));display:flex;align-items:center;justify-content:center;font-size:18px;">${p.emoji||'🌸'}</div>`}
+      <div style="flex:1;"><div style="font-size:13px;color:var(--starlight);">${p.name}</div><div style="font-size:10px;color:rgba(232,213,255,.35);">${p.stock} units</div></div>
+      <span style="font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--aurora);">$${(p.price*p.stock).toLocaleString()}</span>
+    </div>`).join('');
+
+  // Category breakdown
+  const cats = getCategories();
+  document.getElementById('overviewCategories').innerHTML = cats.map(c=>{
+    const count = products.filter(p=> p.step === c.id).length;
+    return `<div class="pill p-purple" style="font-size:11px;padding:6px 14px;">${c.icon} ${c.name} <strong style="margin-left:4px;color:var(--aurora);">${count}</strong></div>`;
+  }).join('');
+
+  // Subscription preview on overview
+  const subsPreviewEl = document.getElementById('overviewSubsPreview');
+  if(subsPreviewEl){
+    const subs = getSubs();
+    const now = new Date(); now.setHours(0,0,0,0);
+    const endOfMonth = new Date(now.getFullYear(), now.getMonth()+1, 0);
+    const upcoming = subs.filter(s=>new Date(s.nextDate)<=endOfMonth).sort((a,b)=>new Date(a.nextDate)-new Date(b.nextDate)).slice(0,4);
+    subsPreviewEl.innerHTML = upcoming.length
+      ? upcoming.map(s => {
+          const d = new Date(s.nextDate);
+          const diff = Math.round((d-now)/86400000);
+          return `<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(168,85,247,.07);">
+            <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--electric),var(--violet));display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">${s.name.charAt(0)}</div>
+            <div style="flex:1;">
+              <div style="font-size:13px;color:var(--starlight);">${s.name}</div>
+              <div style="font-size:10px;color:rgba(232,213,255,.35);">${s.products?.length||0} products · ${s.delivery}</div>
+            </div>
+            <span class="pill ${diff<0?'p-red':diff<=7?'p-yellow':'p-green'}" style="font-size:9px;">${diff<0?'Overdue':diff===0?'Today':diff+'d'}</span>
+          </div>`;
+        }).join('')
+      : '<p style="font-size:13px;color:rgba(232,213,255,.25);padding:16px 0;text-align:center;">No subscriptions due this month.</p>';
+  }
+}
+
+// ═══════════════════════════════════════════════
+// PRODUCT TABLE
+// ═══════════════════════════════════════════════
+let activeFilter = 'all';
+function renderFilterChips(){
+  const cats = getCategories();
+  document.getElementById('filterChips').innerHTML =
+    `<div class="filter-chip active" onclick="setFilter('all',this)">All</div>` +
+    cats.map(c=>`<div class="filter-chip" onclick="setFilter('${c.id}',this)">${c.icon} ${c.name}</div>`).join('');
+}
+
+function setFilter(f, el){
+  activeFilter = f;
+  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  renderProductTable();
+}
+
+function renderProductTable(){
+  const query = document.getElementById('productSearch')?.value.toLowerCase()||'';
+  const sort = document.getElementById('sortSelect')?.value||'name';
+  let products = getProducts().filter(p=>!p.proOnly);
+  if(activeFilter !== 'all') products = products.filter(p=> p.step === activeFilter);
+  if(query) products = products.filter(p=>
+    p.name.toLowerCase().includes(query) ||
+    (p.sku||'').toLowerCase().includes(query) ||
+    (p.desc||'').toLowerCase().includes(query) ||
+    (p.step||'').toLowerCase().includes(query)
+  );
+  if(sort==='stock-asc') products.sort((a,b)=>a.stock-b.stock);
+  else if(sort==='stock-desc') products.sort((a,b)=>b.stock-a.stock);
+  else if(sort==='price-asc') products.sort((a,b)=>a.price-b.price);
+  else if(sort==='price-desc') products.sort((a,b)=>b.price-a.price);
+  else products.sort((a,b)=>a.name.localeCompare(b.name));
+
+  const tbody = document.getElementById('productTableBody');
+  const empty = document.getElementById('productTableEmpty');
+
+  if(!products.length){ tbody.innerHTML=''; empty.style.display='block'; return; }
+  empty.style.display='none';
+
+  tbody.innerHTML = products.map(p=>{
+    const isOut = p.stock === 0;
+    const isLow = p.stock > 0 && p.stock <= p.restockAt;
+    const pct = p.restockAt > 0 ? Math.min(100, Math.round((p.stock / (p.restockAt * 3)) * 100)) : 100;
+    const barColor = isOut ? '#f87171' : isLow ? '#fbbf24' : '#34d399';
+    return `
+      <tr class="${isOut?'out-stock':isLow?'low-stock':''}" onclick="openEditModal(${p.id})" style="cursor:pointer;">
+        <td>
+          ${p.image
+            ? `<img src="${p.image}" class="prod-thumb" alt="${p.name}">`
+            : `<div class="prod-thumb-placeholder">${p.emoji||'🌸'}</div>`}
+        </td>
+        <td>
+          <div class="prod-name-cell">${p.name}</div>
+          <div class="prod-sku">${p.sku||''} · ${p.size||''}</div>
+          ${p.badges?.length ? `<div style="margin-top:4px;">${p.badges.map(b=>`<span class="pill p-purple" style="font-size:9px;margin-right:3px;">${b}</span>`).join('')}</div>` : ''}
+        </td>
+        <td>${p.step ? `<span class="pill p-blue" style="font-size:9px;">${{'cleanse':'🫧 Cleanse','tone':'💧 Tone','exfoliate':'✨ Exfoliate','serum':'⚗️ Serum','moisturize':'🌙 Moisturize','eye':'👁️ Eye Care','mask':'🌟 Mask','spf':'☀️ SPF','sets':'🎁 Sets','lip':'💋 Lip'}[p.step]||p.step}</span>` : '<span style="color:rgba(232,213,255,.2);font-size:12px;">—</span>'}</td>
+        <td>
+          <span style="font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--aurora);">$${p.price}</span>
+          ${p.cost ? `<div style="font-size:10px;color:rgba(232,213,255,.3);">Cost: $${p.cost}</div>` : ''}
+        </td>
+        <td onclick="event.stopPropagation()">
+          <div class="stock-counter">
+            <button class="stock-btn" onclick="adjustStock(${p.id},-1)">−</button>
+            <span class="stock-num ${isOut?'out':isLow?'low':''}">${p.stock}</span>
+            <button class="stock-btn" onclick="adjustStock(${p.id},1)">+</button>
+          </div>
+        </td>
+        <td>
+          <span class="pill ${isOut?'p-red':isLow?'p-yellow':'p-green'}">${isOut?'Out of Stock':isLow?'Low Stock':'In Stock'}</span>
+          ${p.visibility==='hidden' ? '<br><span class="pill p-purple" style="font-size:9px;margin-top:4px;">Hidden</span>' : ''}
+        </td>
+        <td>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div class="restock-bar-wrap"><div class="restock-bar" style="width:${pct}%;background:${barColor};"></div></div>
+            <span style="font-size:11px;color:rgba(232,213,255,.35);">@ ${p.restockAt}</span>
+          </div>
+        </td>
+        <td onclick="event.stopPropagation()">
+          <button class="btn-icon" onclick="openEditModal(${p.id})" title="Edit">✏️</button>
+        </td>
+      </tr>`;
+  }).join('');
+}
+
+function adjustStock(id, delta){
+  const products = getProducts();
+  const p = products.find(x=>x.id===id);
+  if(!p) return;
+  p.stock = Math.max(0, (p.stock||0) + delta);
+  // Update memory and badges without re-upserting all rows
+  _products = products;
+  updateBadges();
+  // Targeted single-row update
+  _sb.from('products').update({ stock: p.stock }).eq('id', id)
+    .then(({ error }) => { if (error) console.error('[adjustStock]', error); });
+  renderProductTable();
+  if(p.stock === 0) toast('⚠️', `${p.name} is now out of stock!`);
+  else if(p.stock <= p.restockAt) toast('⚡', `${p.name} is running low — ${p.stock} left`);
+  else toast('✦', `${p.name} stock updated: ${p.stock} units`);
+}
+
+// ═══════════════════════════════════════════════
+// PRO PRODUCTS TABLE
+// ═══════════════════════════════════════════════
+function openAddProModal(){
+  openAddModal();
+  // Pre-select Pro after modal opens
+  setTimeout(()=>setUse('pro'), 50);
+}
+
+function renderProTable(){
+  const query = (document.getElementById('proSearch')?.value||'').toLowerCase();
+  const sort = document.getElementById('proSort')?.value||'name';
+  let products = getProducts().filter(p=>p.proOnly);
+  if(query) products = products.filter(p=>
+    p.name.toLowerCase().includes(query)||
+    (p.sku||'').toLowerCase().includes(query)||
+    (p.type||'').toLowerCase().includes(query)
+  );
+  if(sort==='stock-asc') products.sort((a,b)=>a.stock-b.stock);
+  else if(sort==='stock-desc') products.sort((a,b)=>b.stock-a.stock);
+  else products.sort((a,b)=>a.name.localeCompare(b.name));
+
+  const tbody = document.getElementById('proTableBody');
+  const empty = document.getElementById('proTableEmpty');
+  if(!products.length){ tbody.innerHTML=''; empty.style.display='block'; return; }
+  empty.style.display='none';
+
+  tbody.innerHTML = products.map(p=>{
+    const isOut = p.stock===0;
+    const isLow = p.stock>0 && p.stock<=p.restockAt;
+    const pct = p.restockAt>0 ? Math.min(100,Math.round((p.stock/(p.restockAt*3))*100)) : 100;
+    const barColor = isOut?'#f87171':isLow?'#fbbf24':'#34d399';
+    return `
+      <tr class="${isOut?'out-stock':isLow?'low-stock':''}" onclick="openEditModal(${p.id})" style="cursor:pointer;">
+        <td>${p.image?`<img src="${p.image}" class="prod-thumb" alt="${p.name}">`:`<div class="prod-thumb-placeholder">${p.emoji||'🔬'}</div>`}</td>
+        <td>
+          <div class="prod-name-cell">${p.name}</div>
+          <div class="prod-sku">${p.sku||''} · ${p.size||''}</div>
+          <span class="pill p-purple" style="font-size:9px;margin-top:4px;">🔬 Pro Only</span>
+        </td>
+        <td><span style="font-size:12px;color:rgba(232,213,255,.5);">${p.type||'—'}</span></td>
+        <td><span style="font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--aurora);">$${p.price||0}</span>${p.cost?`<div style="font-size:10px;color:rgba(232,213,255,.3);">Cost: $${p.cost}</div>`:''}</td>
+        <td onclick="event.stopPropagation()">
+          <div class="stock-counter">
+            <button class="stock-btn" onclick="adjustStock(${p.id},-1)">−</button>
+            <span class="stock-num ${isOut?'out':isLow?'low':''}">${p.stock}</span>
+            <button class="stock-btn" onclick="adjustStock(${p.id},1)">+</button>
+          </div>
+        </td>
+        <td><span class="pill ${isOut?'p-red':isLow?'p-yellow':'p-green'}">${isOut?'Out of Stock':isLow?'Low Stock':'In Stock'}</span></td>
+        <td>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div class="restock-bar-wrap"><div class="restock-bar" style="width:${pct}%;background:${barColor};"></div></div>
+            <span style="font-size:11px;color:rgba(232,213,255,.35);">@ ${p.restockAt}</span>
+          </div>
+        </td>
+        <td onclick="event.stopPropagation()"><button class="btn-icon" onclick="openEditModal(${p.id})" title="Edit">✏️</button></td>
+      </tr>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════
+// RESTOCK PANEL
+// ═══════════════════════════════════════════════
+function renderRestockPanel(){
+  const products = getProducts();
+  const outOfStock = products.filter(p=>p.stock===0);
+  const lowStock = products.filter(p=>p.stock>0 && p.stock<=p.restockAt);
+  const nearLow = products.filter(p=>p.stock>p.restockAt && p.stock<=p.restockAt+5);
+
+  const makeCard = (p, urgent) => {
+    const pct = p.restockAt>0 ? Math.min(100,Math.round((p.stock/(p.restockAt*3))*100)) : 100;
+    return `
+      <div class="restock-card ${urgent?'urgent':'low'}">
+        ${p.image ? `<img src="${p.image}" class="rc-thumb" alt="${p.name}">` : `<div class="rc-thumb-placeholder">${p.emoji||'🌸'}</div>`}
+        <div class="rc-info">
+          <div class="rc-name">${p.name} <span style="font-size:10px;color:rgba(232,213,255,.35);">${p.size||''}</span></div>
+          <div class="rc-sku">${p.brand||''} · ${p.sku||''}</div>
+          <div class="rc-stock" style="color:${p.stock===0?'#f87171':'#fbbf24'};">
+            ${p.stock===0 ? '⚠️ OUT OF STOCK' : `⚡ ${p.stock} units left (restock at ${p.restockAt})`}
+          </div>
+        </div>
+        <div class="rc-actions">
+          <input type="number" class="restock-input" id="rs-${p.id}" value="12" min="1" placeholder="Qty">
+          <button class="btn-primary btn-sm" onclick="restockProduct(${p.id})">Restock ✦</button>
+        </div>
+      </div>`;
+  };
+
+  document.getElementById('restockList').innerHTML = outOfStock.length || lowStock.length
+    ? [...outOfStock, ...lowStock].map(p=>makeCard(p, p.stock===0)).join('')
+    : '<p style="color:rgba(232,213,255,.25);font-size:13px;text-align:center;padding:24px;">No urgent restock needed right now! ✦</p>';
+
+  document.getElementById('lowStockList').innerHTML = nearLow.length
+    ? nearLow.map(p=>makeCard(p, false)).join('')
+    : '<p style="color:rgba(232,213,255,.25);font-size:13px;padding:12px 0;">No products near threshold.</p>';
+}
+
+function restockProduct(id){
+  const qty = parseInt(document.getElementById('rs-'+id)?.value)||0;
+  if(qty<=0){ toast('⚠️','Enter a valid quantity'); return; }
+  const products = getProducts();
+  const p = products.find(x=>x.id===id);
+  if(!p) return;
+  p.stock = (p.stock||0) + qty;
+  saveProducts(products);
+  renderRestockPanel();
+  renderOverview();
+  updateBadges();
+  toast('✦', `Restocked ${p.name} — now ${p.stock} units`);
+}
+
+// ═══════════════════════════════════════════════
+// CATEGORIES
+// ═══════════════════════════════════════════════
+function renderCategories(){
+  const cats = getCategories();
+  const products = getProducts();
+  document.getElementById('categoryList').innerHTML = cats.map((c,i)=>`
+    <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(168,85,247,.07);">
+      <span style="font-size:20px;">${c.icon}</span>
+      <span style="flex:1;font-size:13px;color:var(--starlight);">${c.name}</span>
+      <span class="pill p-purple">${products.filter(p=>(p.concerns||[]).includes(c.name)).length} products</span>
+      <button class="btn-icon" style="font-size:13px;" onclick="deleteCategory(${i})">✕</button>
+    </div>`).join('');
+}
+
+function addCategory(){
+  const name = document.getElementById('newCatName').value.trim();
+  const icon = document.getElementById('newCatIcon').value.trim() || '🌸';
+  if(!name){ toast('⚠️','Enter a category name'); return; }
+  const cats = getCategories();
+  cats.push({id: name.toLowerCase().replace(/\s+/g,'-'), name, icon});
+  saveCategories(cats);
+  document.getElementById('newCatName').value='';
+  document.getElementById('newCatIcon').value='';
+  renderCategories();
+  toast('✦', `Category "${name}" added`);
+}
+
+function deleteCategory(idx){
+  const cats = getCategories();
+  const removed = cats.splice(idx,1)[0];
+  _categories = cats;
+  _sb.from('categories').delete().eq('id', removed.id)
+    .then(({ error }) => { if (error) console.error('[deleteCategory]', error); });
+  renderCategories();
+  toast('✦', `Category "${removed.name}" removed`);
+}
+
+// ═══════════════════════════════════════════════
+// MODAL — ADD / EDIT
+// ═══════════════════════════════════════════════
+let editingId = null;
+let currentImageData = null;
+
+function openAddModal(){
+  editingId = null;
+  currentImageData = null;
+  document.getElementById('modalTitle').textContent = 'Add New Product';
+  document.getElementById('deleteBtn').style.display = 'none';
+  clearModalForm();
+  document.getElementById('productModal').classList.add('open');
+}
+
+function openEditModal(id){
+  const products = getProducts();
+  const p = products.find(x=>x.id===id);
+  if(!p) return;
+  editingId = id;
+  currentImageData = p.image || null;
+  document.getElementById('modalTitle').textContent = 'Edit Product';
+  document.getElementById('deleteBtn').style.display = 'block';
+  fillModalForm(p);
+  document.getElementById('productModal').classList.add('open');
+}
+
+function closeModal(){
+  document.getElementById('productModal').classList.remove('open');
+  editingId = null;
+  currentImageData = null;
+}
+
+function clearModalForm(){
+  ['f-name','f-brand','f-desc','f-ingredients','f-size','f-price','f-cost','f-sku','f-stock','f-restock','f-notes'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.value = id==='f-brand' ? 'Bioelements®' : id==='f-restock' ? '3' : '';
+  });
+  document.getElementById('f-brand').value = 'Bioelements®';
+  clearImage();
+  document.querySelectorAll('#skinTypePicker .concern-tag, #badge-bestseller, #badge-new, #badge-sale').forEach(t=>t.classList.remove('selected'));
+  setVisibility('active');
+  setUse('retail');
+}
+
+function fillModalForm(p){
+  document.getElementById('f-name').value = p.name||'';
+  document.getElementById('f-brand').value = p.brand||'Bioelements®';
+  document.getElementById('f-type').value = p.type||'';
+  document.getElementById('f-step').value = p.step||'';
+  document.getElementById('f-desc').value = p.desc||'';
+  document.getElementById('f-ingredients').value = p.ingredients||'';
+  document.getElementById('f-size').value = p.size||'';
+  document.getElementById('f-price').value = p.price||'';
+  document.getElementById('f-cost').value = p.cost||'';
+  document.getElementById('f-sku').value = p.sku||'';
+  document.getElementById('f-stock').value = p.stock||0;
+  document.getElementById('f-restock').value = p.restockAt||3;
+  document.getElementById('f-notes').value = p.notes||'';
+
+  // Image
+  if(p.image){
+    const img = document.getElementById('imagePreview');
+    img.src = p.image; img.style.display='block';
+    document.getElementById('imageUploadPlaceholder').style.display='none';
+    document.getElementById('imageUploadArea').classList.add('has-image');
+  } else { clearImage(); }
+
+  // Skin types
+  document.querySelectorAll('#skinTypePicker .concern-tag').forEach(t=>{
+    t.classList.toggle('selected', (p.skinTypes||[]).includes(t.textContent.trim()));
+  });
+
+  // Badges
+  document.getElementById('badge-bestseller').classList.toggle('selected', (p.badges||[]).includes('★ Bestseller'));
+  document.getElementById('badge-new').classList.toggle('selected', (p.badges||[]).includes('✦ New'));
+  document.getElementById('badge-sale').classList.toggle('selected', (p.badges||[]).includes('⚡ On Sale'));
+
+  setVisibility(p.visibility||'active');
+  setUse(p.proOnly ? 'pro' : 'retail');
+}
+
+function buildConcernPicker(selected=[]){
+  const cats = getCategories();
+  document.getElementById('concernTagPicker').innerHTML = cats.map(c=>`
+    <div class="concern-tag ${selected.includes(c.name)?'selected':''}" onclick="this.classList.toggle('selected')">${c.icon} ${c.name}</div>`
+  ).join('');
+}
+
+let activeVis = 'active';
+function setVisibility(v){
+  activeVis = v;
+  document.getElementById('vis-active').classList.toggle('selected', v==='active');
+  document.getElementById('vis-hidden').classList.toggle('selected', v==='hidden');
+}
+
+let activeUse = 'retail';
+function setUse(u){
+  activeUse = u;
+  document.getElementById('use-retail').classList.toggle('selected', u==='retail');
+  document.getElementById('use-pro').classList.toggle('selected', u==='pro');
+  document.getElementById('pro-use-note').style.display = u==='pro' ? 'block' : 'none';
+}
+
+function handleImageUpload(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  if(file.size > 5*1024*1024){ toast('⚠️','Image must be under 5MB'); return; }
+  const reader = new FileReader();
+  reader.onload = ev => {
+    currentImageData = ev.target.result;
+    const img = document.getElementById('imagePreview');
+    img.src = currentImageData; img.style.display='block';
+    document.getElementById('imageUploadPlaceholder').style.display='none';
+    document.getElementById('imageUploadArea').classList.add('has-image');
+    toast('🖼️','Image loaded!');
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearImage(){
+  currentImageData = null;
+  const img = document.getElementById('imagePreview');
+  img.src=''; img.style.display='none';
+  document.getElementById('imageUploadPlaceholder').style.display='block';
+  document.getElementById('imageUploadArea').classList.remove('has-image');
+  document.getElementById('imageFileInput').value='';
+}
+
+function saveProduct(){
+  const name = document.getElementById('f-name').value.trim();
+  if(!name){ toast('⚠️','Product name is required'); return; }
+
+  const skinTypes = [...document.querySelectorAll('#skinTypePicker .concern-tag.selected')].map(t=>t.textContent.trim());
+  const badges = [];
+  if(document.getElementById('badge-bestseller').classList.contains('selected')) badges.push('★ Bestseller');
+  if(document.getElementById('badge-new').classList.contains('selected')) badges.push('✦ New');
+  if(document.getElementById('badge-sale').classList.contains('selected')) badges.push('⚡ On Sale');
+
+  const product = {
+    id: editingId || Date.now(),
+    name,
+    brand: document.getElementById('f-brand').value.trim()||'Bioelements®',
+    type: document.getElementById('f-type').value,
+    step: document.getElementById('f-step').value,
+    desc: document.getElementById('f-desc').value.trim(),
+    ingredients: document.getElementById('f-ingredients').value.trim(),
+    size: document.getElementById('f-size').value.trim(),
+    price: parseFloat(document.getElementById('f-price').value)||0,
+    cost: parseFloat(document.getElementById('f-cost').value)||0,
+    sku: document.getElementById('f-sku').value.trim(),
+    stock: parseInt(document.getElementById('f-stock').value)||0,
+    restockAt: parseInt(document.getElementById('f-restock').value)||3,
+    skinTypes, badges,
+    visibility: activeVis,
+    proOnly: activeUse === 'pro',
+    notes: document.getElementById('f-notes').value.trim(),
+    image: currentImageData || '',
+    emoji: activeUse === 'pro' ? '🔬' : '🌸',
+  };
+
+  const products = getProducts();
+  if(editingId){
+    const idx = products.findIndex(p=>p.id===editingId);
+    if(idx>=0) products[idx] = product;
+  } else {
+    products.push(product);
+  }
+  saveProducts(products);
+  closeModal();
+  if(product.proOnly) renderProTable(); else renderProductTable();
+  updateBadges();
+  toast('✦', `${name} ${editingId?'updated':'added'} successfully!`);
+}
+
+function deleteProduct(){
+  if(!editingId) return;
+  if(!confirm('Delete this product? This cannot be undone.')) return;
+  const removedId = editingId;
+  _products = _products.filter(p=>p.id!==removedId);
+  updateBadges();
+  _sb.from('products').delete().eq('id', removedId)
+    .then(({ error }) => { if (error) console.error('[deleteProduct]', error); });
+  closeModal();
+  renderProductTable();
+  updateBadges();
+  toast('✦','Product deleted');
+}
+
+// ═══════════════════════════════════════════════
+// EXPORT CSV
+// ═══════════════════════════════════════════════
+function exportInventory(){
+  const products = getProducts();
+  const rows = [['Name','Brand','Type','SKU','Price','Cost','Stock','Restock At','Concerns','Status']];
+  products.forEach(p=>rows.push([p.name,p.brand,p.type,p.sku,p.price,p.cost,p.stock,p.restockAt,(p.concerns||[]).join(';'),p.visibility]));
+  const csv = rows.map(r=>r.map(c=>`"${c}"`).join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
+  a.download = `cosmic-beauty-spa-inventory-${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  toast('⬇','Inventory exported as CSV!');
+}
+
+// ═══════════════════════════════════════════════
+// SUBSCRIPTIONS
+// ═══════════════════════════════════════════════
+function getSubs(){ return _subs; }
+function saveSubs(s){
+  _subs = s;
+  updateBadges();
+  _sb.from('subscriptions').upsert(s.map(_subToRow), { onConflict: 'id' })
+    .then(({ error }) => { if (error) console.error('[saveSubs]', error); });
+}
+
+let activeSubTab = 'upcoming';
+let editingSubId = null;
+let subProductsInForm = []; // [{id, name, qty, emoji, image, price}]
+
+function setSubTab(tab, el){
+  activeSubTab = tab;
+  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('subClientsView').style.display = tab === 'order' ? 'none' : 'block';
+  document.getElementById('subOrderView').style.display = tab === 'order' ? 'block' : 'none';
+  if(tab === 'order') renderOrderSummary();
+  else renderSubGrid();
+}
+
+function renderSubscriptions(){
+  renderSubStats();
+  renderSubGrid();
+  updateBadges();
+}
+
+function renderSubStats(){
+  const subs = getSubs();
+  const now = new Date();
+  const thisMonth = subs.filter(s => {
+    const d = new Date(s.nextDate);
+    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+  });
+  const overdue = subs.filter(s => new Date(s.nextDate) < now);
+  const totalMonthlyValue = thisMonth.reduce((sum, s) =>
+    sum + (s.products||[]).reduce((ps, p) => ps + (p.price * p.qty), 0), 0);
+
+  document.getElementById('subStats').innerHTML = [
+    {num: subs.length, label:'Active Subscriptions', sub:'Total clients', color:''},
+    {num: thisMonth.length, label:'Due This Month', sub:`Est. $${totalMonthlyValue.toFixed(0)} in orders`, color:''},
+    {num: overdue.length, label:'Overdue', sub:'Past next order date', color: overdue.length ? 'color:var(--danger);' : ''},
+    {num: subs.reduce((n,s)=>(n+(s.products||[]).length),0), label:'Total Products Tracked', sub:'Across all subscriptions', color:''},
+  ].map(s=>`<div class="stat-card"><span class="stat-num" style="${s.color}">${s.num}</span><span class="stat-label">${s.label}</span><span class="stat-sub" style="color:rgba(232,213,255,.3);">${s.sub}</span></div>`).join('');
+}
+
+function renderSubGrid(){
+  const subs = getSubs();
+  const products = getProducts();
+  const now = new Date();
+  now.setHours(0,0,0,0);
+
+  let filtered = [...subs];
+  if(activeSubTab === 'upcoming'){
+    const endOfMonth = new Date(now.getFullYear(), now.getMonth()+1, 0);
+    filtered = subs.filter(s => new Date(s.nextDate) <= endOfMonth);
+    filtered.sort((a,b) => new Date(a.nextDate) - new Date(b.nextDate));
+  } else {
+    filtered.sort((a,b) => new Date(a.nextDate) - new Date(b.nextDate));
+  }
+
+  const grid = document.getElementById('subGrid');
+  const empty = document.getElementById('subEmpty');
+
+  if(!filtered.length){
+    grid.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  grid.innerHTML = filtered.map(sub => {
+    const nextDate = new Date(sub.nextDate);
+    const diffDays = Math.round((nextDate - now) / 86400000);
+    const dueClass = diffDays < 0 ? 'due-overdue' : diffDays === 0 ? 'due-today' : diffDays <= 7 ? 'due-soon' : 'due-upcoming';
+    const dueLabel = diffDays < 0 ? `${Math.abs(diffDays)}d overdue` : diffDays === 0 ? 'Due Today!' : diffDays <= 7 ? `Due in ${diffDays}d` : nextDate.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+
+    const subProds = (sub.products || []).map(sp => {
+      const p = products.find(x => x.id === sp.id);
+      const stockStatus = !p ? 'unknown' : p.stock === 0 ? 'out' : p.stock < sp.qty ? 'low' : 'ok';
+      return {sp, p, stockStatus};
+    });
+
+    const hasIssue = subProds.some(x => x.stockStatus === 'out' || x.stockStatus === 'low');
+    const subTotal = (sub.products||[]).reduce((s,p)=>s+(p.price*p.qty),0);
+
+    return `
+      <div class="sub-client-card ${hasIssue ? 'style="border-color:rgba(251,191,36,.25);"' : ''}">
+        <div class="scc-header">
+          <div class="scc-avatar">${sub.name.charAt(0).toUpperCase()}</div>
+          <div class="scc-info">
+            <div class="scc-name">${sub.name}</div>
+            <div class="scc-date">${sub.freq === 'monthly' ? 'Monthly' : sub.freq === 'bimonthly' ? 'Every 2 months' : sub.freq === 'quarterly' ? 'Quarterly' : 'Custom'} · ${sub.delivery}</div>
+            ${sub.notes ? `<div style="font-size:10px;color:rgba(168,85,247,.5);margin-top:2px;">${sub.notes}</div>` : ''}
+          </div>
+          <span class="scc-due ${dueClass}">${dueLabel}</span>
+        </div>
+        <div class="scc-products">
+          ${subProds.length ? subProds.map(({sp, p, stockStatus}) => `
+            <div class="scc-prod-row">
+              ${p?.image ? `<img src="${p.image}" class="spr-thumb" alt="${sp.name}">` : `<div class="spr-thumb-ph">${p?.emoji||sp.emoji||'🌸'}</div>`}
+              <span class="spr-name">${sp.name}</span>
+              <span class="spr-qty">×${sp.qty}</span>
+              <span class="spr-stock ${stockStatus==='ok'?'stock-ok':stockStatus==='low'?'stock-low':'stock-out'}">
+                ${stockStatus==='ok'?'✓ In Stock':stockStatus==='low'?`⚡ Low (${p?.stock||0})`:stockStatus==='out'?'✗ Out':'—'}
+              </span>
+            </div>`).join('') : '<div style="font-size:12px;color:rgba(232,213,255,.25);padding:8px 0;">No products added yet</div>'}
+        </div>
+        <div class="scc-footer">
+          <div>
+            <div class="scc-total">$${subTotal.toFixed(2)}</div>
+            <div style="font-size:10px;color:rgba(232,213,255,.3);">${sub.products?.length||0} products</div>
+          </div>
+          <div class="scc-actions">
+            ${hasIssue ? `<button class="btn-ghost btn-sm" style="font-size:10px;color:var(--warning);border-color:rgba(251,191,36,.3);" onclick="showPanel('restock',document.querySelectorAll('.sb-item')[2])">⚠ Restock</button>` : ''}
+            <button class="btn-ghost btn-sm" onclick="markFulfilled(${sub.id})" style="font-size:10px;">✓ Fulfilled</button>
+            <button class="btn-icon" onclick="openSubModal(${sub.id})" style="font-size:13px;" title="Edit">✏️</button>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function renderOrderSummary(){
+  const subs = getSubs();
+  const products = getProducts();
+  const now = new Date();
+  const endOfMonth = new Date(now.getFullYear(), now.getMonth()+1, 0);
+  const upcoming = subs.filter(s => new Date(s.nextDate) <= endOfMonth);
+
+  // Aggregate all products needed
+  const needed = {};
+  upcoming.forEach(sub => {
+    (sub.products||[]).forEach(sp => {
+      if(!needed[sp.id]) needed[sp.id] = {id:sp.id, name:sp.name, emoji:sp.emoji, qty:0, price:sp.price};
+      needed[sp.id].qty += sp.qty;
+    });
+  });
+
+  const neededList = Object.values(needed).sort((a,b)=>b.qty-a.qty);
+  const totalVal = neededList.reduce((s,n)=>s+(n.price*n.qty),0);
+  document.getElementById('orderTotalValue').textContent = '$'+totalVal.toFixed(2);
+
+  if(!neededList.length){
+    document.getElementById('orderSummaryList').innerHTML = '<p style="font-size:13px;color:rgba(232,213,255,.25);padding:16px 0;text-align:center;">No subscriptions due this month.</p>';
+    document.getElementById('stockImpactList').innerHTML = '';
+    return;
+  }
+
+  document.getElementById('orderSummaryList').innerHTML = neededList.map(n => {
+    const p = products.find(x=>x.id===n.id);
+    const currentStock = p?.stock||0;
+    const shortfall = Math.max(0, n.qty - currentStock);
+    return `
+      <div class="os-row">
+        ${p?.image ? `<img src="${p.image}" class="os-thumb" alt="${n.name}">` : `<div class="os-thumb-ph">${p?.emoji||n.emoji||'🌸'}</div>`}
+        <div class="os-info">
+          <div class="os-name">${n.name}</div>
+          <div class="os-sub">$${n.price} each · ${upcoming.filter(s=>(s.products||[]).some(sp=>sp.id===n.id)).length} clients</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="os-qty-needed">${n.qty} needed</div>
+          <div class="os-have" style="color:${shortfall>0?'var(--danger)':'var(--success)'};">
+            ${shortfall > 0 ? `⚠ Need ${shortfall} more` : `✓ Have ${currentStock}`}
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+
+  // Stock impact
+  document.getElementById('stockImpactList').innerHTML = neededList.map(n => {
+    const p = products.find(x=>x.id===n.id);
+    const current = p?.stock||0;
+    const after = Math.max(0, current - n.qty);
+    const pct = current > 0 ? Math.round((after/current)*100) : 0;
+    const color = after === 0 ? '#f87171' : after <= (p?.restockAt||3) ? '#fbbf24' : '#34d399';
+    return `
+      <div style="padding:10px 0;border-bottom:1px solid rgba(168,85,247,.07);">
+        <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+          <span style="font-size:13px;color:var(--starlight);">${n.name}</span>
+          <span style="font-size:11px;color:rgba(232,213,255,.4);">${current} → <strong style="color:${color};">${after}</strong></span>
+        </div>
+        <div style="height:5px;background:rgba(168,85,247,.1);border-radius:100px;overflow:hidden;">
+          <div style="width:${pct}%;height:100%;background:${color};border-radius:100px;transition:width .4s;"></div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+// ── SUBSCRIPTION MODAL ──
+function openSubModal(id = null){
+  editingSubId = id;
+  subProductsInForm = [];
+
+  // Populate product picker
+  const products = getProducts();
+  document.getElementById('subProductPicker').innerHTML =
+    '<option value="">— Select a product to add —</option>' +
+    products.map(p=>`<option value="${p.id}">${p.name} · $${p.price}</option>`).join('');
+
+  if(id){
+    const sub = getSubs().find(s=>s.id===id);
+    if(!sub) return;
+    document.getElementById('subModalTitle').textContent = 'Edit Subscription';
+    document.getElementById('subDeleteBtn').style.display = 'block';
+    document.getElementById('sf-name').value = sub.name||'';
+    document.getElementById('sf-email').value = sub.email||'';
+    document.getElementById('sf-phone').value = sub.phone||'';
+    document.getElementById('sf-freq').value = sub.freq||'monthly';
+    document.getElementById('sf-nextdate').value = sub.nextDate||'';
+    document.getElementById('sf-delivery').value = sub.delivery||'Pick Up at Spa';
+    document.getElementById('sf-notes').value = sub.notes||'';
+    subProductsInForm = (sub.products||[]).map(p=>({...p}));
+  } else {
+    document.getElementById('subModalTitle').textContent = 'Add Client Subscription';
+    document.getElementById('subDeleteBtn').style.display = 'none';
+    document.getElementById('sf-name').value='';
+    document.getElementById('sf-email').value='';
+    document.getElementById('sf-phone').value='';
+    document.getElementById('sf-freq').value='monthly';
+    document.getElementById('sf-notes').value='';
+    document.getElementById('sf-delivery').value='Pick Up at Spa';
+    // Default next date = 1 month from today
+    const d = new Date(); d.setMonth(d.getMonth()+1);
+    document.getElementById('sf-nextdate').value = d.toISOString().slice(0,10);
+  }
+  renderSubFormProducts();
+  document.getElementById('subModal').classList.add('open');
+}
+
+function closeSubModal(){
+  document.getElementById('subModal').classList.remove('open');
+  editingSubId = null;
+  subProductsInForm = [];
+}
+
+function addSubProduct(){
+  const sel = document.getElementById('subProductPicker');
+  const id = parseInt(sel.value);
+  if(!id){ toast('⚠️','Select a product first'); return; }
+  const p = getProducts().find(x=>x.id===id);
+  if(!p) return;
+  const existing = subProductsInForm.find(x=>x.id===id);
+  if(existing){ existing.qty++; }
+  else { subProductsInForm.push({id:p.id, name:p.name, qty:1, emoji:p.emoji||'🌸', image:p.image||'', price:p.price}); }
+  renderSubFormProducts();
+  sel.value = '';
+}
+
+function renderSubFormProducts(){
+  const builder = document.getElementById('subProductsBuilder');
+  const empty = document.getElementById('subProdsEmpty');
+  if(!subProductsInForm.length){
+    builder.innerHTML = '<div style="padding:14px;text-align:center;color:rgba(232,213,255,.3);font-size:13px;" id="subProdsEmpty">No products added yet — select below ↓</div>';
+    return;
+  }
+  builder.innerHTML = subProductsInForm.map((sp, i) => `
+    <div class="spb-row">
+      ${sp.image ? `<img src="${sp.image}" style="width:30px;height:30px;border-radius:6px;object-fit:cover;">` : `<span style="font-size:18px;">${sp.emoji}</span>`}
+      <span class="spb-name">${sp.name} <span style="font-size:10px;color:rgba(168,85,247,.5);">$${sp.price}</span></span>
+      <div class="spb-qty-wrap">
+        <span style="font-size:10px;color:rgba(232,213,255,.3);">Qty:</span>
+        <input type="number" class="spb-qty" value="${sp.qty}" min="1" onchange="updateSubProdQty(${i},this.value)">
+      </div>
+      <button class="spb-remove" onclick="removeSubProd(${i})">×</button>
+    </div>`).join('');
+}
+
+function updateSubProdQty(idx, val){
+  subProductsInForm[idx].qty = Math.max(1, parseInt(val)||1);
+}
+
+function removeSubProd(idx){
+  subProductsInForm.splice(idx,1);
+  renderSubFormProducts();
+}
+
+function saveSubscription(){
+  const name = document.getElementById('sf-name').value.trim();
+  if(!name){ toast('⚠️','Client name is required'); return; }
+  const nextDate = document.getElementById('sf-nextdate').value;
+  if(!nextDate){ toast('⚠️','Next order date is required'); return; }
+
+  const sub = {
+    id: editingSubId || Date.now(),
+    name,
+    email: document.getElementById('sf-email').value.trim(),
+    phone: document.getElementById('sf-phone').value.trim(),
+    freq: document.getElementById('sf-freq').value,
+    nextDate,
+    delivery: document.getElementById('sf-delivery').value,
+    notes: document.getElementById('sf-notes').value.trim(),
+    products: subProductsInForm.map(p=>({...p})),
+    createdAt: editingSubId ? getSubs().find(s=>s.id===editingSubId)?.createdAt : new Date().toISOString(),
+  };
+
+  const subs = getSubs();
+  if(editingSubId){
+    const idx = subs.findIndex(s=>s.id===editingSubId);
+    if(idx>=0) subs[idx] = sub; else subs.push(sub);
+  } else { subs.push(sub); }
+  saveSubs(subs);
+  closeSubModal();
+  renderSubscriptions();
+  toast('✦', `Subscription ${editingSubId?'updated':'added'} for ${name}!`);
+}
+
+function deleteSubscription(){
+  if(!editingSubId) return;
+  if(!confirm('Delete this subscription?')) return;
+  saveSubs(getSubs().filter(s=>s.id!==editingSubId));
+  closeSubModal();
+  renderSubscriptions();
+  toast('✦','Subscription deleted');
+}
+
+function markFulfilled(id){
+  const subs = getSubs();
+  const sub = subs.find(s=>s.id===id);
+  if(!sub) return;
+  // Deduct stock for each product
+  const products = getProducts();
+  (sub.products||[]).forEach(sp => {
+    const p = products.find(x=>x.id===sp.id);
+    if(p) p.stock = Math.max(0, p.stock - sp.qty);
+  });
+  saveProducts(products);
+  // Advance next order date
+  const next = new Date(sub.nextDate);
+  if(sub.freq === 'monthly') next.setMonth(next.getMonth()+1);
+  else if(sub.freq === 'bimonthly') next.setMonth(next.getMonth()+2);
+  else if(sub.freq === 'quarterly') next.setMonth(next.getMonth()+3);
+  else next.setMonth(next.getMonth()+1);
+  sub.nextDate = next.toISOString().slice(0,10);
+  saveSubs(subs);
+  renderSubscriptions();
+  renderProductTable();
+  toast('✦', `${sub.name}'s order marked fulfilled! Next order: ${next.toLocaleDateString('en-US',{month:'short',day:'numeric'})}`);
+}
+
+function exportOrderList(){
+  const subs = getSubs();
+  const products = getProducts();
+  const now = new Date();
+  const endOfMonth = new Date(now.getFullYear(), now.getMonth()+1, 0);
+  const upcoming = subs.filter(s=>new Date(s.nextDate)<=endOfMonth);
+  const needed = {};
+  upcoming.forEach(sub => {
+    (sub.products||[]).forEach(sp => {
+      if(!needed[sp.id]) needed[sp.id] = {name:sp.name,qty:0,price:sp.price,clients:[]};
+      needed[sp.id].qty += sp.qty;
+      needed[sp.id].clients.push(sub.name);
+    });
+  });
+  const rows = [['Product','Qty Needed','Price Each','Total Value','Current Stock','Shortfall','Clients']];
+  Object.values(needed).forEach(n => {
+    const p = products.find(x=>x.name===n.name);
+    const stock = p?.stock||0;
+    rows.push([n.name, n.qty, '$'+n.price, '$'+(n.qty*n.price).toFixed(2), stock, Math.max(0,n.qty-stock), n.clients.join('; ')]);
+  });
+  const csv = rows.map(r=>r.map(c=>`"${c}"`).join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
+  a.download = `cosmic-spa-order-${now.toISOString().slice(0,7)}.csv`;
+  a.click();
+  toast('⬇','Order list exported!');
+}
+
+// ═══════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════
+function toast(icon, text){
+  const t = document.getElementById('toast');
+  document.getElementById('ti').textContent = icon;
+  document.getElementById('tt').textContent = text;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(()=>t.classList.remove('show'), 3200);
+}
+
+// ═══════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════
+window.addEventListener('DOMContentLoaded', async ()=>{
+  // Auth guard — esthetician only
+  CosmicAuth.injectAuthBar(['esthetician'], 'inventory');
+
+  // Show loading state
+  document.getElementById('productTableBody').innerHTML =
+    '<tr><td colspan="8" style="text-align:center;padding:48px;color:rgba(232,213,255,.3);">Loading inventory…</td></tr>';
+
+  // Load all three datasets from Supabase in parallel
+  try {
+    const [prodRes, catRes, subRes] = await Promise.all([
+      _sb.from('products').select('*').order('id', { ascending: true }),
+      _sb.from('categories').select('*').order('sort_order', { ascending: true }),
+      _sb.from('subscriptions').select('*').order('id', { ascending: true }),
+    ]);
+
+    // Products — seed with defaults if table is empty
+    if (!prodRes.error && prodRes.data && prodRes.data.length > 0) {
+      _products = prodRes.data.map(_rowToProduct);
+    } else {
+      _products = DEFAULT_PRODUCTS;
+      saveProducts(_products); // seeds Supabase
+    }
+
+    // Categories — seed with defaults if table is empty
+    if (!catRes.error && catRes.data && catRes.data.length > 0) {
+      _categories = catRes.data.map(r => ({ id: r.id, name: r.name, icon: r.icon }));
+    } else {
+      _categories = DEFAULT_CATEGORIES;
+      saveCategories(_categories); // seeds Supabase
+    }
+
+    // Subscriptions
+    if (!subRes.error && subRes.data) {
+      _subs = subRes.data.map(_rowToSub);
+    } else {
+      _subs = [];
+    }
+
+    if (prodRes.error)  console.error('[init] products load error:',  prodRes.error);
+    if (catRes.error)   console.error('[init] categories load error:', catRes.error);
+    if (subRes.error)   console.error('[init] subscriptions load error:', subRes.error);
+
+  } catch (e) {
+    console.error('[init] Supabase load failed, falling back to defaults:', e);
+    _products   = DEFAULT_PRODUCTS;
+    _categories = DEFAULT_CATEGORIES;
+    _subs       = [];
+  }
+
+  updateBadges();
+  renderFilterChips();
+  renderProductTable();
+});
+</script>
+</body>
+</html>

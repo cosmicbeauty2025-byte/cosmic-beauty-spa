@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cosmic Beauty Spa · Sign In</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Syncopate:wght@400;700&family=DM+Sans:wght@300;400;500;600&family=Pacifico&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js"></script>
+<script src="supabase-client.js"></script>
+<style>
+:root{--void:#030612;--deep:#0a0820;--violet:#6b2fa0;--electric:#7c3aed;--aurora:#a855f7;--sky:#60a5fa;--ice:#bae6fd;--starlight:#e8d5ff;--pearl:#f5f0ff;--border:rgba(168,85,247,.15);--border-hi:rgba(168,85,247,.45);}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--void);color:var(--pearl);font-family:'DM Sans',sans-serif;font-weight:300;min-height:100vh;overflow-x:hidden;display:flex;align-items:center;justify-content:center;}
+::selection{background:var(--aurora);color:var(--void);}
+
+#starfield{position:fixed;inset:0;z-index:0;pointer-events:none;}
+.nb{position:fixed;border-radius:50%;filter:blur(120px);pointer-events:none;z-index:0;}
+.nb1{width:600px;height:600px;background:radial-gradient(circle,rgba(107,47,160,.3) 0%,transparent 70%);top:-150px;left:-100px;animation:drift 22s ease-in-out infinite alternate;}
+.nb2{width:500px;height:500px;background:radial-gradient(circle,rgba(61,47,160,.22) 0%,transparent 70%);bottom:10%;right:-100px;animation:drift 28s ease-in-out infinite alternate-reverse;}
+.nb3{width:380px;height:380px;background:radial-gradient(circle,rgba(96,165,250,.14) 0%,transparent 70%);top:50%;left:40%;animation:drift 34s ease-in-out infinite alternate;}
+@keyframes drift{0%{transform:translate(0,0) scale(1);}100%{transform:translate(36px,24px) scale(1.1);}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+@keyframes twinkle{0%,100%{opacity:1;}50%{opacity:.3;}}
+
+.login-wrap{position:relative;z-index:1;width:100%;max-width:480px;padding:24px;}
+
+.login-header{text-align:center;margin-bottom:32px;animation:fadeUp .7s ease both;}
+.logo-text{font-family:'Pacifico',cursive;font-size:40px;color:var(--aurora);text-shadow:0 0 40px rgba(168,85,247,.5);}
+.logo-sub{font-size:9px;letter-spacing:.45em;text-transform:uppercase;color:rgba(168,85,247,.4);margin-top:6px;}
+.login-title{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;margin-top:16px;line-height:1.1;}
+.login-title em{font-style:italic;background:linear-gradient(135deg,var(--aurora),var(--sky));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+
+.login-box{background:linear-gradient(145deg,rgba(18,10,45,.96),rgba(13,26,74,.92));border:1px solid var(--border);border-radius:28px;padding:36px 40px;box-shadow:0 0 80px rgba(107,47,160,.22);animation:fadeUp .7s .1s ease both;backdrop-filter:blur(20px);}
+
+/* Tabs */
+.role-tabs{display:grid;grid-template-columns:1fr 1fr;gap:3px;background:rgba(168,85,247,.07);border-radius:14px;padding:3px;margin-bottom:28px;}
+.role-tab{padding:11px;text-align:center;font-size:12px;letter-spacing:.1em;text-transform:uppercase;border-radius:11px;cursor:pointer;transition:all .3s;color:rgba(232,213,255,.45);}
+.role-tab.active{background:linear-gradient(135deg,rgba(107,47,160,.6),rgba(61,47,160,.5));color:var(--starlight);box-shadow:0 0 16px rgba(107,47,160,.3);}
+
+/* Auth sub-tabs (login/register) */
+.auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:rgba(168,85,247,.06);border-radius:10px;padding:3px;margin-bottom:22px;}
+.auth-tab{padding:9px;text-align:center;font-size:11px;letter-spacing:.1em;text-transform:uppercase;border-radius:8px;cursor:pointer;transition:all .3s;color:rgba(232,213,255,.4);}
+.auth-tab.active{background:rgba(168,85,247,.18);color:var(--starlight);}
+
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
+.field label{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--aurora);}
+.field input{background:rgba(26,10,61,.6);border:1px solid var(--border);border-radius:12px;padding:13px 16px;color:var(--pearl);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:all .3s;width:100%;}
+.field input:focus{border-color:var(--border-hi);box-shadow:0 0 16px rgba(168,85,247,.12);}
+.field input::placeholder{color:rgba(232,213,255,.22);}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+
+.btn-submit{width:100%;background:linear-gradient(135deg,var(--electric),rgba(107,47,160,.9));color:#fff;border:none;padding:15px;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:13px;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;transition:all .4s;box-shadow:0 0 24px rgba(124,58,237,.4);position:relative;overflow:hidden;margin-top:6px;}
+.btn-submit::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent,rgba(255,255,255,.12),transparent);transform:translateX(-100%);transition:transform .5s;}
+.btn-submit:hover::before{transform:translateX(100%);}
+.btn-submit:hover{box-shadow:0 0 44px rgba(124,58,237,.7);transform:translateY(-1px);}
+
+.divider{text-align:center;font-size:11px;color:rgba(232,213,255,.2);letter-spacing:.2em;margin:14px 0;}
+
+.btn-demo{width:100%;background:rgba(168,85,247,.07);border:1px solid var(--border);border-radius:12px;padding:13px;color:rgba(232,213,255,.55);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;transition:all .3s;letter-spacing:.04em;}
+.btn-demo:hover{border-color:var(--border-hi);color:var(--starlight);}
+
+.error-msg{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.25);border-radius:10px;padding:10px 14px;font-size:12px;color:#f87171;margin-bottom:14px;display:none;}
+.error-msg.show{display:block;}
+
+.esthie-hint{text-align:center;font-size:12px;color:rgba(232,213,255,.28);padding:10px 14px;background:rgba(168,85,247,.05);border:1px solid rgba(168,85,247,.1);border-radius:10px;margin-bottom:20px;line-height:1.6;}
+
+.login-footer{text-align:center;margin-top:20px;font-size:11px;color:rgba(232,213,255,.22);letter-spacing:.04em;animation:fadeUp .7s .2s ease both;}
+.star-deco{color:rgba(168,85,247,.35);animation:twinkle 2.2s infinite;}
+</style>
+</head>
+<body>
+
+<canvas id="starfield"></canvas>
+<div class="nb nb1"></div><div class="nb nb2"></div><div class="nb nb3"></div>
+
+<div class="login-wrap">
+  <div class="login-header">
+    <div class="logo-text">Cosmic Beauty Spa</div>
+    <div class="logo-sub">Hudson · Florida</div>
+    <h1 class="login-title">Welcome<br><em>Back</em></h1>
+  </div>
+
+  <div class="login-box">
+    <!-- Role tabs -->
+    <div class="role-tabs">
+      <div class="role-tab active" id="tabGuest" onclick="switchRole('guest')">✨ Guest</div>
+      <div class="role-tab" id="tabEsth"  onclick="switchRole('esthetician')">🧖 Esthetician</div>
+    </div>
+
+    <div id="errorMsg" class="error-msg"></div>
+
+    <!-- ── GUEST PANEL ── -->
+    <div id="guestPanel">
+      <div class="auth-tabs">
+        <div class="auth-tab active" id="atLogin"    onclick="switchAuthTab('login')">Sign In</div>
+        <div class="auth-tab"        id="atRegister" onclick="switchAuthTab('register')">Create Account</div>
+      </div>
+
+      <!-- Login form -->
+      <div id="loginForm">
+        <div class="field"><label>Email</label><input type="email" id="loginEmail" placeholder="your@email.com" autocomplete="email"></div>
+        <div class="field"><label>Password</label><input type="password" id="loginPw" placeholder="••••••••" onkeydown="if(event.key==='Enter')guestLogin()" autocomplete="current-password"></div>
+        <button class="btn-submit" onclick="guestLogin()">Sign In ✦</button>
+        <div class="divider">· or ·</div>
+        <button class="btn-demo" onclick="demoGuest()">✦ Try Demo Guest Account</button>
+      </div>
+
+      <!-- Register form -->
+      <div id="registerForm" style="display:none;">
+        <div class="grid-2">
+          <div class="field"><label>First Name</label><input type="text" id="regFirst" placeholder="Aurora"></div>
+          <div class="field"><label>Last Name</label><input type="text" id="regLast" placeholder="Starling"></div>
+        </div>
+        <div class="field"><label>Email</label><input type="email" id="regEmail" placeholder="your@email.com" autocomplete="email"></div>
+        <div class="field"><label>Phone (optional)</label><input type="tel" id="regPhone" placeholder="(727) 000-0000"></div>
+        <div class="field"><label>Password</label><input type="password" id="regPw" placeholder="Create a password" autocomplete="new-password"></div>
+        <button class="btn-submit" onclick="guestRegister()">Create My Account ✦</button>
+      </div>
+    </div>
+
+    <!-- ── ESTHETICIAN PANEL ── -->
+    <div id="esthPanel" style="display:none;">
+      <div class="esthie-hint">&#x1F512; This area is for Cosmic Beauty Spa staff only.</div>
+      <div class="field"><label>Email</label><input type="email" id="estEmail" placeholder="christina@cosmicbeautyspa.com" autocomplete="email"></div>
+      <div class="field"><label>Password</label><input type="password" id="estPw" placeholder="••••••••" onkeydown="if(event.key==='Enter')estLogin()" autocomplete="current-password"></div>
+      <button class="btn-submit" onclick="estLogin()">Sign In to Dashboard ✦</button>
+    </div>
+  </div>
+
+  <div class="login-footer"><span class="star-deco">✦</span> Cosmic Beauty Spa · Hudson, Florida <span class="star-deco">✦</span></div>
+</div>
+
+<script>
+var HOME_PAGE = 'skincare-cosmos.html';
+var DASH_PAGE = 'esthetician-dashboard.html';
+
+function _navigate(dest) {
+  try {
+    var base = window.location.href.replace(/[^/\\]+$/, '');
+    window.location.href = base + dest;
+  } catch(e) { showError('Navigation error: ' + e.message); }
+}
+
+// ── Redirect if already logged in ────────────────────────────────────────────
+// Check Supabase session async; also check CosmicAuth as instant fallback.
+window.addEventListener('DOMContentLoaded', function() {
+  // Quick CosmicAuth check first (instant)
+  try {
+    if (typeof CosmicAuth !== 'undefined') {
+      var s = CosmicAuth.getSession();
+      if (s) {
+        _navigate(s.role === 'esthetician' ? DASH_PAGE : HOME_PAGE);
+        return;
+      }
+    }
+  } catch(e) {}
+
+  // Async Supabase session check
+  if (typeof cbsInitSession === 'function') {
+    cbsInitSession(
+      function(user, profile) {
+        _navigate(profile && profile.is_admin ? DASH_PAGE : HOME_PAGE);
+      },
+      function() { /* no session — stay on login page */ }
+    );
+  }
+});
+
+// ── Starfield ─────────────────────────────────────────────────────────────────
+var canvas = document.getElementById('starfield');
+var ctx = canvas.getContext('2d');
+var stars = [];
+function resizeStars() {
+  canvas.width = innerWidth; canvas.height = innerHeight;
+  stars = [];
+  for (var i = 0; i < 180; i++) stars.push({
+    x: Math.random()*canvas.width, y: Math.random()*canvas.height,
+    r: Math.random()*1.4+.2, ts: Math.random()*.02+.004,
+    c: Math.random()>.7 ? '#60a5fa' : '#e8d5ff'
+  });
+}
+function drawStars(t) {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  for (var i = 0; i < stars.length; i++) {
+    var s = stars[i];
+    ctx.globalAlpha = .12+.7*(.5+.5*Math.sin(t*s.ts));
+    ctx.fillStyle = s.c; ctx.beginPath();
+    ctx.arc(s.x,s.y,s.r,0,Math.PI*2); ctx.fill();
+  }
+  ctx.globalAlpha = 1; requestAnimationFrame(drawStars);
+}
+resizeStars(); window.addEventListener('resize', resizeStars); requestAnimationFrame(drawStars);
+
+// ── UI helpers ────────────────────────────────────────────────────────────────
+function switchRole(role) {
+  document.getElementById('guestPanel').style.display = role === 'guest' ? 'block' : 'none';
+  document.getElementById('esthPanel').style.display  = role === 'esthetician' ? 'block' : 'none';
+  document.getElementById('tabGuest').classList.toggle('active', role === 'guest');
+  document.getElementById('tabEsth').classList.toggle('active',  role === 'esthetician');
+  clearError();
+}
+function switchAuthTab(tab) {
+  document.getElementById('loginForm').style.display    = tab === 'login'    ? 'block' : 'none';
+  document.getElementById('registerForm').style.display = tab === 'register' ? 'block' : 'none';
+  document.getElementById('atLogin').classList.toggle('active',    tab === 'login');
+  document.getElementById('atRegister').classList.toggle('active', tab === 'register');
+  clearError();
+}
+function showError(msg) {
+  var el = document.getElementById('errorMsg');
+  el.textContent = msg; el.classList.add('show');
+}
+function clearError() { document.getElementById('errorMsg').classList.remove('show'); }
+function _btnState(btn, loading) {
+  btn.disabled = loading;
+  btn.style.opacity = loading ? '.6' : '1';
+}
+
+// ── Guest Login ───────────────────────────────────────────────────────────────
+async function guestLogin() {
+  clearError();
+  var email = document.getElementById('loginEmail').value.trim();
+  var pw    = document.getElementById('loginPw').value;
+  if (!email || !pw) { showError('Please enter your email and password.'); return; }
+  var btn = document.querySelector('#loginForm .btn-submit');
+  _btnState(btn, true); btn.textContent = 'Signing in…';
+  try {
+    var user    = await cbsLogin(email, pw);
+    var profile = await getProfile(user.id);
+    _navigate(profile && profile.is_admin ? DASH_PAGE : HOME_PAGE);
+  } catch(e) {
+    showError(e.message || 'Sign in failed. Please check your credentials.');
+    _btnState(btn, false); btn.textContent = 'Sign In ✦';
+  }
+}
+
+// ── Guest Register ────────────────────────────────────────────────────────────
+async function guestRegister() {
+  clearError();
+  var first = document.getElementById('regFirst').value.trim();
+  var last  = document.getElementById('regLast').value.trim();
+  var email = document.getElementById('regEmail').value.trim();
+  var phone = document.getElementById('regPhone').value.trim();
+  var pw    = document.getElementById('regPw').value;
+  if (!first || !email || !pw) { showError('First name, email, and password are required.'); return; }
+  if (pw.length < 6) { showError('Password must be at least 6 characters.'); return; }
+  var btn = document.querySelector('#registerForm .btn-submit');
+  _btnState(btn, true); btn.textContent = 'Creating account…';
+  try {
+    await cbsRegister({ firstName: first, lastName: last, email: email, phone: phone, password: pw });
+    _navigate(HOME_PAGE);
+  } catch(e) {
+    showError(e.message || 'Registration failed. Please try again.');
+    _btnState(btn, false); btn.textContent = 'Create My Account ✦';
+  }
+}
+
+// ── Demo Guest ────────────────────────────────────────────────────────────────
+async function demoGuest() {
+  clearError();
+  try {
+    await cbsLogin('demo@cosmicbeautyspa.com', 'demo1234');
+    _navigate(HOME_PAGE);
+  } catch(e) {
+    // If demo account doesn't exist in Supabase yet, show friendly message
+    showError('Demo account not set up yet. Please create a free account above — it only takes 30 seconds!');
+  }
+}
+
+// ── Esthetician Login ─────────────────────────────────────────────────────────
+async function estLogin() {
+  clearError();
+  var email = document.getElementById('estEmail').value.trim();
+  var pw    = document.getElementById('estPw').value;
+  if (!email || !pw) { showError('Please enter your email and password.'); return; }
+  var btn = document.querySelector('#esthPanel .btn-submit');
+  _btnState(btn, true); btn.textContent = 'Signing in…';
+  try {
+    var user    = await cbsLogin(email, pw);
+    var profile = await getProfile(user.id);
+    if (!profile || !profile.is_admin) {
+      await cbsLogout();
+      showError('This account does not have esthetician access.');
+      _btnState(btn, false); btn.textContent = 'Sign In to Dashboard ✦';
+      return;
+    }
+    _navigate(DASH_PAGE);
+  } catch(e) {
+    showError(e.message || 'Incorrect credentials or insufficient access.');
+    _btnState(btn, false); btn.textContent = 'Sign In to Dashboard ✦';
+  }
+}
+</script>
+</body>
+</html>

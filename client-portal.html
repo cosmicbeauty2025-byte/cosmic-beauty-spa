@@ -1,0 +1,3174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<!-- Prevent Cloudflare from modifying this page's scripts -->
+<meta name="cf-2fa-verify" content="false">
+<title>Cosmic Beauty Spa · My Skin Portal</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js"></script>
+<script src="supabase-client.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Syncopate:wght@400;700&family=DM+Sans:wght@300;400;500;600&family=Pacifico&display=swap" rel="stylesheet">
+<style>
+:root {
+  --void: #030612;
+  --deep: #0a0820;
+  --card: rgba(18,10,45,0.85);
+  --card2: rgba(13,26,74,0.6);
+  --violet: #6b2fa0;
+  --electric: #7c3aed;
+  --aurora: #a855f7;
+  --sky: #60a5fa;
+  --ice: #bae6fd;
+  --starlight: #e8d5ff;
+  --pearl: #f5f0ff;
+  --success: #34d399;
+  --warning: #fbbf24;
+  --danger: #f87171;
+  --border: rgba(168,85,247,0.15);
+  --border-active: rgba(168,85,247,0.45);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--void);color:var(--pearl);font-family:'DM Sans',sans-serif;font-weight:300;min-height:100vh;overflow-x:hidden;}
+::selection{background:var(--aurora);color:var(--void);}
+
+/* BG */
+.bg-fixed{position:fixed;inset:0;z-index:0;pointer-events:none;}
+.bg-fixed canvas{position:absolute;inset:0;width:100%;height:100%;}
+.nb{position:absolute;border-radius:50%;filter:blur(100px);}
+.nb1{width:500px;height:500px;background:radial-gradient(circle,rgba(107,47,160,.28) 0%,transparent 70%);top:-100px;left:-80px;animation:drift 18s ease-in-out infinite alternate;}
+.nb2{width:400px;height:400px;background:radial-gradient(circle,rgba(61,47,160,.22) 0%,transparent 70%);bottom:5%;right:-60px;animation:drift 22s ease-in-out infinite alternate-reverse;}
+.nb3{width:300px;height:300px;background:radial-gradient(circle,rgba(96,165,250,.14) 0%,transparent 70%);top:45%;left:35%;animation:drift 26s ease-in-out infinite alternate;}
+@keyframes drift{0%{transform:translate(0,0) scale(1);}100%{transform:translate(30px,20px) scale(1.08);}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+@keyframes pulse{0%,100%{box-shadow:0 0 20px rgba(168,85,247,.3);}50%{box-shadow:0 0 40px rgba(168,85,247,.6);}}
+@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+@keyframes twinkle{0%,100%{opacity:1;}50%{opacity:.3;}}
+@keyframes slideRight{from{transform:translateX(-20px);opacity:0;}to{transform:translateX(0);opacity:1;}}
+
+/* APP SHELL */
+#app{position:relative;z-index:1;min-height:100vh;}
+
+/* ── AUTH SCREEN ── */
+#authScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;}
+.auth-box{background:linear-gradient(145deg,rgba(18,10,45,.95),rgba(13,26,74,.9));border:1px solid var(--border);border-radius:28px;padding:52px 44px;width:100%;max-width:440px;box-shadow:0 0 80px rgba(107,47,160,.25);animation:fadeUp .7s ease both;backdrop-filter:blur(20px);}
+.auth-logo{font-family:'Pacifico',cursive;font-size:38px;letter-spacing:.01em;color:var(--aurora);text-align:center;margin-bottom:6px;font-weight:400;text-shadow:0 0 40px rgba(168,85,247,.5),0 2px 12px rgba(0,0,0,.4);}
+.auth-logo span{font-family:'DM Sans',sans-serif;font-size:9px;display:block;letter-spacing:.45em;text-transform:uppercase;color:rgba(168,85,247,.5);margin-top:4px;font-weight:300;}
+.auth-title{font-family:'Cormorant Garamond',serif;font-size:38px;font-weight:300;text-align:center;margin:20px 0 8px;line-height:1.1;}
+.auth-title em{font-style:italic;background:linear-gradient(135deg,var(--aurora),var(--sky));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.auth-sub{text-align:center;font-size:13px;color:rgba(232,213,255,.5);margin-bottom:36px;line-height:1.7;}
+.auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:rgba(168,85,247,.08);border-radius:12px;padding:3px;margin-bottom:28px;}
+.auth-tab{padding:10px;text-align:center;font-size:12px;letter-spacing:.1em;text-transform:uppercase;border-radius:10px;cursor:pointer;transition:all .3s;color:rgba(232,213,255,.5);}
+.auth-tab.active{background:linear-gradient(135deg,rgba(107,47,160,.6),rgba(61,47,160,.5));color:var(--starlight);box-shadow:0 0 16px rgba(107,47,160,.3);}
+.field{display:flex;flex-direction:column;gap:7px;margin-bottom:16px;}
+.field label{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--aurora);}
+.field input{background:rgba(26,10,61,.6);border:1px solid var(--border);border-radius:12px;padding:13px 16px;color:var(--pearl);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:all .3s;width:100%;}
+.field input:focus{border-color:var(--border-active);box-shadow:0 0 16px rgba(168,85,247,.12);}
+.field input::placeholder{color:rgba(232,213,255,.25);}
+.btn-full{width:100%;background:linear-gradient(135deg,var(--electric),rgba(107,47,160,.9));color:#fff;border:none;padding:15px;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:13px;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;transition:all .4s;box-shadow:0 0 24px rgba(124,58,237,.4);position:relative;overflow:hidden;margin-top:4px;}
+.btn-full::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent,rgba(255,255,255,.12),transparent);transform:translateX(-100%);transition:transform .5s;}
+.btn-full:hover::before{transform:translateX(100%);}
+.btn-full:hover{box-shadow:0 0 44px rgba(124,58,237,.7);transform:translateY(-1px);}
+.auth-divider{text-align:center;font-size:11px;color:rgba(232,213,255,.25);letter-spacing:.2em;margin:16px 0;}
+.demo-btn{width:100%;background:rgba(168,85,247,.08);border:1px solid var(--border);border-radius:12px;padding:13px;color:rgba(232,213,255,.6);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;transition:all .3s;letter-spacing:.05em;}
+.demo-btn:hover{border-color:var(--border-active);color:var(--starlight);}
+
+/* ── MAIN APP SHELL ── */
+#portalScreen{display:none;min-height:100vh;}
+
+/* Top nav */
+.portal-nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:14px 28px;background:rgba(3,6,18,.8);border-bottom:1px solid var(--border);backdrop-filter:blur(20px);}
+.portal-logo{font-family:'Pacifico',cursive;font-size:24px;letter-spacing:.01em;color:var(--aurora);font-weight:400;text-shadow:0 0 24px rgba(168,85,247,.45);line-height:1.1;}
+.portal-logo span{font-family:'DM Sans',sans-serif;font-size:8px;display:block;letter-spacing:.4em;text-transform:uppercase;color:rgba(168,85,247,.4);margin-top:2px;font-weight:300;}
+.nav-user{display:flex;align-items:center;gap:14px;}
+.user-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--electric),var(--violet));display:flex;align-items:center;justify-content:center;font-size:15px;border:1px solid rgba(168,85,247,.3);cursor:pointer;}
+.user-name{font-size:13px;color:var(--starlight);}
+.logout-btn{font-size:11px;color:rgba(232,213,255,.35);letter-spacing:.1em;text-transform:uppercase;background:none;border:none;cursor:pointer;transition:color .3s;}
+.logout-btn:hover{color:var(--aurora);}
+
+/* Bottom tab nav (mobile-first) */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:100;display:flex;background:rgba(3,6,18,.92);border-top:1px solid var(--border);backdrop-filter:blur(20px);}
+.bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px 14px;cursor:pointer;transition:all .3s;border:none;background:none;min-width:0;}
+.bnav-item .bi{font-size:20px;transition:transform .3s;}
+.bnav-item .bl{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:rgba(232,213,255,.35);transition:color .3s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;}
+.bnav-item.active .bl{color:var(--aurora);}
+.bnav-item.active .bi{transform:scale(1.18);}
+.bnav-item:hover .bl{color:rgba(168,85,247,.7);}
+/* On very small phones, hide text labels to prevent crowding */
+@media(max-width:380px){
+  .bnav-item .bl{display:none;}
+  .bnav-item{padding:14px 4px 18px;}
+  .bnav-item .bi{font-size:22px;}
+}
+
+/* Content area */
+.portal-content{padding:24px 20px 100px;max-width:900px;margin:0 auto;}
+
+/* ── PANELS ── */
+.panel{display:none;animation:fadeUp .5s ease both;}
+.panel.active{display:block;}
+
+/* Section headers */
+.p-header{margin-bottom:28px;}
+.p-tag{font-size:9px;letter-spacing:.45em;text-transform:uppercase;color:var(--aurora);margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+.p-tag::before{content:'';display:block;width:18px;height:1px;background:var(--aurora);}
+.p-title{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:300;line-height:1.1;}
+.p-title em{font-style:italic;background:linear-gradient(135deg,var(--aurora),var(--sky));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.p-sub{font-size:13px;color:rgba(232,213,255,.45);margin-top:8px;line-height:1.7;}
+
+/* Cards */
+.card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:24px;backdrop-filter:blur(12px);transition:all .3s;}
+.card:hover{border-color:rgba(168,85,247,.28);}
+.card-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;color:var(--starlight);margin-bottom:4px;}
+.card-sub{font-size:12px;color:rgba(232,213,255,.4);margin-bottom:18px;}
+
+/* Grid helpers */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+
+/* Pill badges */
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:10px;letter-spacing:.12em;padding:4px 12px;border-radius:100px;background:rgba(168,85,247,.1);border:1px solid rgba(168,85,247,.2);color:rgba(168,85,247,.9);}
+.pill.green{background:rgba(52,211,153,.1);border-color:rgba(52,211,153,.25);color:#34d399;}
+.pill.yellow{background:rgba(251,191,36,.1);border-color:rgba(251,191,36,.25);color:#fbbf24;}
+.pill.red{background:rgba(248,113,113,.1);border-color:rgba(248,113,113,.25);color:#f87171;}
+.pill.blue{background:rgba(96,165,250,.1);border-color:rgba(96,165,250,.25);color:#60a5fa;}
+
+/* ── DASHBOARD ── */
+.welcome-banner{background:linear-gradient(135deg,rgba(107,47,160,.4),rgba(61,47,160,.3));border:1px solid rgba(168,85,247,.25);border-radius:22px;padding:28px 28px 24px;margin-bottom:20px;position:relative;overflow:hidden;}
+.welcome-banner::before{content:'✦';position:absolute;right:24px;top:20px;font-size:40px;color:rgba(168,85,247,.15);}
+.welcome-name{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;margin-bottom:4px;}
+.welcome-name em{font-style:italic;color:var(--aurora);}
+.welcome-sub{font-size:13px;color:rgba(232,213,255,.5);margin-bottom:16px;}
+.welcome-actions{display:flex;gap:10px;flex-wrap:wrap;}
+.btn-sm{padding:9px 20px;border-radius:100px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:all .3s;border:none;font-family:'DM Sans',sans-serif;}
+.btn-sm.primary{background:linear-gradient(135deg,var(--electric),var(--violet));color:#fff;box-shadow:0 0 16px rgba(124,58,237,.35);}
+.btn-sm.primary:hover{box-shadow:0 0 30px rgba(124,58,237,.6);transform:translateY(-1px);}
+.btn-sm.ghost{background:rgba(168,85,247,.08);border:1px solid var(--border);color:rgba(232,213,255,.7);}
+.btn-sm.ghost:hover{border-color:var(--border-active);color:var(--starlight);}
+
+.stat-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px;}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;text-align:center;backdrop-filter:blur(12px);}
+.stat-num{font-family:'Cormorant Garamond',serif;font-size:32px;color:var(--aurora);display:block;}
+.stat-label{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(232,213,255,.4);display:block;margin-top:2px;}
+
+.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+
+/* Routine preview */
+.routine-step{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(168,85,247,.07);}
+.routine-step:last-child{border-bottom:none;}
+.rs-num{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,rgba(107,47,160,.5),rgba(61,47,160,.4));display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--aurora);flex-shrink:0;}
+.rs-name{font-size:13px;color:var(--starlight);flex:1;}
+.rs-time{font-size:10px;color:rgba(168,85,247,.6);letter-spacing:.05em;}
+.rs-check{width:20px;height:20px;border-radius:50%;border:1px solid rgba(168,85,247,.3);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .3s;flex-shrink:0;}
+.rs-check.done{background:var(--success);border-color:var(--success);}
+.rs-check.done::after{content:'✓';font-size:11px;color:#fff;}
+
+/* Reminder cards */
+.reminder-item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid rgba(168,85,247,.07);}
+.reminder-item:last-child{border-bottom:none;}
+.ri-icon{font-size:20px;flex-shrink:0;margin-top:1px;}
+.ri-text{flex:1;}
+.ri-title{font-size:13px;color:var(--starlight);margin-bottom:2px;}
+.ri-sub{font-size:11px;color:rgba(232,213,255,.4);}
+.ri-badge{flex-shrink:0;align-self:center;}
+
+/* ── SKIN QUIZ ── */
+.quiz-progress{display:flex;gap:6px;margin-bottom:32px;}
+.qp-dot{flex:1;height:3px;border-radius:100px;background:rgba(168,85,247,.15);transition:all .4s;}
+.qp-dot.done{background:var(--aurora);}
+.qp-dot.active{background:linear-gradient(to right,var(--aurora),var(--sky));animation:pulse 2s ease-in-out infinite;}
+
+.quiz-step{display:none;}
+.quiz-step.active{display:block;animation:fadeUp .4s ease both;}
+.quiz-q{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;color:var(--starlight);margin-bottom:8px;line-height:1.3;}
+.quiz-hint{font-size:13px;color:rgba(232,213,255,.4);margin-bottom:24px;}
+
+.quiz-options{display:grid;gap:10px;}
+.quiz-options.cols-2{grid-template-columns:1fr 1fr;}
+.quiz-opt{background:rgba(26,10,61,.6);border:1px solid var(--border);border-radius:14px;padding:16px 18px;cursor:pointer;transition:all .3s;display:flex;align-items:center;gap:12px;text-align:left;}
+.quiz-opt:hover{border-color:rgba(168,85,247,.35);background:rgba(107,47,160,.15);}
+.quiz-opt.selected{border-color:rgba(168,85,247,.6);background:rgba(107,47,160,.25);box-shadow:0 0 18px rgba(107,47,160,.2);}
+.quiz-opt .qo-icon{font-size:22px;flex-shrink:0;}
+.quiz-opt .qo-text{font-size:13px;color:var(--starlight);}
+.quiz-opt .qo-sub{font-size:11px;color:rgba(232,213,255,.4);margin-top:2px;}
+
+.quiz-nav{display:flex;justify-content:space-between;align-items:center;margin-top:28px;}
+.btn-back{background:none;border:1px solid var(--border);border-radius:100px;padding:10px 22px;color:rgba(232,213,255,.5);font-family:'DM Sans',sans-serif;font-size:12px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .3s;}
+.btn-back:hover{border-color:var(--border-active);color:var(--starlight);}
+.btn-next{background:linear-gradient(135deg,var(--electric),var(--violet));border:none;border-radius:100px;padding:10px 28px;color:#fff;font-family:'DM Sans',sans-serif;font-size:12px;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;transition:all .3s;box-shadow:0 0 16px rgba(124,58,237,.35);}
+.btn-next:hover{box-shadow:0 0 30px rgba(124,58,237,.6);transform:translateY(-1px);}
+.quiz-step-num{font-size:11px;color:rgba(168,85,247,.5);letter-spacing:.2em;}
+
+/* Quiz result */
+.quiz-result{text-align:center;animation:fadeUp .5s ease both;}
+.result-type{display:inline-block;background:linear-gradient(135deg,rgba(107,47,160,.5),rgba(61,47,160,.4));border:1px solid rgba(168,85,247,.35);border-radius:20px;padding:28px 40px;margin:24px 0;}
+.result-icon{font-size:56px;margin-bottom:12px;}
+.result-skin-type{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:300;color:var(--starlight);margin-bottom:6px;}
+.result-desc{font-size:13px;color:rgba(232,213,255,.5);max-width:360px;margin:0 auto;line-height:1.7;}
+.result-products{margin-top:20px;display:flex;flex-direction:column;gap:10px;}
+.rp-item{background:rgba(26,10,61,.6);border:1px solid var(--border);border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:12px;text-align:left;}
+.rp-emoji{font-size:20px;}
+.rp-name{font-size:13px;color:var(--starlight);flex:1;}
+.rp-why{font-size:11px;color:rgba(168,85,247,.6);}
+
+/* ── SKIN PROFILE ── */
+.profile-hero{background:linear-gradient(135deg,rgba(107,47,160,.3),rgba(61,47,160,.25));border:1px solid rgba(168,85,247,.2);border-radius:20px;padding:24px;margin-bottom:20px;display:flex;align-items:center;gap:20px;}
+.profile-avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--electric),var(--violet));display:flex;align-items:center;justify-content:center;font-size:32px;flex-shrink:0;border:2px solid rgba(168,85,247,.4);}
+.profile-info h2{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:var(--starlight);margin-bottom:4px;}
+.profile-info p{font-size:12px;color:rgba(232,213,255,.45);}
+.profile-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;}
+
+.profile-section{margin-bottom:20px;}
+.ps-label{font-size:10px;letter-spacing:.35em;text-transform:uppercase;color:var(--aurora);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.ps-label::before{content:'';display:block;width:16px;height:1px;background:var(--aurora);}
+
+.concern-pills{display:flex;flex-wrap:wrap;gap:8px;}
+.concern-chip{padding:7px 16px;border-radius:100px;border:1px solid var(--border);background:rgba(26,10,61,.5);font-size:12px;color:rgba(232,213,255,.6);cursor:pointer;transition:all .3s;}
+.concern-chip.selected{border-color:rgba(168,85,247,.5);background:rgba(107,47,160,.25);color:var(--starlight);}
+
+.profile-field{display:flex;flex-direction:column;gap:7px;margin-bottom:14px;}
+.profile-field label{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:rgba(168,85,247,.7);}
+.profile-field input,.profile-field select,.profile-field textarea{background:rgba(26,10,61,.5);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--pearl);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;transition:all .3s;width:100%;}
+.profile-field input:focus,.profile-field select:focus,.profile-field textarea:focus{border-color:var(--border-active);box-shadow:0 0 14px rgba(168,85,247,.1);}
+.profile-field textarea{resize:vertical;min-height:80px;}
+.profile-field select option{background:var(--deep);}
+
+.notes-area{background:rgba(26,10,61,.4);border:1px solid var(--border);border-radius:14px;padding:16px;min-height:100px;font-size:13px;color:rgba(232,213,255,.5);font-family:'DM Sans',sans-serif;line-height:1.7;}
+
+/* Skin tone swatches */
+.tone-swatch{width:36px;height:36px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:all .25s;flex-shrink:0;}
+.tone-swatch:hover{transform:scale(1.12);}
+.tone-swatch.selected{border-color:var(--aurora);box-shadow:0 0 0 2px rgba(168,85,247,.4);transform:scale(1.15);}
+
+/* ── PHOTO PROGRESS ── */
+.photo-toolbar{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;}
+.photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;}
+.photo-tile{aspect-ratio:1;border-radius:16px;overflow:hidden;position:relative;border:1px solid var(--border);background:rgba(26,10,61,.5);cursor:pointer;transition:all .3s;}
+.photo-tile:hover{border-color:rgba(168,85,247,.4);transform:scale(1.02);}
+.photo-tile img{width:100%;height:100%;object-fit:cover;}
+.photo-tile .pt-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(3,6,18,.8) 0%,transparent 50%);display:flex;flex-direction:column;justify-content:flex-end;padding:10px;}
+.photo-tile .pt-date{font-size:10px;color:rgba(232,213,255,.6);letter-spacing:.1em;}
+.photo-tile .pt-label{font-size:11px;color:var(--starlight);}
+.photo-add{aspect-ratio:1;border-radius:16px;border:2px dashed rgba(168,85,247,.25);background:rgba(26,10,61,.3);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;transition:all .3s;}
+.photo-add:hover{border-color:rgba(168,85,247,.5);background:rgba(107,47,160,.12);}
+.photo-add .pa-icon{font-size:28px;color:rgba(168,85,247,.4);}
+.photo-add .pa-text{font-size:11px;color:rgba(168,85,247,.5);letter-spacing:.1em;text-align:center;}
+
+.compare-section{margin-top:8px;}
+.compare-box{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.compare-slot{border-radius:16px;border:1px solid var(--border);background:rgba(26,10,61,.4);aspect-ratio:.8;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;position:relative;overflow:hidden;}
+.compare-slot img{width:100%;height:100%;object-fit:cover;}
+.compare-slot .cs-label{font-size:10px;color:rgba(232,213,255,.4);letter-spacing:.15em;text-transform:uppercase;}
+.compare-tag{position:absolute;top:10px;left:10px;background:rgba(3,6,18,.7);border:1px solid var(--border);border-radius:100px;padding:3px 10px;font-size:9px;color:var(--aurora);letter-spacing:.12em;}
+
+/* Upload modal */
+.upload-modal{position:fixed;inset:0;background:rgba(3,6,18,.85);backdrop-filter:blur(16px);z-index:300;display:none;align-items:center;justify-content:center;padding:24px;}
+.upload-modal.open{display:flex;}
+.upload-box{background:linear-gradient(145deg,rgba(18,10,45,.97),rgba(13,26,74,.95));border:1px solid rgba(168,85,247,.3);border-radius:24px;padding:36px;max-width:440px;width:100%;animation:fadeUp .4s ease both;}
+.upload-box h3{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;color:var(--starlight);margin-bottom:6px;}
+.upload-box p{font-size:13px;color:rgba(232,213,255,.45);margin-bottom:24px;}
+.upload-methods{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;}
+.upload-method{background:rgba(26,10,61,.6);border:2px dashed rgba(168,85,247,.2);border-radius:14px;padding:20px;text-align:center;cursor:pointer;transition:all .3s;}
+.upload-method:hover{border-color:rgba(168,85,247,.5);background:rgba(107,47,160,.15);}
+.upload-method .um-icon{font-size:28px;margin-bottom:8px;}
+.upload-method .um-text{font-size:12px;color:rgba(232,213,255,.6);letter-spacing:.05em;}
+.photo-label-field{margin-bottom:16px;}
+.photo-label-field label{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--aurora);display:block;margin-bottom:7px;}
+.photo-label-field input{width:100%;background:rgba(26,10,61,.5);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--pearl);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;transition:all .3s;}
+.photo-label-field input:focus{border-color:var(--border-active);}
+.upload-actions{display:flex;gap:10px;}
+#cameraFeed{width:100%;border-radius:12px;margin-bottom:12px;display:none;}
+#photoCanvas{display:none;}
+
+/* ── ROUTINE ── */
+.routine-tabs{display:flex;gap:8px;margin-bottom:24px;}
+.rt-tab{padding:8px 20px;border-radius:100px;border:1px solid var(--border);background:rgba(26,10,61,.4);color:rgba(232,213,255,.5);font-size:11px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:all .3s;}
+.rt-tab.active{background:linear-gradient(135deg,rgba(107,47,160,.5),rgba(61,47,160,.4));border-color:rgba(168,85,247,.5);color:var(--starlight);}
+
+.routine-list{display:flex;flex-direction:column;gap:12px;}
+.routine-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;display:flex;align-items:center;gap:14px;transition:all .3s;cursor:pointer;}
+.routine-card:hover{border-color:rgba(168,85,247,.28);transform:translateX(4px);}
+.routine-card.completed{opacity:.6;}
+.rc-num{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,rgba(107,47,160,.5),rgba(61,47,160,.4));border:1px solid rgba(168,85,247,.25);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.rc-info{flex:1;}
+.rc-name{font-size:14px;color:var(--starlight);margin-bottom:3px;}
+.rc-product{font-size:11px;color:rgba(168,85,247,.6);}
+.rc-tip{font-size:11px;color:rgba(232,213,255,.4);margin-top:3px;}
+.rc-toggle{width:28px;height:28px;border-radius:50%;border:1px solid rgba(168,85,247,.3);background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .3s;flex-shrink:0;font-size:14px;}
+.rc-toggle.done{background:var(--success);border-color:var(--success);}
+
+.routine-progress{background:rgba(26,10,61,.4);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:20px;display:flex;align-items:center;gap:16px;}
+.rp-bar-wrap{flex:1;height:6px;background:rgba(168,85,247,.1);border-radius:100px;overflow:hidden;}
+.rp-bar{height:100%;background:linear-gradient(to right,var(--aurora),var(--sky));border-radius:100px;transition:width .5s ease;}
+.rp-text{font-size:12px;color:rgba(168,85,247,.7);white-space:nowrap;}
+
+/* ── REMINDERS ── */
+.reminder-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:12px;transition:all .3s;}
+.reminder-card:hover{border-color:rgba(168,85,247,.28);}
+.reminder-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.reminder-title-row{display:flex;align-items:center;gap:10px;}
+.reminder-icon{font-size:20px;}
+.reminder-name{font-size:14px;color:var(--starlight);}
+.reminder-toggle{position:relative;width:40px;height:22px;cursor:pointer;}
+.reminder-toggle input{opacity:0;width:0;height:0;}
+.toggle-slider{position:absolute;inset:0;background:rgba(168,85,247,.15);border:1px solid var(--border);border-radius:100px;transition:all .3s;}
+.toggle-slider::before{content:'';position:absolute;width:16px;height:16px;left:2px;top:2px;background:rgba(232,213,255,.3);border-radius:50%;transition:all .3s;}
+.reminder-toggle input:checked+.toggle-slider{background:rgba(168,85,247,.4);border-color:var(--aurora);}
+.reminder-toggle input:checked+.toggle-slider::before{transform:translateX(18px);background:var(--aurora);}
+.reminder-details{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.rd-field{display:flex;flex-direction:column;gap:5px;}
+.rd-label{font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:rgba(168,85,247,.6);}
+.rd-select{background:rgba(26,10,61,.5);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--pearl);font-family:'DM Sans',sans-serif;font-size:12px;outline:none;width:100%;}
+.rd-input{background:rgba(26,10,61,.5);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--pearl);font-family:'DM Sans',sans-serif;font-size:12px;outline:none;width:100%;}
+
+.reorder-card{background:linear-gradient(135deg,rgba(26,10,61,.7),rgba(13,26,74,.6));border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:10px;display:flex;align-items:center;gap:14px;}
+.reorder-emoji{font-size:26px;}
+.reorder-info{flex:1;}
+.reorder-name{font-size:13px;color:var(--starlight);margin-bottom:3px;}
+.reorder-sub{font-size:11px;color:rgba(232,213,255,.4);}
+.reorder-btn{background:linear-gradient(135deg,var(--electric),var(--violet));border:none;border-radius:100px;padding:7px 16px;color:#fff;font-size:11px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .3s;white-space:nowrap;font-family:'DM Sans',sans-serif;}
+.reorder-btn:hover{box-shadow:0 0 16px rgba(124,58,237,.5);}
+
+/* Toast */
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(60px);background:linear-gradient(135deg,rgba(18,10,45,.97),rgba(13,26,74,.97));border:1px solid rgba(168,85,247,.35);border-radius:14px;padding:12px 20px;display:flex;align-items:center;gap:10px;z-index:500;opacity:0;transition:all .4s;white-space:nowrap;box-shadow:0 0 40px rgba(107,47,160,.3);}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+.ti{font-size:16px;}.tt{font-size:13px;color:var(--starlight);}
+
+/* Responsive */
+@media(max-width:600px){
+  .grid-2,.grid-3,.stat-cards,.dash-grid,.compare-box{grid-template-columns:1fr;}
+  .photo-grid{grid-template-columns:repeat(2,1fr);}
+  .auth-box{padding:36px 24px;}
+  .portal-content{padding:20px 16px 90px;}
+  .quiz-options.cols-2{grid-template-columns:1fr;}
+  .reminder-details{grid-template-columns:1fr;}
+}
+
+/* Water tracker */
+.water-tracker {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 20px 24px;
+  margin-top: 16px;
+}
+.water-drops {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+.water-drop {
+  font-size: 22px;
+  cursor: pointer;
+  transition: all .25s;
+  filter: grayscale(1) opacity(.3);
+  user-select: none;
+}
+.water-drop.filled {
+  filter: none;
+  transform: scale(1.1);
+  animation: dropFill .3s ease;
+}
+@keyframes dropFill {
+  0%   { transform: scale(.8); }
+  60%  { transform: scale(1.2); }
+  100% { transform: scale(1.1); }
+}
+
+/* Daily tip card */
+.tip-card {
+  background: linear-gradient(135deg,rgba(96,165,250,.08),rgba(168,85,247,.06));
+  border: 1px solid rgba(96,165,250,.18);
+  border-radius: 20px;
+  padding: 20px 24px;
+  margin-top: 16px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+.tip-icon { font-size: 26px; flex-shrink: 0; margin-top: 2px; }
+.tip-label {
+  font-size: 9px;
+  letter-spacing: .35em;
+  text-transform: uppercase;
+  color: var(--sky);
+  margin-bottom: 5px;
+}
+.tip-text {
+  font-size: 13px;
+  color: var(--starlight);
+  line-height: 1.7;
+}
+.tip-source {
+  font-size: 10px;
+  color: rgba(232,213,255,.35);
+  margin-top: 5px;
+  letter-spacing: .05em;
+}
+
+/* Photo grid thumbnails */
+.photo-tile-inner {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: rgba(26,10,61,.5);
+  cursor: pointer;
+  transition: all .3s;
+}
+.photo-tile-inner:hover { border-color: rgba(168,85,247,.4); transform: scale(1.02); }
+.photo-tile-inner img { width:100%; height:100%; object-fit:cover; display:block; }
+.photo-tile-meta {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: linear-gradient(to top, rgba(3,6,18,.85) 0%, transparent 100%);
+  padding: 24px 10px 10px;
+}
+.photo-tile-date { font-size: 9px; color: rgba(232,213,255,.55); letter-spacing: .1em; }
+.photo-tile-label { font-size: 11px; color: var(--starlight); margin-top: 2px; }
+.photo-tile-del {
+  position: absolute; top: 8px; right: 8px;
+  width: 24px; height: 24px; border-radius: 50%;
+  background: rgba(248,113,113,.2); border: 1px solid rgba(248,113,113,.3);
+  color: #f87171; font-size: 12px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; transition: opacity .2s;
+}
+.photo-tile-inner:hover .photo-tile-del { opacity: 1; }
+/* ── ROCKET ONBOARDING MODAL ── */
+.ob-modal {
+  position:fixed;inset:0;z-index:600;background:#020510;
+  display:none;align-items:center;justify-content:center;padding:18px;
+}
+.ob-modal.open{display:flex;}
+#obBgCanvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;}
+.ob-box {
+  position:relative;z-index:1;
+  background:linear-gradient(170deg,rgba(12,4,32,.98),rgba(4,2,14,.99));
+  border:1px solid rgba(168,85,247,.18);border-radius:26px;
+  padding:26px 24px 22px;max-width:430px;width:100%;
+  box-shadow:0 0 60px rgba(107,47,160,.2),inset 0 1px 0 rgba(255,255,255,.04);
+  animation:fadeUp .5s cubic-bezier(.16,1,.3,1) both;
+  max-height:92vh;overflow-y:auto;
+}
+.ob-dots{display:flex;gap:6px;justify-content:center;margin-bottom:20px;}
+.ob-dot{width:6px;height:6px;border-radius:50%;background:rgba(168,85,247,.18);transition:all .4s;}
+.ob-dot.active{background:linear-gradient(135deg,#a855f7,#60a5fa);width:24px;border-radius:100px;box-shadow:0 0 8px rgba(168,85,247,.5);}
+.ob-slide{display:none;text-align:center;animation:fadeUp .35s ease both;}
+.ob-slide.active{display:block;}
+/* Rocket canvas */
+.ob-rocket-wrap{width:100%;height:160px;position:relative;border-radius:14px;overflow:hidden;margin-bottom:16px;background:radial-gradient(ellipse 90% 60% at 50% 110%,rgba(124,58,237,.25),transparent);}
+#rocketCanvas{position:absolute;inset:0;width:100%;height:100%;}
+/* Constellation canvas */
+.ob-const-wrap{width:100%;height:100px;position:relative;border-radius:12px;overflow:hidden;margin-bottom:14px;background:rgba(168,85,247,.03);border:1px solid rgba(168,85,247,.09);}
+.ob-const-wrap canvas{position:absolute;inset:0;width:100%;height:100%;}
+.ob-const-name{position:absolute;bottom:7px;right:10px;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:rgba(168,85,247,.45);font-family:'DM Sans',sans-serif;}
+.ob-title{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:var(--starlight);margin-bottom:7px;line-height:1.15;text-shadow:0 0 28px rgba(168,85,247,.3);}
+.ob-title em{font-style:italic;color:var(--aurora);}
+.ob-sub{font-size:12px;color:rgba(232,213,255,.48);line-height:1.65;margin-bottom:15px;}
+.ob-feature{display:flex;align-items:flex-start;gap:11px;background:rgba(168,85,247,.055);border:1px solid rgba(168,85,247,.1);border-radius:13px;padding:11px 13px;margin-bottom:8px;text-align:left;}
+.ob-fi{font-size:22px;flex-shrink:0;margin-top:1px;}
+.ob-ft{font-size:12px;color:var(--starlight);margin-bottom:2px;}
+.ob-fs{font-size:11px;color:rgba(232,213,255,.4);line-height:1.5;}
+.ob-nav{display:flex;gap:9px;margin-top:16px;}
+.ob-skip{background:none;border:1px solid rgba(168,85,247,.18);border-radius:100px;padding:9px 16px;color:rgba(232,213,255,.35);font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:.07em;cursor:pointer;transition:all .3s;white-space:nowrap;}
+.ob-skip:hover{color:var(--starlight);border-color:rgba(168,85,247,.4);}
+.ob-next{flex:1;background:linear-gradient(135deg,var(--electric),var(--violet));border:none;border-radius:100px;padding:11px 18px;color:#fff;font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .3s;box-shadow:0 0 18px rgba(124,58,237,.3);}
+.ob-next:hover{box-shadow:0 0 32px rgba(124,58,237,.6);transform:translateY(-1px);}
+.glow-scene {
+  position: relative;
+  border-radius: 24px;
+  overflow: hidden;
+  border: 1px solid rgba(168,85,247,0.2);
+  margin-bottom: 24px;
+  background: #030612;
+  height: 420px;
+}
+#solarCanvas {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  display: block;
+}
+/* Month orbit legend */
+.month-legend {
+  display: grid;
+  grid-template-columns: repeat(6,1fr);
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.ml-item {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(168,85,247,0.1);
+  border-radius: 12px;
+  padding: 10px 6px;
+  text-align: center;
+  cursor: default;
+  transition: all .3s;
+}
+.ml-item.unlocked {
+  border-color: rgba(168,85,247,0.3);
+  background: rgba(168,85,247,0.08);
+}
+.ml-item.superstar {
+  border-color: rgba(251,191,36,0.5);
+  background: rgba(251,191,36,0.08);
+  box-shadow: 0 0 12px rgba(251,191,36,0.15);
+}
+.ml-month { font-size: 9px; letter-spacing:.2em; text-transform:uppercase; color:rgba(232,213,255,.35); display:block; margin-bottom:3px; }
+.ml-planet { font-size: 20px; display:block; filter: grayscale(1); transition: filter .3s; }
+.ml-item.unlocked .ml-planet { filter: none; }
+.ml-item.superstar .ml-planet { filter: none; }
+.ml-label { font-size: 9px; color:rgba(232,213,255,.3); display:block; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.ml-item.unlocked .ml-label { color:rgba(168,85,247,.7); }
+.ml-item.superstar .ml-label { color:#fbbf24; }
+/* Star badge card */
+.glow-badge {
+  background: linear-gradient(135deg, rgba(107,47,160,0.2), rgba(61,47,160,0.15));
+  border: 1px solid rgba(168,85,247,0.3);
+  border-radius: 20px;
+  padding: 24px 28px;
+  text-align: center;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+}
+.glow-badge::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(168,85,247,0.12), transparent);
+}
+.badge-crown { font-size: 36px; margin-bottom: 8px; display: block; }
+.badge-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 26px;
+  font-weight: 300;
+  color: var(--starlight);
+  margin-bottom: 6px;
+}
+.badge-title em { font-style: italic; color: var(--aurora); }
+.badge-desc {
+  font-size: 12px;
+  color: rgba(232,213,255,0.5);
+  letter-spacing: 0.1em;
+  line-height: 1.6;
+}
+.badge-next {
+  margin-top: 12px;
+  font-size: 11px;
+  color: rgba(168,85,247,0.6);
+  letter-spacing: 0.08em;
+}
+/* Glow stat pills */
+.garden-stats {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+.gstat {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(168,85,247,0.15);
+  border-radius: 14px;
+  padding: 14px 18px;
+  text-align: center;
+  flex: 1;
+  min-width: 90px;
+}
+.gstat-icon { font-size: 22px; display: block; margin-bottom: 4px; }
+.gstat-val {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  font-weight: 300;
+  color: var(--aurora);
+  display: block;
+  line-height: 1;
+}
+.gstat-label {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(232,213,255,0.4);
+  margin-top: 4px;
+}
+/* Superstar banner */
+.superstar-banner {
+  background: linear-gradient(135deg, rgba(251,191,36,.18), rgba(107,47,160,.15));
+  border: 1px solid rgba(251,191,36,.4);
+  border-radius: 16px;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 12px;
+  animation: fadeUp .4s ease both;
+}
+.sb-icon { font-size: 28px; flex-shrink:0; }
+.sb-text { flex:1; }
+.sb-title { font-size:13px; color:#fbbf24; letter-spacing:.05em; margin-bottom:2px; }
+.sb-sub { font-size:11px; color:rgba(232,213,255,.4); }
+.sb-count { font-family:'Cormorant Garamond',serif; font-size:28px; color:#fbbf24; flex-shrink:0; }
+</style>
+</head>
+<body>
+
+<div class="bg-fixed">
+  <canvas id="starfield"></canvas>
+  <div class="nb nb1"></div>
+  <div class="nb nb2"></div>
+  <div class="nb nb3"></div>
+</div>
+
+<div id="app">
+
+<!-- AUTH SCREEN — hidden by default; CosmicAuth handles login via index.html -->
+<div id="authScreen" style="display:none">
+  <div class="auth-box">
+    <div class="auth-logo">COSMIC BEAUTY SPA <span>HUDSON · FLORIDA</span></div>
+    <h1 class="auth-title">Your Skin<br><em>Portal</em></h1>
+    <p class="auth-sub">Track your glow journey, your routine, your results — all in one place.</p>
+
+    <div class="auth-tabs">
+      <div class="auth-tab active" onclick="switchAuthTab('login',this)">Sign In</div>
+      <div class="auth-tab" onclick="switchAuthTab('register',this)">Create Account</div>
+    </div>
+
+    <div id="loginForm">
+      <div class="field"><label>Email</label><input type="email" id="loginEmail" placeholder="yourplaceholder="yourplaceholder="your&#64;email.com"#64;email.com"#64;email.com"></div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" id="loginPw" placeholder="••••••••">
+        <span style="font-size:11px;color:var(--aurora);cursor:pointer;text-align:right;margin-top:4px;display:block;letter-spacing:.05em;" onclick="showForgotPassword()">Forgot password?</span>
+      </div>
+      <button class="btn-full" onclick="handleLogin()">Sign In ✦</button>
+      <div class="auth-divider">· or ·</div>
+      <button class="demo-btn" onclick="demoLogin()">✦ Try Demo Account</button>
+    </div>
+
+    <!-- Forgot password inline form -->
+    <div id="forgotForm" style="display:none;">
+      <div style="text-align:center;margin-bottom:20px;">
+        <div style="font-size:28px;margin-bottom:8px;">🔑</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:var(--starlight);margin-bottom:6px;">Reset Your Password</div>
+        <div style="font-size:12px;color:rgba(232,213,255,.45);line-height:1.7;">Enter your email and we'll send you a reset link. Check your inbox — it may take a minute.</div>
+      </div>
+      <div class="field"><label>Email</label><input type="email" id="resetEmail" placeholder="yourplaceholder="yourplaceholder="your&#64;email.com"#64;email.com"#64;email.com"></div>
+      <button class="btn-full" onclick="handleForgotPassword()">Send Reset Link ✦</button>
+      <div class="auth-divider">· or ·</div>
+      <button class="demo-btn" onclick="showForgotPassword(false)">← Back to Sign In</button>
+    </div>
+
+    <div id="registerForm" style="display:none;">
+      <div class="grid-2" style="gap:12px;">
+        <div class="field"><label>First Name</label><input type="text" id="regFirst" placeholder="Aurora"></div>
+        <div class="field"><label>Last Name</label><input type="text" id="regLast" placeholder="Starling"></div>
+      </div>
+      <div class="field"><label>Email</label><input type="email" id="regEmail" placeholder="yourplaceholder="yourplaceholder="your&#64;email.com"#64;email.com"#64;email.com"></div>
+      <div class="field"><label>Phone (for reminders)</label><input type="tel" id="regPhone" placeholder="(727) 000-0000"></div>
+      <div class="field"><label>Password</label><input type="password" id="regPw" placeholder="Create a password"></div>
+      <button class="btn-full" onclick="handleRegister()">Create My Account ✦</button>
+    </div>
+  </div>
+</div>
+
+<!-- PORTAL SCREEN -->
+<div id="portalScreen">
+
+  <nav class="portal-nav">
+    <div class="portal-logo">COSMIC BEAUTY SPA <span>CLIENT PORTAL</span></div>
+    <div class="nav-user">
+      <div class="user-avatar" id="userAvatar">🌸</div>
+      <span class="user-name" id="userName">Loading…</span>
+      <button class="logout-btn" onclick="handleLogout()">Sign Out</button>
+    </div>
+  </nav>
+
+  <div class="portal-content">
+
+    <!-- DASHBOARD -->
+    <div class="panel active" id="panel-dashboard">
+      <div class="welcome-banner" id="welcomeBanner">
+        <div class="welcome-name" id="dashWelcome">Welcome back, <em>Aurora</em> ✦</div>
+        <div class="welcome-sub" id="dashSubtitle">Your skin is on a journey — here's where you are today.</div>
+        <div class="welcome-actions" id="dashActions">
+          <button class="btn-sm primary" onclick="goTo('quiz')">Take Skin Quiz</button>
+          <button class="btn-sm ghost" onclick="goTo('photos')">Add Progress Photo</button>
+          <a href="https://cosmicnailsandspa.glossgenius.com" target="_blank"><button class="btn-sm ghost">Book Appointment</button></a>
+        </div>
+      </div>
+
+      <!-- Onboarding checklist — shown only for new users, hidden once quiz is done -->
+      <div id="onboardingChecklist" style="display:none;"></div>
+
+      <div class="stat-cards" id="statCards">
+        <div class="stat-card"><span class="stat-num" id="statDays">0</span><span class="stat-label">Days Active</span></div>
+        <div class="stat-card"><span class="stat-num" id="statPhotos">0</span><span class="stat-label">Progress Photos</span></div>
+        <div class="stat-card"><span class="stat-num" id="statStreak">0</span><span class="stat-label">Routine Streak</span></div>
+      </div>
+
+      <div class="dash-grid">
+        <div class="card">
+          <div class="card-title">Today's Routine</div>
+          <div class="card-sub" id="routineDate"></div>
+          <div id="dashRoutine"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Upcoming Reminders</div>
+          <div class="card-sub">Your next alerts</div>
+          <div id="dashReminders"></div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:16px;">
+        <div class="card-title">Your Skin Profile</div>
+        <div class="card-sub">Based on your quiz answers</div>
+        <div id="dashSkinProfile" style="color:rgba(232,213,255,.4);font-size:13px;">Complete the skin quiz to see your personalized profile →</div>
+      </div>
+
+      <!-- Appointment history -->
+      <div class="card" style="margin-top:16px;" id="apptCard">
+        <div class="card-title">Last Visit at Cosmic Beauty Spa</div>
+        <div class="card-sub">Your facial history with Christina</div>
+        <div id="dashAppt"></div>
+      </div>
+
+      <!-- Daily skin tip -->
+      <div class="tip-card" id="tipCard">
+        <span class="tip-icon" id="tipIcon">💧</span>
+        <div>
+          <div class="tip-label">Tip of the Day</div>
+          <div class="tip-text" id="tipText">Loading your daily tip…</div>
+          <div class="tip-source" id="tipSource"></div>
+        </div>
+      </div>
+
+      <!-- Water tracker -->
+      <div class="water-tracker">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+          <div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;color:var(--starlight);">Daily Hydration</div>
+            <div style="font-size:11px;color:rgba(232,213,255,.4);margin-top:2px;">Tap each drop as you drink — 8 glasses a day keeps dullness away</div>
+          </div>
+          <span style="font-family:'Cormorant Garamond',serif;font-size:28px;color:var(--sky);" id="waterCount">0</span>
+        </div>
+        <div class="water-drops" id="waterDrops"></div>
+        <div id="waterMsg" style="font-size:11px;margin-top:10px;color:rgba(232,213,255,.4);letter-spacing:.05em;"></div>
+      </div>
+    </div>
+
+    <!-- SKIN QUIZ -->
+    <div class="panel" id="panel-quiz">
+      <div class="p-header">
+        <div class="p-tag">Skin Quiz</div>
+        <h1 class="p-title">Discover Your<br><em>Skin Type</em></h1>
+        <p class="p-sub">Answer 7 quick questions so we can build your personalized Bioelements® routine.</p>
+      </div>
+
+      <div class="quiz-progress" id="quizProgress"></div>
+
+      <div class="quiz-step active" data-step="1">
+        <div class="quiz-q">How does your skin feel by midday?</div>
+        <div class="quiz-hint">Without any product applied over cleansed skin</div>
+        <div class="quiz-options cols-2">
+          <div class="quiz-opt" data-value="oily" onclick="selectOpt(this,'q1')"><span class="qo-icon">✨</span><div><div class="qo-text">Shiny & oily</div><div class="qo-sub">Especially T-zone</div></div></div>
+          <div class="quiz-opt" data-value="dry" onclick="selectOpt(this,'q1')"><span class="qo-icon">🏜️</span><div><div class="qo-text">Tight & dry</div><div class="qo-sub">Sometimes flaky</div></div></div>
+          <div class="quiz-opt" data-value="combo" onclick="selectOpt(this,'q1')"><span class="qo-icon">⚖️</span><div><div class="qo-text">Oily in some spots</div><div class="qo-sub">Dry in others</div></div></div>
+          <div class="quiz-opt" data-value="normal" onclick="selectOpt(this,'q1')"><span class="qo-icon">🌸</span><div><div class="qo-text">Comfortable & balanced</div><div class="qo-sub">No major issues</div></div></div>
+        </div>
+        <div class="quiz-nav"><div></div><div class="quiz-step-num">1 of 7</div><button class="btn-next" onclick="nextStep()">Next →</button></div>
+      </div>
+
+      <div class="quiz-step" data-step="2">
+        <div class="quiz-q">What are your main skin concerns?</div>
+        <div class="quiz-hint">Select all that apply</div>
+        <div class="quiz-options cols-2">
+          <div class="quiz-opt" data-value="acne" onclick="selectOpt(this,'q2',true)"><span class="qo-icon">🎯</span><div><div class="qo-text">Breakouts & acne</div></div></div>
+          <div class="quiz-opt" data-value="aging" onclick="selectOpt(this,'q2',true)"><span class="qo-icon">⏳</span><div><div class="qo-text">Fine lines & aging</div></div></div>
+          <div class="quiz-opt" data-value="dull" onclick="selectOpt(this,'q2',true)"><span class="qo-icon">☁️</span><div><div class="qo-text">Dull & uneven tone</div></div></div>
+          <div class="quiz-opt" data-value="dehydrated" onclick="selectOpt(this,'q2',true)"><span class="qo-icon">💧</span><div><div class="qo-text">Dehydration</div></div></div>
+          <div class="quiz-opt" data-value="sensitive" onclick="selectOpt(this,'q2',true)"><span class="qo-icon">🌿</span><div><div class="qo-text">Sensitivity & redness</div></div></div>
+          <div class="quiz-opt" data-value="pores" onclick="selectOpt(this,'q2',true)"><span class="qo-icon">🔬</span><div><div class="qo-text">Large pores</div></div></div>
+        </div>
+        <div class="quiz-nav"><button class="btn-back" onclick="prevStep()">← Back</button><div class="quiz-step-num">2 of 7</div><button class="btn-next" onclick="nextStep()">Next →</button></div>
+      </div>
+
+      <div class="quiz-step" data-step="3">
+        <div class="quiz-q">How sensitive is your skin?</div>
+        <div class="quiz-hint">Think about reactions to products or environment</div>
+        <div class="quiz-options">
+          <div class="quiz-opt" data-value="very" onclick="selectOpt(this,'q3')"><span class="qo-icon">🌶️</span><div><div class="qo-text">Very sensitive</div><div class="qo-sub">Reacts to almost everything</div></div></div>
+          <div class="quiz-opt" data-value="some" onclick="selectOpt(this,'q3')"><span class="qo-icon">🌤️</span><div><div class="qo-text">Somewhat sensitive</div><div class="qo-sub">Occasional reactions</div></div></div>
+          <div class="quiz-opt" data-value="rarely" onclick="selectOpt(this,'q3')"><span class="qo-icon">🌙</span><div><div class="qo-text">Rarely sensitive</div><div class="qo-sub">Most products work fine</div></div></div>
+          <div class="quiz-opt" data-value="not" onclick="selectOpt(this,'q3')"><span class="qo-icon">💪</span><div><div class="qo-text">Not sensitive at all</div><div class="qo-sub">Skin handles anything</div></div></div>
+        </div>
+        <div class="quiz-nav"><button class="btn-back" onclick="prevStep()">← Back</button><div class="quiz-step-num">3 of 7</div><button class="btn-next" onclick="nextStep()">Next →</button></div>
+      </div>
+
+      <div class="quiz-step" data-step="4">
+        <div class="quiz-q">What's your age range?</div>
+        <div class="quiz-hint">Helps us recommend the right actives</div>
+        <div class="quiz-options cols-2">
+          <div class="quiz-opt" data-value="under25" onclick="selectOpt(this,'q4')"><span class="qo-icon">🌱</span><div><div class="qo-text">Under 25</div></div></div>
+          <div class="quiz-opt" data-value="25-35" onclick="selectOpt(this,'q4')"><span class="qo-icon">🌸</span><div><div class="qo-text">25 – 35</div></div></div>
+          <div class="quiz-opt" data-value="35-50" onclick="selectOpt(this,'q4')"><span class="qo-icon">🌺</span><div><div class="qo-text">35 – 50</div></div></div>
+          <div class="quiz-opt" data-value="over50" onclick="selectOpt(this,'q4')"><span class="qo-icon">💜</span><div><div class="qo-text">50+</div></div></div>
+        </div>
+        <div class="quiz-nav"><button class="btn-back" onclick="prevStep()">← Back</button><div class="quiz-step-num">4 of 7</div><button class="btn-next" onclick="nextStep()">Next →</button></div>
+      </div>
+
+      <div class="quiz-step" data-step="5">
+        <div class="quiz-q">How much water do you drink daily?</div>
+        <div class="quiz-hint">Hydration affects your skin from the inside</div>
+        <div class="quiz-options">
+          <div class="quiz-opt" data-value="lots" onclick="selectOpt(this,'q5')"><span class="qo-icon">💦</span><div><div class="qo-text">8+ glasses a day</div><div class="qo-sub">I'm a hydration champion</div></div></div>
+          <div class="quiz-opt" data-value="some" onclick="selectOpt(this,'q5')"><span class="qo-icon">🚰</span><div><div class="qo-text">4–7 glasses</div><div class="qo-sub">Pretty consistent</div></div></div>
+          <div class="quiz-opt" data-value="little" onclick="selectOpt(this,'q5')"><span class="qo-icon">🏜️</span><div><div class="qo-text">Less than 4</div><div class="qo-sub">I need to drink more</div></div></div>
+        </div>
+        <div class="quiz-nav"><button class="btn-back" onclick="prevStep()">← Back</button><div class="quiz-step-num">5 of 7</div><button class="btn-next" onclick="nextStep()">Next →</button></div>
+      </div>
+
+      <div class="quiz-step" data-step="6">
+        <div class="quiz-q">What's your current skincare routine like?</div>
+        <div class="quiz-hint">Be honest — we won't judge!</div>
+        <div class="quiz-options">
+          <div class="quiz-opt" data-value="none" onclick="selectOpt(this,'q6')"><span class="qo-icon">🌑</span><div><div class="qo-text">I barely have one</div><div class="qo-sub">Soap & water at best</div></div></div>
+          <div class="quiz-opt" data-value="basic" onclick="selectOpt(this,'q6')"><span class="qo-icon">🌒</span><div><div class="qo-text">Basic routine</div><div class="qo-sub">Cleanser & moisturizer</div></div></div>
+          <div class="quiz-opt" data-value="solid" onclick="selectOpt(this,'q6')"><span class="qo-icon">🌔</span><div><div class="qo-text">Solid routine</div><div class="qo-sub">Multiple steps, consistently</div></div></div>
+          <div class="quiz-opt" data-value="advanced" onclick="selectOpt(this,'q6')"><span class="qo-icon">🌕</span><div><div class="qo-text">Advanced routine</div><div class="qo-sub">Actives, serums, the works</div></div></div>
+        </div>
+        <div class="quiz-nav"><button class="btn-back" onclick="prevStep()">← Back</button><div class="quiz-step-num">6 of 7</div><button class="btn-next" onclick="nextStep()">Next →</button></div>
+      </div>
+
+      <div class="quiz-step" data-step="7">
+        <div class="quiz-q">What's your #1 skin goal right now?</div>
+        <div class="quiz-hint">We'll prioritize this in your routine</div>
+        <div class="quiz-options cols-2">
+          <div class="quiz-opt" data-value="glow" onclick="selectOpt(this,'q7')"><span class="qo-icon">✨</span><div><div class="qo-text">Get that glow</div></div></div>
+          <div class="quiz-opt" data-value="clear" onclick="selectOpt(this,'q7')"><span class="qo-icon">🎯</span><div><div class="qo-text">Clear my skin</div></div></div>
+          <div class="quiz-opt" data-value="anti-age" onclick="selectOpt(this,'q7')"><span class="qo-icon">⏳</span><div><div class="qo-text">Fight aging</div></div></div>
+          <div class="quiz-opt" data-value="hydrate" onclick="selectOpt(this,'q7')"><span class="qo-icon">💧</span><div><div class="qo-text">Deep hydration</div></div></div>
+          <div class="quiz-opt" data-value="calm" onclick="selectOpt(this,'q7')"><span class="qo-icon">🌿</span><div><div class="qo-text">Calm & soothe</div></div></div>
+          <div class="quiz-opt" data-value="overall" onclick="selectOpt(this,'q7')"><span class="qo-icon">🌸</span><div><div class="qo-text">Overall health</div></div></div>
+        </div>
+        <div class="quiz-nav"><button class="btn-back" onclick="prevStep()">← Back</button><div class="quiz-step-num">7 of 7</div><button class="btn-next" onclick="finishQuiz()">See My Results ✦</button></div>
+      </div>
+
+      <div class="quiz-step" id="quizResult" data-step="result">
+        <div class="quiz-result">
+          <div class="p-tag" style="justify-content:center;">Your Skin Profile</div>
+          <h2 class="p-title" style="text-align:center;">Your Results Are In ✦</h2>
+          <div class="result-type" id="resultBox"></div>
+          <div id="resultProducts"></div>
+          <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:24px;">
+            <button class="btn-sm primary" onclick="goTo('profile')">Save to My Profile</button>
+            <button class="btn-sm ghost" onclick="goTo('routine')">View My Routine</button>
+            <a href="https://cosmicnailsandspa.glossgenius.com" target="_blank"><button class="btn-sm ghost">Book with Esthetician</button></a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SKIN PROFILE -->
+    <div class="panel" id="panel-profile">
+      <div class="p-header">
+        <div class="p-tag">My Profile</div>
+        <h1 class="p-title">Your Skin<br><em>Story</em></h1>
+      </div>
+      <div class="profile-hero">
+        <div class="profile-avatar" id="profileAvatarBig">🌸</div>
+        <div class="profile-info">
+          <h2 id="profileFullName">Aurora Starling</h2>
+          <p id="profileEmail">aurora&#64;email.com</p>#64;email.com</p>
+          <p id="profilePhone" style="margin-top:2px;"></p>
+          <div class="profile-tags" id="profileTags"></div>
+        </div>
+      </div>
+      <div class="profile-section">
+        <div class="ps-label">Personal Information</div>
+        <div class="grid-2" style="gap:14px;">
+          <div class="profile-field"><label>First Name</label><input type="text" id="pfFirst" placeholder="Aurora"></div>
+          <div class="profile-field"><label>Last Name</label><input type="text" id="pfLast" placeholder="Starling"></div>
+          <div class="profile-field"><label>Email</label><input type="email" id="pfEmail" placeholder="your&#64;email.com"></div>
+          <div class="profile-field"><label>Phone</label><input type="tel" id="pfPhone" placeholder="(727) 000-0000"></div>
+          <div class="profile-field"><label>Birthday</label><input type="date" id="pfBday"></div>
+          <div class="profile-field"><label>Location</label><input type="text" id="pfLocation" placeholder="Hudson, FL"></div>
+        </div>
+      </div>
+      <div class="profile-section">
+        <div class="ps-label">Skin Information</div>
+        <div class="grid-2" style="gap:14px;">
+          <div class="profile-field"><label>Skin Type</label>
+            <select id="pfSkinType">
+              <option value="">Select skin type</option>
+              <option>Oily</option><option>Dry</option><option>Combination</option><option>Normal</option><option>Sensitive</option>
+            </select>
+          </div>
+          <div class="profile-field">
+            <label>Skin Tone</label>
+            <div style="display:flex;gap:8px;margin-top:4px;" id="skinToneSelector">
+              <div class="tone-swatch" data-tone="Very Fair" onclick="selectTone(this)" title="Very Fair"    style="background:#fde8d8;"></div>
+              <div class="tone-swatch" data-tone="Fair"      onclick="selectTone(this)" title="Fair"        style="background:#f5c9a0;"></div>
+              <div class="tone-swatch" data-tone="Medium"    onclick="selectTone(this)" title="Medium"      style="background:#d4956a;"></div>
+              <div class="tone-swatch" data-tone="Olive"     onclick="selectTone(this)" title="Olive"       style="background:#b07850;"></div>
+              <div class="tone-swatch" data-tone="Brown"     onclick="selectTone(this)" title="Brown"       style="background:#7d4e2d;"></div>
+              <div class="tone-swatch" data-tone="Deep"      onclick="selectTone(this)" title="Deep"        style="background:#3d1f0f;"></div>
+            </div>
+            <input type="hidden" id="pfFitz" value="">
+            <div id="toneLabel" style="font-size:11px;color:rgba(168,85,247,.6);margin-top:5px;letter-spacing:.05em;"></div>
+          </div>
+        </div>
+        <div class="profile-field" style="margin-top:4px;"><label>Known Allergies or Sensitivities</label><input type="text" id="pfAllergies" placeholder="e.g. fragrance, retinol, nuts…"></div>
+        <div class="profile-field"><label>Current Medications Affecting Skin</label><input type="text" id="pfMeds" placeholder="e.g. accutane, birth control…"></div>
+      </div>
+      <div class="profile-section">
+        <div class="ps-label">My Skin Concerns</div>
+        <div class="concern-pills">
+          <div class="concern-chip" onclick="toggleConcern(this)">Acne / Breakouts</div>
+          <div class="concern-chip" onclick="toggleConcern(this)">Fine Lines</div>
+          <div class="concern-chip" onclick="toggleConcern(this)">Dehydration</div>
+          <div class="concern-chip" onclick="toggleConcern(this)">Dull Skin</div>
+          <div class="concern-chip" onclick="toggleConcern(this)">Redness</div>
+          <div class="concern-chip" onclick="toggleConcern(this)">Hyperpigmentation</div>
+          <div class="concern-chip" onclick="toggleConcern(this)">Large Pores</div>
+          <div class="concern-chip" onclick="toggleConcern(this)">Loss of Firmness</div>
+          <div class="concern-chip" onclick="toggleConcern(this)">Sun Damage</div>
+          <div class="concern-chip" onclick="toggleConcern(this)">Dark Circles</div>
+          <div class="concern-chip" onclick="toggleConcern(this)">Sensitivity</div>
+          <div class="concern-chip" onclick="toggleConcern(this)">Texture</div>
+        </div>
+      </div>
+      <div class="profile-section">
+        <div class="ps-label">Esthetician Notes</div>
+        <div class="notes-area" id="estheNotes">No notes from your esthetician yet. Notes added after your appointments will appear here.</div>
+      </div>
+      <button class="btn-full" onclick="saveProfile()">Save Profile ✦</button>
+    </div>
+
+    <!-- PHOTO PROGRESS -->
+    <div class="panel" id="panel-photos">
+      <div class="p-header">
+        <div class="p-tag">Photo Tracker</div>
+        <h1 class="p-title">Track Your<br><em>Glow Journey</em></h1>
+        <p class="p-sub">Upload or capture photos to see your skin transform over time.</p>
+      </div>
+      <div class="photo-toolbar">
+        <button class="btn-sm primary" onclick="openUpload()">📸 Add Photo</button>
+        <button class="btn-sm ghost" id="compareToggle" onclick="toggleCompare()">⚡ Compare</button>
+      </div>
+      <div id="compareView" style="display:none;margin-bottom:24px;">
+        <div class="card">
+          <div class="card-title">Before & After</div>
+          <div class="card-sub">Select two photos to compare your progress</div>
+          <div class="compare-box">
+            <div class="compare-slot" id="compareLeft"><span style="font-size:28px;color:rgba(168,85,247,.3);">📷</span><span class="cs-label">Before</span></div>
+            <div class="compare-slot" id="compareRight"><span style="font-size:28px;color:rgba(168,85,247,.3);">📷</span><span class="cs-label">After</span></div>
+          </div>
+          <p style="font-size:11px;color:rgba(232,213,255,.3);text-align:center;margin-top:12px;">Tap any photo below to set as Before or After</p>
+        </div>
+      </div>
+      <div class="photo-grid" id="photoGrid">
+        <div class="photo-add" onclick="openUpload()">
+          <div class="pa-icon">+</div>
+          <div class="pa-text">Add your first<br>progress photo</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MY ROUTINE -->
+    <div class="panel" id="panel-routine">
+      <div class="p-header">
+        <div class="p-tag">My Routine</div>
+        <h1 class="p-title">Your Daily<br><em>Ritual</em></h1>
+        <p class="p-sub">Your routine, your way — customize it to match exactly what you use at home.</p>
+      </div>
+
+      <!-- Progress bar + Reset -->
+      <div class="routine-progress" style="justify-content:space-between;">
+        <span style="font-size:18px;">✨</span>
+        <div class="rp-bar-wrap"><div class="rp-bar" id="routineBar" style="width:0%"></div></div>
+        <span class="rp-text" id="routineProgressText">0 / 0 steps</span>
+        <button id="resetRoutineBtn" onclick="resetRoutineToday()" title="Reset all steps for today"
+          style="display:none;background:none;border:1px solid rgba(168,85,247,.25);border-radius:100px;padding:5px 12px;color:rgba(232,213,255,.5);font-size:10px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .3s;white-space:nowrap;font-family:'DM Sans',sans-serif;"
+          onmouseover="this.style.borderColor='rgba(168,85,247,.5)';this.style.color='var(--starlight)'"
+          onmouseout="this.style.borderColor='rgba(168,85,247,.25)';this.style.color='rgba(232,213,255,.5)'">↺ Reset</button>
+      </div>
+
+      <!-- AM / PM tabs + Edit toggle -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;gap:12px;">
+        <div class="routine-tabs" style="margin-bottom:0;flex:1;">
+          <div class="rt-tab active" onclick="switchRoutine('am',this)">☀️ AM Routine</div>
+          <div class="rt-tab" onclick="switchRoutine('pm',this)">🌙 PM Routine</div>
+        </div>
+        <button id="editRoutineBtn" onclick="toggleRoutineEdit()" class="btn-sm ghost" style="white-space:nowrap;flex-shrink:0;">✏️ Edit</button>
+      </div>
+
+      <!-- Step list -->
+      <div class="routine-list" id="routineList"></div>
+
+      <!-- Add step form (hidden until edit mode) -->
+      <div id="addStepForm" style="display:none;margin-top:16px;">
+        <div class="card" style="border-color:rgba(168,85,247,.3);">
+          <div class="card-title" style="font-size:16px;margin-bottom:14px;">➕ Add a Step</div>
+          <div class="grid-2" style="gap:12px;margin-bottom:12px;">
+            <div class="profile-field">
+              <label>Step Name</label>
+              <input type="text" id="newStepName" placeholder="e.g. Vitamin C Serum">
+            </div>
+            <div class="profile-field">
+              <label>Product / Brand</label>
+              <input type="text" id="newStepProduct" placeholder="e.g. SkinCeuticals C E Ferulic">
+            </div>
+          </div>
+          <div class="profile-field" style="margin-bottom:14px;">
+            <label>Quick Tip (optional)</label>
+            <input type="text" id="newStepTip" placeholder="e.g. Apply before moisturizer, 3–4 drops">
+          </div>
+          <button class="btn-sm primary" onclick="addRoutineStep()" style="width:100%;">Add to My Routine ✦</button>
+        </div>
+      </div>
+
+      <!-- Christina's Recommendations (collapsible) -->
+      <div style="margin-top:20px;">
+        <button onclick="toggleRecommendations()" id="recToggleBtn"
+          style="width:100%;background:rgba(168,85,247,.06);border:1px solid var(--border);border-radius:14px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:all .3s;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="font-size:18px;">💜</span>
+            <div style="text-align:left;">
+              <div style="font-size:13px;color:var(--starlight);font-family:'DM Sans',sans-serif;">Christina's Recommendations</div>
+              <div style="font-size:11px;color:rgba(232,213,255,.4);font-family:'DM Sans',sans-serif;">Bioelements® picks for your skin type</div>
+            </div>
+          </div>
+          <span id="recToggleIcon" style="font-size:16px;color:var(--aurora);transition:transform .3s;">▾</span>
+        </button>
+        <div id="recommendationsPanel" style="display:none;margin-top:2px;">
+          <div class="card" style="border-top-left-radius:0;border-top-right-radius:0;border-top:none;">
+            <div id="recContent"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pro Tips -->
+      <div class="card" style="margin-top:16px;">
+        <div class="card-title">Pro Tips from Your Esthetician</div>
+        <div class="card-sub">Personalized advice for your skin type</div>
+        <div id="proTips" style="font-size:13px;color:rgba(232,213,255,.5);line-height:1.8;"></div>
+      </div>
+    </div>
+
+    <!-- REMINDERS -->
+    <div class="panel" id="panel-reminders">
+      <div class="p-header">
+        <div class="p-tag">Reminders</div>
+        <h1 class="p-title">Never Miss<br><em>Your Glow</em></h1>
+        <p class="p-sub">Set reminders for your routine, appointments, and product reorders.</p>
+      </div>
+      <div style="margin-bottom:28px;">
+        <div class="ps-label" style="margin-bottom:14px;">Routine Reminders</div>
+        <div class="reminder-card">
+          <div class="reminder-header">
+            <div class="reminder-title-row"><span class="reminder-icon">☀️</span><span class="reminder-name">Morning Routine</span></div>
+            <label class="reminder-toggle"><input type="checkbox" id="tog-am" checked><span class="toggle-slider"></span></label>
+          </div>
+          <div class="reminder-details">
+            <div class="rd-field"><span class="rd-label">Time</span><input type="time" class="rd-input" value="07:30" id="time-am"></div>
+            <div class="rd-field"><span class="rd-label">Days</span><select class="rd-select"><option>Every day</option><option>Weekdays only</option><option>Weekends only</option></select></div>
+          </div>
+        </div>
+        <div class="reminder-card">
+          <div class="reminder-header">
+            <div class="reminder-title-row"><span class="reminder-icon">🌙</span><span class="reminder-name">Evening Routine</span></div>
+            <label class="reminder-toggle"><input type="checkbox" id="tog-pm" checked><span class="toggle-slider"></span></label>
+          </div>
+          <div class="reminder-details">
+            <div class="rd-field"><span class="rd-label">Time</span><input type="time" class="rd-input" value="21:00" id="time-pm"></div>
+            <div class="rd-field"><span class="rd-label">Days</span><select class="rd-select"><option>Every day</option><option>Weekdays only</option><option>Weekends only</option></select></div>
+          </div>
+        </div>
+        <div class="reminder-card">
+          <div class="reminder-header">
+            <div class="reminder-title-row"><span class="reminder-icon">💧</span><span class="reminder-name">Weekly Treatment Mask</span></div>
+            <label class="reminder-toggle"><input type="checkbox" id="tog-mask"><span class="toggle-slider"></span></label>
+          </div>
+          <div class="reminder-details">
+            <div class="rd-field"><span class="rd-label">Day</span><select class="rd-select"><option>Sunday</option><option>Saturday</option><option>Friday</option></select></div>
+            <div class="rd-field"><span class="rd-label">Time</span><input type="time" class="rd-input" value="19:00"></div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-bottom:28px;">
+        <div class="ps-label" style="margin-bottom:14px;">Product Reorder Reminders</div>
+        <div id="reorderList"><div style="color:rgba(232,213,255,.3);font-size:13px;padding:20px 0;text-align:center;">No reorder reminders set yet — Christina will add them after your next appointment.</div></div>
+      </div>
+      <div style="margin-bottom:28px;">
+        <div class="ps-label" style="margin-bottom:14px;">Notification Preferences</div>
+        <div class="reminder-card">
+          <div class="reminder-details">
+            <div class="rd-field"><span class="rd-label">📱 Phone (SMS)</span><input type="tel" class="rd-input" id="reminderPhone" placeholder="(727) 000-0000"></div>
+            <div class="rd-field"><span class="rd-label">📧 Email</span><input type="email" class="rd-input" id="reminderEmail" placeholder="yourplaceholder="yourplaceholder="your&#64;email.com"#64;email.com"#64;email.com"></div>
+          </div>
+        </div>
+      </div>
+      <!-- Honest expectations notice -->
+      <div style="background:rgba(96,165,250,.06);border:1px solid rgba(96,165,250,.2);border-radius:14px;padding:16px 18px;margin-bottom:20px;display:flex;gap:12px;align-items:flex-start;">
+        <span style="font-size:20px;flex-shrink:0;">💙</span>
+        <div>
+          <div style="font-size:13px;color:var(--sky);margin-bottom:4px;letter-spacing:.03em;">Your preferences are saved here</div>
+          <div style="font-size:12px;color:rgba(232,213,255,.45);line-height:1.7;">SMS and email notifications will activate once your account is connected to Cosmic Beauty Spa's booking system. Christina will confirm your reminders at your next appointment.</div>
+        </div>
+      </div>
+      <button class="btn-full" onclick="saveReminders()">Save My Preferences ✦</button>
+    </div>
+
+    <!-- YOUR COSMIC GLOW -->
+    <div class="panel" id="panel-garden">
+      <div class="p-header">
+        <div class="p-tag">Your Cosmic Glow</div>
+        <h1 class="p-title">Your <em>Galaxy</em></h1>
+        <p class="p-sub">12 months · 12 planets · each one shaped by your skin journey and achievements this year.</p>
+      </div>
+
+      <!-- Stats row -->
+      <div class="garden-stats">
+        <div class="gstat"><span class="gstat-icon">⭐</span><span class="gstat-val" id="gs-streak">0</span><div class="gstat-label">Routine Streak</div></div>
+        <div class="gstat"><span class="gstat-icon">🌟</span><span class="gstat-val" id="gs-superstars">0</span><div class="gstat-label">Superstar Days</div></div>
+        <div class="gstat"><span class="gstat-icon">🚀</span><span class="gstat-val" id="gs-facials">0</span><div class="gstat-label">Facials</div></div>
+        <div class="gstat"><span class="gstat-icon">☄️</span><span class="gstat-val" id="gs-orders">0</span><div class="gstat-label">Purchases</div></div>
+      </div>
+
+      <!-- Current title badge -->
+      <div class="glow-badge" id="gardenBadge">
+        <span class="badge-crown" id="badgeCrown">🌑</span>
+        <div class="badge-title" id="badgeTitle">Dark <em>Matter</em></div>
+        <div class="badge-desc" id="badgeDesc">Your cosmos awaits. Complete your daily routines to ignite the first planet in your galaxy.</div>
+        <div class="badge-next" id="badgeNext"></div>
+      </div>
+
+      <!-- Superstar banners -->
+      <div id="superstarBanners"></div>
+
+      <!-- Galaxy canvas -->
+      <div class="glow-scene" id="gardenScene"><canvas id="solarCanvas"></canvas></div>
+
+      <!-- 12-month planet legend -->
+      <div class="ps-label" style="margin-bottom:12px;">Your Year · 12 Planets</div>
+      <div class="month-legend" id="monthLegend"></div>
+
+      <!-- Milestones -->
+      <div class="card" style="margin-top:20px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+          <div class="card-title" style="margin-bottom:0;">Cosmic Milestones</div>
+          <button onclick="shareMyGlow()" class="btn-sm ghost" style="font-size:10px;padding:6px 14px;">✨ Share My Glow</button>
+        </div>
+        <div class="card-sub">Achievements earned through your glow ritual</div>
+        <div id="gardenMilestones" style="margin-top:14px;display:flex;flex-direction:column;gap:10px;"></div>
+      </div>
+    </div>
+
+  </div><!-- end portal-content -->
+
+  <nav class="bottom-nav">
+    <button class="bnav-item active" onclick="goTo('dashboard')" id="nav-dashboard"><span class="bi">🏠</span><span class="bl">Home</span></button>
+    <button class="bnav-item" onclick="goTo('quiz')" id="nav-quiz"><span class="bi">🔬</span><span class="bl">Quiz</span></button>
+    <button class="bnav-item" onclick="goTo('photos')" id="nav-photos"><span class="bi">📸</span><span class="bl">Photos</span></button>
+    <button class="bnav-item" onclick="goTo('routine')" id="nav-routine"><span class="bi">✨</span><span class="bl">Routine</span></button>
+    <button class="bnav-item" onclick="goTo('garden')" id="nav-garden"><span class="bi">🌌</span><span class="bl">My Glow</span></button>
+    <button class="bnav-item" onclick="goTo('profile')" id="nav-profile"><span class="bi">👤</span><span class="bl">Profile</span></button>
+  </nav>
+
+</div><!-- end portalScreen -->
+</div><!-- end app -->
+
+<!-- UPLOAD MODAL -->
+<div class="upload-modal" id="uploadModal">
+  <div class="upload-box" style="position:relative;">
+    <button onclick="closeUpload()" style="position:absolute;top:16px;right:16px;background:rgba(168,85,247,.1);border:1px solid rgba(168,85,247,.2);border-radius:50%;width:32px;height:32px;color:var(--starlight);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;">✕</button>
+    <h3>Add Progress Photo</h3>
+    <p>Capture or upload a photo to track your skin's transformation</p>
+
+    <!-- Honest note -->
+    <div style="background:rgba(96,165,250,.06);border:1px solid rgba(96,165,250,.2);border-radius:12px;padding:12px 14px;margin-bottom:18px;display:flex;gap:10px;align-items:flex-start;">
+      <span style="font-size:16px;flex-shrink:0;">💙</span>
+      <div style="font-size:11px;color:rgba(232,213,255,.5);line-height:1.7;">Photos are previewed here for now. Permanent storage activates once your account is connected — your photos will be saved securely for your next visit with Christina.</div>
+    </div>
+
+    <video id="cameraFeed" autoplay playsinline></video>
+    <canvas id="photoCanvas"></canvas>
+    <div class="upload-methods" id="uploadMethods">
+      <div class="upload-method" onclick="startCamera()"><div class="um-icon">📷</div><div class="um-text">Take Photo<br>with Camera</div></div>
+      <div class="upload-method" onclick="document.getElementById('fileInput').click()"><div class="um-icon">🖼️</div><div class="um-text">Upload from<br>Device</div></div>
+    </div>
+    <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="handleFileUpload(event)">
+    <div id="cameraControls" style="display:none;text-align:center;margin-bottom:16px;">
+      <button class="btn-sm primary" onclick="capturePhoto()" style="margin-bottom:8px;">📸 Capture</button><br>
+      <button class="btn-sm ghost" onclick="stopCamera()" style="font-size:10px;">Cancel Camera</button>
+    </div>
+    <div class="photo-label-field">
+      <label>Label this photo</label>
+      <input type="text" id="photoLabel" placeholder="e.g. Week 1 · After morning routine">
+    </div>
+    <div class="upload-actions">
+      <button class="btn-sm ghost" onclick="closeUpload()" style="flex:1;">Cancel</button>
+      <button class="btn-sm primary" id="savePhotoBtn" onclick="savePhoto()" style="flex:2;display:none;">Preview Photo ✦</button>
+    </div>
+  </div>
+</div>
+
+<!-- ALIEN ONBOARDING MODAL -->
+<!-- ROCKET LAUNCH ONBOARDING -->
+<div class="ob-modal" id="alienModal">
+  <canvas id="obBgCanvas"></canvas>
+  <div class="ob-box">
+    <div class="ob-dots" id="obDots"></div>
+
+    <!-- SLIDE 1: Rocket Launch -->
+    <div class="ob-slide active" id="ob-slide-1">
+      <div class="ob-rocket-wrap"><canvas id="rocketCanvas"></canvas></div>
+      <div class="ob-title">Your Galaxy<br><em>Awaits</em> ✦</div>
+      <div class="ob-sub">Your skin quiz is complete. You've just launched into your own personal cosmos — let us show you how it works.</div>
+      <div class="ob-nav">
+        <button class="ob-skip" onclick="closeAlienOnboarding()">Skip</button>
+        <button class="ob-next" onclick="obNext()">Show me →</button>
+      </div>
+    </div>
+
+    <!-- SLIDE 2: Your Galaxy + Orion constellation -->
+    <div class="ob-slide" id="ob-slide-2">
+      <div class="ob-const-wrap" id="constWrap1">
+        <canvas id="constCanvas1"></canvas>
+        <div class="ob-const-name">The Orion Glow</div>
+      </div>
+      <div class="ob-title">Your <em>Galaxy</em></div>
+      <div class="ob-sub">Your personal solar system lives in <strong style="color:var(--starlight);">My Glow</strong>. It's built entirely around you — your skin, your routine, your year.</div>
+      <div class="ob-feature">
+        <span class="ob-fi">☀️</span>
+        <div><div class="ob-ft">You are the Sun</div><div class="ob-fs">The glowing center of your galaxy. It grows brighter and larger every streak day. Your consistency is your light.</div></div>
+      </div>
+      <div class="ob-feature">
+        <span class="ob-fi">🪐</span>
+        <div><div class="ob-ft">12 Planets · 12 Months</div><div class="ob-fs">Stay consistent each month and a new planet ignites. Complete the full year — all 12 orbit your sun.</div></div>
+      </div>
+      <div class="ob-feature">
+        <span class="ob-fi">✦</span>
+        <div><div class="ob-ft">Constellations in the Sky</div><div class="ob-fs">As you earn achievements, ancient star patterns appear in your galaxy — each one named for your glow journey.</div></div>
+      </div>
+      <div class="ob-nav">
+        <button class="ob-skip" onclick="obPrev()">← Back</button>
+        <button class="ob-next" onclick="obNext()">Next →</button>
+      </div>
+    </div>
+
+    <!-- SLIDE 3: Achievements + Glow Serpent constellation -->
+    <div class="ob-slide" id="ob-slide-3">
+      <div class="ob-const-wrap" id="constWrap2">
+        <canvas id="constCanvas2"></canvas>
+        <div class="ob-const-name">The Glow Serpent</div>
+      </div>
+      <div class="ob-title">Earn Your<br><em>Achievements</em></div>
+      <div class="ob-sub">Three ways to power up your galaxy and unlock cosmic titles — from Dark Matter to Celestial Icon:</div>
+      <div class="ob-feature">
+        <span class="ob-fi">🌟</span>
+        <div><div class="ob-ft">Superstar Days</div><div class="ob-fs">Check off <strong style="color:var(--starlight);">every AM + PM step</strong> in one day. Your planet earns golden Saturn rings and a glowing ★</div></div>
+      </div>
+      <div class="ob-feature">
+        <span class="ob-fi">🌙</span>
+        <div><div class="ob-ft">Moons — Book a Facial</div><div class="ob-fs">Each visit with Christina at Cosmic Beauty Spa sends a moon into orbit around one of your planets.</div></div>
+      </div>
+      <div class="ob-feature">
+        <span class="ob-fi">☄️</span>
+        <div><div class="ob-ft">Comets — Shop Bioelements®</div><div class="ob-fs">Every product purchase sends a comet blazing across your galaxy in real time.</div></div>
+      </div>
+      <div class="ob-nav">
+        <button class="ob-skip" onclick="obPrev()">← Back</button>
+        <button class="ob-next" onclick="obNext()">Next →</button>
+      </div>
+    </div>
+
+    <!-- SLIDE 4: Navigate + Beauty Crown constellation -->
+    <div class="ob-slide" id="ob-slide-4">
+      <div class="ob-const-wrap" id="constWrap3">
+        <canvas id="constCanvas3"></canvas>
+        <div class="ob-const-name">The Beauty Crown</div>
+      </div>
+      <div class="ob-title">Navigate Your<br><em>Cosmos</em></div>
+      <div class="ob-sub">Everything lives in the bottom bar. Tap any icon to explore your portal:</div>
+      <div class="ob-feature">
+        <span class="ob-fi">✨</span>
+        <div><div class="ob-ft">Routine — your daily ritual</div><div class="ob-fs">Check off AM + PM steps · customize with your products · earn Superstar Days</div></div>
+      </div>
+      <div class="ob-feature">
+        <span class="ob-fi">📸</span>
+        <div><div class="ob-ft">Photos — track your transformation</div><div class="ob-fs">Upload weekly progress photos · use Before & After compare to see how far you've come</div></div>
+      </div>
+      <div class="ob-feature">
+        <span class="ob-fi">🌌</span>
+        <div><div class="ob-ft">My Glow — your living galaxy</div><div class="ob-fs">Watch planets ignite month by month · unlock titles · share your galaxy on Instagram</div></div>
+      </div>
+      <div class="ob-nav">
+        <button class="ob-skip" onclick="obPrev()">← Back</button>
+        <button class="ob-next" onclick="closeAlienOnboarding()" style="background:linear-gradient(135deg,#a855f7,#6366f1);">Enter My Galaxy ✦</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- SHARE MY GLOW MODAL -->
+<div class="upload-modal" id="shareGlowModal">
+  <div class="upload-box" style="position:relative;text-align:center;">
+    <button onclick="closeShareGlow()" style="position:absolute;top:16px;right:16px;background:rgba(168,85,247,.1);border:1px solid rgba(168,85,247,.2);border-radius:50%;width:32px;height:32px;color:var(--starlight);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;">✕</button>
+    <div id="glowShareCard" style="background:linear-gradient(145deg,#0a0820,#1a0a3d);border:1px solid rgba(168,85,247,.4);border-radius:20px;padding:32px 24px;margin-bottom:20px;">
+      <div style="font-family:'Pacifico',cursive;font-size:22px;letter-spacing:.02em;color:rgba(168,85,247,.7);margin-bottom:16px;">Cosmic Beauty Spa · Hudson FL</div>
+      <div id="shareGlowIcon" style="font-size:52px;margin-bottom:10px;">☀️</div>
+      <div id="shareGlowTitle" style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:#e8d5ff;margin-bottom:6px;">Celestial Skin Goddess</div>
+      <div id="shareGlowName" style="font-size:13px;color:rgba(168,85,247,.7);letter-spacing:.1em;margin-bottom:16px;"></div>
+      <div style="display:flex;justify-content:center;gap:20px;margin-bottom:16px;">
+        <div style="text-align:center;"><div style="font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--aurora);" id="shareStreak">0</div><div style="font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(232,213,255,.4);">Day Streak</div></div>
+        <div style="width:1px;background:rgba(168,85,247,.2);"></div>
+        <div style="text-align:center;"><div style="font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--aurora);" id="shareSuperstars">0</div><div style="font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(232,213,255,.4);">Superstar Days</div></div>
+        <div style="width:1px;background:rgba(168,85,247,.2);"></div>
+        <div style="text-align:center;"><div style="font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--aurora);" id="shareFacials">0</div><div style="font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(232,213,255,.4);">Facials</div></div>
+      </div>
+      <div style="font-size:11px;color:rgba(232,213,255,.3);letter-spacing:.08em;">cosmicbeautyspa.com</div>
+    </div>
+    <p style="font-size:12px;color:rgba(232,213,255,.4);margin-bottom:14px;line-height:1.7;">Screenshot this card and share it on Instagram or stories to show off your glow journey ✨</p>
+    <div style="display:flex;gap:10px;">
+      <button class="btn-sm ghost" onclick="closeShareGlow()" style="flex:1;">Close</button>
+      <button class="btn-sm primary" onclick="toast('✦','Screenshot taken! Share your glow ✨');closeShareGlow();" style="flex:2;">📸 Screenshot & Share</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><span class="ti" id="ti">✦</span><span class="tt" id="tt"></span></div>
+
+<!-- app logic: stored as template so CDN cannot modify it -->
+<script type="text/template" id="app-logic">
+const canvas = document.getElementById('starfield');
+const ctx = canvas.getContext('2d');
+let stars = [];
+function resizeStars() {
+  canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+  stars = Array.from({length:160}, () => ({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*1.3+0.2,ts:Math.random()*.02+.004,color:Math.random()>.7?'#60a5fa':'#e8d5ff'}));
+}
+function drawStars(t) {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  stars.forEach(s=>{ctx.globalAlpha=0.15+0.85*(0.5+0.5*Math.sin(t*s.ts));ctx.fillStyle=s.color;ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fill();});
+  ctx.globalAlpha=1; requestAnimationFrame(drawStars);
+}
+resizeStars(); window.addEventListener('resize',resizeStars); requestAnimationFrame(drawStars);
+
+// ── State ──
+let currentUser = null;
+let solarAnim = null;
+
+function getUser() { return currentUser; }
+
+// ── Auth ──
+function switchAuthTab(tab, el) {
+  document.querySelectorAll('.auth-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('loginForm').style.display = tab==='login'?'block':'none';
+  document.getElementById('registerForm').style.display = tab==='register'?'block':'none';
+  document.getElementById('forgotForm').style.display = 'none';
+}
+
+function showForgotPassword(show=true) {
+  document.getElementById('loginForm').style.display = show ? 'none' : 'block';
+  document.getElementById('forgotForm').style.display = show ? 'block' : 'none';
+  if (show) document.getElementById('resetEmail').value = document.getElementById('loginEmail').value;
+}
+
+function handleForgotPassword() {
+  const email = document.getElementById('resetEmail').value.trim();
+  if (!email) { toast('⚠️','Please enter your email address'); return; }
+  // Simulate sending — real implementation uses Supabase auth.resetPasswordForEmail()
+  toast('💙', 'Reset link sent! Check your inbox.');
+  setTimeout(() => showForgotPassword(false), 1800);
+}
+
+function handleLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pw = document.getElementById('loginPw').value;
+  if (!email||!pw) { toast('⚠️','Please enter your email and password'); return; }
+  // Demo fallback for preview
+  launchPortal({ first_name:'Aurora', last_name:'Starling', email, skin_type:'Combination', concerns:['Dehydration','Dull Skin'], streak:7, superstar_days:2, facials:0, orders:1, joined_at: new Date().toISOString() });
+}
+
+function handleRegister() {
+  const first = document.getElementById('regFirst').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  const pw = document.getElementById('regPw').value;
+  if (!first||!email||!pw) { toast('⚠️','Please fill in all required fields'); return; }
+  launchPortal({ first_name:first, last_name:document.getElementById('regLast').value.trim(), email, phone:document.getElementById('regPhone').value.trim(), skin_type:'', concerns:[], streak:0, joined_at:new Date().toISOString() });
+}
+
+function demoLogin() {
+  launchPortal({ first_name:'Aurora', last_name:'Starling', email:'demo@cosmicbeautyspa.com',
+    skin_type:'Combination', concerns:['Dehydration','Fine Lines','Dull Skin'],
+    streak:12, superstar_days:4, facials:1, orders:2,
+    joined_at: new Date(Date.now()-75*86400000).toISOString() });
+}
+
+function handleLogout() {
+  currentUser = null;
+  if (typeof CosmicAuth !== 'undefined') { CosmicAuth.logout(); return; }
+  document.getElementById('portalScreen').style.display = 'none';
+  document.getElementById('authScreen').style.display = 'flex';
+  toast('✦','Signed out successfully');
+}
+
+// ── Portal ──
+function launchPortal(user) {
+  currentUser = user;
+  // Load persisted streak
+  const savedStreak = loadStreak();
+  currentUser.streak = Math.max(savedStreak, user.streak || 0);
+
+  // Personalize routine steps from skin type if available
+  if (user.skin_type) {
+    const st = user.skin_type.toLowerCase().replace(' / balanced','').trim();
+    const key = {oily:'oily',dry:'dry',combination:'combo',normal:'normal',sensitive:'sensitive'}[st] || 'combo';
+    const builtAM = buildRoutine(key,'am');
+    const builtPM = buildRoutine(key,'pm');
+    if (builtAM) amSteps = builtAM;
+    if (builtPM) pmSteps = builtPM;
+  }
+  document.getElementById('authScreen').style.display = 'none';
+  document.getElementById('portalScreen').style.display = 'block';
+  document.getElementById('userName').textContent = (user.first_name||'')+' '+(user.last_name||'');
+  document.getElementById('userAvatar').textContent = getEmoji(user.skin_type);
+  renderDashboard(user);
+  renderProfile(user);
+  renderRoutine('am');
+  populatePhotoGrid();
+}
+
+function getEmoji(type) {
+  return {Oily:'✨',Dry:'🌿',Combination:'⚖️',Normal:'🌸',Sensitive:'💜'}[type]||'🌸';
+}
+
+// ── Navigation ──
+let activePanel = 'dashboard';
+let currentRoutineTab = 'am';
+
+function goTo(panel) {
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.bnav-item').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+panel).classList.add('active');
+  document.getElementById('nav-'+panel)?.classList.add('active');
+  activePanel = panel;
+  window.scrollTo(0,0);
+  document.dispatchEvent(new CustomEvent('panelChange',{detail:panel}));
+  if (panel==='dashboard') renderDashboard(getUser());
+  if (panel==='routine') renderRoutine(currentRoutineTab);
+  if (panel==='garden') renderGarden();
+}
+
+// ── Dashboard ──
+function renderDashboard(user) {
+  if (!user) return;
+  const isNewUser = !user.skin_type;
+  const days = Math.floor((Date.now()-new Date(user.joined_at))/86400000)+1;
+
+  // Time-of-day greeting
+  const hr = new Date().getHours();
+  const greeting = hr < 12 ? 'Good morning' : hr < 17 ? 'Good afternoon' : 'Good evening';
+  document.getElementById('dashWelcome').innerHTML = isNewUser
+    ? `Welcome, <em>${user.first_name}</em> ✦`
+    : `${greeting}, <em>${user.first_name}</em> ✦`;
+  document.getElementById('dashSubtitle').textContent = isNewUser
+    ? `Let's get your glow journey started — just 3 steps to set everything up.`
+    : hr < 12 ? `Rise and glow ✨ Your AM routine is waiting.`
+    : hr < 17 ? `Midday check-in — how's your skin feeling today?`
+    : `Wind down and glow — your PM routine awaits.`;
+
+  // Onboarding checklist for brand-new users
+  const onboarding = document.getElementById('onboardingChecklist');
+  if (isNewUser) {
+    onboarding.style.display = 'block';
+    onboarding.innerHTML = `
+      <div style="background:linear-gradient(135deg,rgba(107,47,160,.25),rgba(61,47,160,.2));border:1px solid rgba(168,85,247,.3);border-radius:20px;padding:22px 24px;margin-bottom:20px;">
+        <div style="font-size:10px;letter-spacing:.35em;text-transform:uppercase;color:var(--aurora);margin-bottom:14px;">Start Here · 3 Steps</div>
+        <div onclick="goTo('quiz')" style="display:flex;align-items:center;gap:14px;padding:13px 0;border-bottom:1px solid rgba(168,85,247,.1);cursor:pointer;">
+          <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--electric),var(--violet));display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">1</div>
+          <div style="flex:1;">
+            <div style="font-size:14px;color:var(--starlight);">Take Your Skin Quiz</div>
+            <div style="font-size:11px;color:rgba(232,213,255,.4);margin-top:2px;">2 minutes · unlocks your personalized routine</div>
+          </div>
+          <span style="font-size:18px;color:var(--aurora);">→</span>
+        </div>
+        <div onclick="goTo('routine')" style="display:flex;align-items:center;gap:14px;padding:13px 0;border-bottom:1px solid rgba(168,85,247,.1);cursor:pointer;opacity:.6;">
+          <div style="width:32px;height:32px;border-radius:50%;background:rgba(168,85,247,.15);border:1px solid rgba(168,85,247,.25);display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--aurora);flex-shrink:0;">2</div>
+          <div style="flex:1;">
+            <div style="font-size:14px;color:var(--starlight);">Customize Your Routine</div>
+            <div style="font-size:11px;color:rgba(232,213,255,.4);margin-top:2px;">Add the products you already use at home</div>
+          </div>
+          <span style="font-size:18px;color:rgba(168,85,247,.3);">→</span>
+        </div>
+        <div onclick="goTo('photos')" style="display:flex;align-items:center;gap:14px;padding:13px 0;cursor:pointer;opacity:.6;">
+          <div style="width:32px;height:32px;border-radius:50%;background:rgba(168,85,247,.15);border:1px solid rgba(168,85,247,.25);display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--aurora);flex-shrink:0;">3</div>
+          <div style="flex:1;">
+            <div style="font-size:14px;color:var(--starlight);">Add Your First Progress Photo</div>
+            <div style="font-size:11px;color:rgba(232,213,255,.4);margin-top:2px;">So you can see your transformation over time</div>
+          </div>
+          <span style="font-size:18px;color:rgba(168,85,247,.3);">→</span>
+        </div>
+      </div>`;
+  } else {
+    onboarding.style.display = 'none';
+  }
+
+  document.getElementById('statDays').textContent = days === 1 ? '1' : days;
+  document.getElementById('statStreak').textContent = user.streak||0;
+  document.getElementById('statPhotos').textContent = 0;
+
+  // Warm label for day 1
+  if (isNewUser || days === 1) {
+    document.getElementById('statCards').innerHTML = `
+      <div class="stat-card" style="grid-column:1/-1;background:linear-gradient(135deg,rgba(107,47,160,.2),rgba(61,47,160,.15));border-color:rgba(168,85,247,.25);">
+        <span style="font-size:22px;margin-bottom:6px;display:block;">🌟</span>
+        <span style="font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--starlight);display:block;margin-bottom:4px;">Day 1 of your glow journey</span>
+        <span style="font-size:11px;color:rgba(232,213,255,.4);letter-spacing:.1em;">Complete the quiz to unlock your stats</span>
+      </div>`;
+  } else {
+    document.getElementById('statCards').innerHTML = `
+      <div class="stat-card"><span class="stat-num" id="statDays">${days}</span><span class="stat-label">Days Active</span></div>
+      <div class="stat-card"><span class="stat-num" id="statPhotos">0</span><span class="stat-label">Progress Photos</span></div>
+      <div class="stat-card"><span class="stat-num" id="statStreak">${user.streak||0}</span><span class="stat-label">Routine Streak</span></div>`;
+  }
+  document.getElementById('routineDate').textContent = new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+
+  // ── Personalized routine preview ──
+  const routineEl = document.getElementById('dashRoutine');
+  if (!user.skin_type) {
+    routineEl.innerHTML = `
+      <div style="text-align:center;padding:20px 10px;">
+        <div style="font-size:32px;margin-bottom:10px;">🔬</div>
+        <div style="font-size:14px;color:var(--starlight);margin-bottom:6px;">Your routine isn't set yet</div>
+        <div style="font-size:12px;color:rgba(232,213,255,.4);margin-bottom:16px;line-height:1.6;">Take the 2-minute skin quiz and we'll build your personalized Bioelements® routine.</div>
+        <button class="btn-sm primary" onclick="goTo('quiz')" style="margin:0 auto;">Take Skin Quiz →</button>
+      </div>`;
+  } else {
+    const steps = amSteps;
+    const doneCount = steps.filter(s=>s.done).length;
+    const total = steps.length;
+    const pct = Math.round(doneCount/total*100);
+    routineEl.innerHTML = `
+      <div style="margin-bottom:12px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <span style="font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:rgba(168,85,247,.6);">Today's Progress</span>
+          <span style="font-size:11px;color:rgba(168,85,247,.7);">${doneCount}/${total} done</span>
+        </div>
+        <div style="height:4px;background:rgba(168,85,247,.1);border-radius:100px;overflow:hidden;">
+          <div style="height:100%;width:${pct}%;background:linear-gradient(to right,var(--aurora),var(--sky));border-radius:100px;transition:width .5s;"></div>
+        </div>
+      </div>
+      ${steps.slice(0,4).map(s=>`
+        <div class="routine-step" onclick="toggleDashStep(${s.step})" style="cursor:pointer;">
+          <div class="rs-num" style="${s.done?'background:var(--success);color:#fff;border:none;':''}">${s.done?'✓':s.step}</div>
+          <div class="rs-name" style="${s.done?'text-decoration:line-through;opacity:.5;':''}">${s.name}</div>
+          <span class="rs-time" style="font-size:10px;color:rgba(168,85,247,.5);">Bioelements®</span>
+          <div class="rs-check ${s.done?'done':''}"></div>
+        </div>`).join('')}
+      ${total > 4 ? `<div style="text-align:center;padding-top:8px;"><span style="font-size:11px;color:rgba(168,85,247,.5);cursor:pointer;" onclick="goTo('routine')">+${total-4} more steps →</span></div>` : ''}`;
+  }
+
+  document.getElementById('dashReminders').innerHTML = `
+    <div class="reminder-item"><span class="ri-icon">☀️</span><div class="ri-text"><div class="ri-title">Morning Routine</div><div class="ri-sub">7:30 AM · Daily</div></div><span class="pill green ri-badge">Active</span></div>
+    <div class="reminder-item"><span class="ri-icon">🌙</span><div class="ri-text"><div class="ri-title">Evening Routine</div><div class="ri-sub">9:00 PM · Daily</div></div><span class="pill green ri-badge">Active</span></div>`;
+
+  if (user.skin_type) {
+    document.getElementById('dashSkinProfile').innerHTML = `
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
+        <span class="pill">${getEmoji(user.skin_type)} ${user.skin_type} Skin</span>
+        ${(user.concerns||[]).map(c=>`<span class="pill blue">${c}</span>`).join('')}
+      </div>
+      <p style="font-size:12px;color:rgba(232,213,255,.4);">Based on your skin quiz · <span style="color:var(--aurora);cursor:pointer;" onclick="goTo('quiz')">Retake quiz</span></p>`;
+  }
+
+  // Appointment history
+  const apptEl = document.getElementById('dashAppt');
+  if (user.facials && user.facials > 0) {
+    apptEl.innerHTML = `
+      <div style="display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid rgba(168,85,247,.07);">
+        <span style="font-size:24px;">✨</span>
+        <div style="flex:1;">
+          <div style="font-size:13px;color:var(--starlight);">Custom Facial with Christina</div>
+          <div style="font-size:11px;color:rgba(232,213,255,.4);margin-top:2px;">Your last visit · Bioelements® treatment</div>
+        </div>
+        <span class="pill green">Completed</span>
+      </div>
+      <div style="padding-top:12px;">
+        <a href="https://cosmicnailsandspa.glossgenius.com" target="_blank" style="text-decoration:none;">
+          <button class="btn-sm primary">Book Next Appointment</button>
+        </a>
+      </div>`;
+  } else {
+    apptEl.innerHTML = `
+      <div style="display:flex;align-items:center;gap:14px;padding:8px 0;">
+        <span style="font-size:28px;">🚀</span>
+        <div>
+          <div style="font-size:13px;color:var(--starlight);margin-bottom:4px;">No visits yet</div>
+          <div style="font-size:12px;color:rgba(232,213,255,.4);line-height:1.6;">Book your first facial with Christina — your planets will thank you.</div>
+        </div>
+      </div>
+      <a href="https://cosmicnailsandspa.glossgenius.com" target="_blank" style="text-decoration:none;">
+        <button class="btn-sm primary" style="margin-top:10px;">Book a Facial ✦</button>
+      </a>`;
+  }
+
+  // Daily tip
+  renderDailyTip(user);
+
+  // Water tracker
+  renderWaterTracker();
+}
+
+function toggleDashStep(stepNum) {
+  const step = amSteps.find(s=>s.step===stepNum);
+  if (!step) return;
+  step.done = !step.done;
+  const allDone = amSteps.every(s=>s.done);
+  if (allDone) {
+    if (currentUser) currentUser.superstar_days = (currentUser.superstar_days||0)+1;
+    toast('🌟','Superstar! All AM steps complete ✦');
+  }
+  renderDashboard(getUser());
+  // Keep routine panel in sync
+  if (activePanel==='routine') renderRoutine('am');
+}
+
+// ── Quiz ──
+let currentStep = 1;
+const quizAnswers = {};
+
+function initQuiz() {
+  currentStep = 1;
+  document.querySelectorAll('.quiz-step').forEach(s=>s.classList.remove('active'));
+  document.querySelector('[data-step="1"]').classList.add('active');
+  renderQuizProgress();
+}
+
+function renderQuizProgress() {
+  document.getElementById('quizProgress').innerHTML = Array.from({length:7},(_,i)=>{
+    const n=i+1,cls=n<currentStep?'done':n===currentStep?'active':'';
+    return `<div class="qp-dot ${cls}"></div>`;
+  }).join('');
+}
+
+function selectOpt(el, qKey, multi=false) {
+  const opts = el.closest('.quiz-options').querySelectorAll('.quiz-opt');
+  if (!multi) { opts.forEach(o=>o.classList.remove('selected')); el.classList.add('selected'); quizAnswers[qKey]=el.dataset.value; }
+  else { el.classList.toggle('selected'); quizAnswers[qKey]=[...opts].filter(o=>o.classList.contains('selected')).map(o=>o.dataset.value); }
+}
+
+function nextStep() {
+  if (currentStep < 7) {
+    const current = document.querySelector(`[data-step="${currentStep}"]`);
+    current.style.opacity = '0';
+    current.style.transform = 'translateX(-20px)';
+    setTimeout(() => {
+      current.classList.remove('active');
+      current.style.opacity = '';
+      current.style.transform = '';
+      currentStep++;
+      const next = document.querySelector(`[data-step="${currentStep}"]`);
+      next.style.opacity = '0';
+      next.style.transform = 'translateX(20px)';
+      next.classList.add('active');
+      requestAnimationFrame(() => {
+        next.style.transition = 'opacity .35s ease, transform .35s ease';
+        next.style.opacity = '1';
+        next.style.transform = 'translateX(0)';
+        setTimeout(() => { next.style.transition = ''; next.style.opacity = ''; next.style.transform = ''; }, 400);
+      });
+      renderQuizProgress();
+      window.scrollTo(0,0);
+    }, 200);
+  }
+}
+
+function prevStep() {
+  if (currentStep > 1) {
+    const current = document.querySelector(`[data-step="${currentStep}"]`);
+    current.style.opacity = '0';
+    current.style.transform = 'translateX(20px)';
+    setTimeout(() => {
+      current.classList.remove('active');
+      current.style.opacity = '';
+      current.style.transform = '';
+      currentStep--;
+      const prev = document.querySelector(`[data-step="${currentStep}"]`);
+      prev.style.opacity = '0';
+      prev.style.transform = 'translateX(-20px)';
+      prev.classList.add('active');
+      requestAnimationFrame(() => {
+        prev.style.transition = 'opacity .35s ease, transform .35s ease';
+        prev.style.opacity = '1';
+        prev.style.transform = 'translateX(0)';
+        setTimeout(() => { prev.style.transition = ''; prev.style.opacity = ''; prev.style.transform = ''; }, 400);
+      });
+      renderQuizProgress();
+    }, 200);
+  }
+}
+
+function finishQuiz() {
+  document.querySelector(`[data-step="${currentStep}"]`).classList.remove('active');
+  document.getElementById('quizResult').classList.add('active');
+  const skinType = determineSkinType();
+  const skinData = {
+    oily:{icon:'✨',label:'Oily Skin',desc:'Your skin produces excess sebum, especially in the T-zone. Focus on balancing, deep-cleansing, and non-comedogenic hydration.'},
+    dry:{icon:'🌿',label:'Dry Skin',desc:'Your skin lacks oil and moisture, feeling tight and sometimes flaky. Rich, emollient moisturizers and gentle exfoliation are your best friends.'},
+    combo:{icon:'⚖️',label:'Combination Skin',desc:"You're dealing with multiple zones — oily where it counts, dry where you don't want it. Targeted, zone-specific care is key."},
+    normal:{icon:'🌸',label:'Normal / Balanced Skin',desc:'Lucky you — your skin is naturally balanced. Maintenance and prevention are your focus.'},
+    sensitive:{icon:'💜',label:'Sensitive Skin',desc:'Your skin reacts easily and needs extra care. Calming, barrier-repairing, fragrance-free formulas are essential.'}
+  };
+  const productMap = {
+    oily:[{e:'🫧',n:'Flash Foam Cleanser',w:'Clears oil without stripping'},{e:'⚖️',n:'Beyond Hydration',w:'Lightweight gel hydration'},{e:'🎯',n:'Shine Stopper',w:'Controls midday oil'},{e:'⚡',n:'Kerafole Mask',w:'Weekly deep-pore cleanse'}],
+    dry:[{e:'🌙',n:'Sleepwear',w:'Overnight retinol + repair'},{e:'💧',n:'Crucial Moisture',w:'Rich emollient hydration'},{e:'💎',n:'Hydroplunge Mask',w:'Intense HA hydration boost'},{e:'🛡️',n:'Barrier Fix Hydrator',w:'Strengthen moisture barrier'}],
+    combo:[{e:'🫧',n:'Flash Foam Cleanser',w:'Balanced, gentle cleanse'},{e:'🌊',n:'Absolute Moisture',w:'Balanced lightweight hydration'},{e:'⚡',n:'Kerafole Mask',w:'Purify congested zones'},{e:'🔬',n:'Age Activist Serum',w:'Targeted correction'}],
+    normal:[{e:'✨',n:'Skin Editor AHA',w:'Maintain glow & texture'},{e:'🌸',n:'Absolute Moisture',w:'Balanced daily hydration'},{e:'☀️',n:'Raydefense SPF 30',w:'Daily sun protection'},{e:'💜',n:'Power Peptide Toner',w:'Anti-aging prep step'}],
+    sensitive:[{e:'🛡️',n:'Barrier Fix Hydrator',w:'Repair & protect barrier'},{e:'🌿',n:'Soothing Creme',w:'Calm redness instantly'},{e:'💜',n:'Calm Skin Arnica Toner',w:'Soothe after cleansing'},{e:'💎',n:'Hydroplunge Mask',w:'Gentle deep hydration'}]
+  };
+  const data = skinData[skinType]||skinData.combo;
+  const products = productMap[skinType]||productMap.combo;
+  document.getElementById('resultBox').innerHTML = `<div class="result-icon">${data.icon}</div><div class="result-skin-type">${data.label}</div><div class="result-desc">${data.desc}</div>`;
+  document.getElementById('resultProducts').innerHTML = `
+    <div class="ps-label" style="justify-content:center;margin:0 0 12px;">Your Recommended Bioelements® Products</div>
+    <div class="result-products">
+      ${products.map(p=>`
+        <a href="https://cosmicnailsandspa.glossgenius.com" target="_blank" style="text-decoration:none;">
+          <div class="rp-item" style="cursor:pointer;transition:border-color .3s;" onmouseover="this.style.borderColor='rgba(168,85,247,.4)'" onmouseout="this.style.borderColor=''">
+            <span class="rp-emoji">${p.e}</span>
+            <span class="rp-name">${p.n}</span>
+            <span class="rp-why">${p.w}</span>
+            <span style="font-size:11px;color:rgba(168,85,247,.5);flex-shrink:0;">Shop →</span>
+          </div>
+        </a>`).join('')}
+    </div>`;
+
+  // ── Immediately personalize the routine state ──
+  const newSkinType = data.label.replace(' Skin','').replace(' / Balanced','').trim();
+  const newConcerns = Array.isArray(quizAnswers.q2)
+    ? quizAnswers.q2.map(c=>({acne:'Acne / Breakouts',aging:'Fine Lines',dull:'Dull Skin',dehydrated:'Dehydration',sensitive:'Sensitivity',pores:'Large Pores'}[c]||c))
+    : [];
+
+  // Build personalized routine from quiz result
+  const newAM = buildRoutine(skinType, 'am');
+  const newPM = buildRoutine(skinType, 'pm');
+  amSteps = newAM;
+  pmSteps = newPM;
+
+  // Update user profile silently
+  if (currentUser) {
+    currentUser.skin_type = newSkinType;
+    currentUser.concerns = newConcerns;
+    document.getElementById('userAvatar').textContent = getEmoji(newSkinType);
+    document.getElementById('pfSkinType').value = newSkinType;
+  }
+
+  // ── Show alien onboarding (only once, after first quiz) ──
+  const hasSeenOnboarding = localStorage.getItem('cbs_onboarding_done');
+  if (!hasSeenOnboarding) {
+    setTimeout(() => openAlienOnboarding(), 900);
+  }
+}
+
+function determineSkinType() {
+  const q1=quizAnswers.q1;
+  if(q1==='oily') return 'oily'; if(q1==='dry') return 'dry'; if(q1==='combo') return 'combo';
+  if(q1==='normal') { const q3=quizAnswers.q3; if(q3==='very'||q3==='some') return 'sensitive'; return 'normal'; }
+  return 'combo';
+}
+
+// ── Routines ──
+function defaultAM() {
+  return [{step:1,name:'Cleanse',product:'Flash Foam Cleanser',tip:'Massage gently for 60 seconds',time:'AM',done:false},{step:2,name:'Tone',product:'Power Peptide Toner',tip:'Apply with hands or cotton pad',time:'AM',done:false},{step:3,name:'Serum',product:'Age Activist Serum',tip:'3-4 drops, press into skin',time:'AM',done:false},{step:4,name:'Moisturize',product:'Absolute Moisture',tip:'Apply while skin is slightly damp',time:'AM',done:false},{step:5,name:'SPF',product:'Raydefense SPF 30',tip:'Last step — always protect!',time:'AM',done:false}];
+}
+function defaultPM() {
+  return [{step:1,name:'Double Cleanse',product:'Decongestant Cleanser',tip:'Remove all traces of sunscreen & makeup',time:'PM',done:false},{step:2,name:'Tone',product:'Power Peptide Toner',tip:'Prep skin to absorb actives',time:'PM',done:false},{step:3,name:'Treatment',product:'Skin Editor AHA',tip:'Use 3-4 nights per week',time:'PM',done:false},{step:4,name:'Eye Cream',product:'Sleepwear for Eyes',tip:'Pat gently with ring finger',time:'PM',done:false},{step:5,name:'Night Creme',product:'Sleepwear',tip:'Warm between fingers first',time:'PM',done:false}];
+}
+
+function buildRoutine(skinType, ampm) {
+  const routines = {
+    oily: {
+      am: [
+        {step:1,name:'Cleanse',product:'Flash Foam Cleanser',tip:'Clears excess oil from overnight',time:'AM',done:false},
+        {step:2,name:'Tone',product:'Power Peptide Toner',tip:'Balance and prep skin',time:'AM',done:false},
+        {step:3,name:'Oil Control',product:'Equalizer',tip:'Apply to T-zone first',time:'AM',done:false},
+        {step:4,name:'Moisturize',product:'Beyond Hydration Gel',tip:'Lightweight — never skip!',time:'AM',done:false},
+        {step:5,name:'SPF',product:'Raydefense SPF 30',tip:'Non-negotiable last step',time:'AM',done:false}
+      ],
+      pm: [
+        {step:1,name:'Cleanse',product:'Decongestant Cleanser',tip:'Deep-clean pores daily',time:'PM',done:false},
+        {step:2,name:'Tone',product:'Power Peptide Toner',tip:'Restore pH balance',time:'PM',done:false},
+        {step:3,name:'Treatment',product:'Skin Editor AHA',tip:'4× per week for best results',time:'PM',done:false},
+        {step:4,name:'Night Creme',product:'Oil Control Sleepwear',tip:'Firms and balances overnight',time:'PM',done:false}
+      ]
+    },
+    dry: {
+      am: [
+        {step:1,name:'Cleanse',product:'Twice Daily Bar',tip:'Gentle — never strip dry skin',time:'AM',done:false},
+        {step:2,name:'Tone',product:'Remineralist Toner',tip:'Adds minerals back to skin',time:'AM',done:false},
+        {step:3,name:'Serum',product:'Barrier Fix Hydrator',tip:'Ceramide boost before moisture',time:'AM',done:false},
+        {step:4,name:'Moisturize',product:'Crucial Moisture',tip:'Apply generously',time:'AM',done:false},
+        {step:5,name:'SPF',product:'Raydefense SPF 30',tip:'Always last',time:'AM',done:false}
+      ],
+      pm: [
+        {step:1,name:'Cleanse',product:'Twice Daily Bar',tip:'Never sleep with makeup on',time:'PM',done:false},
+        {step:2,name:'Tone',product:'Remineralist Toner',tip:'Prep for overnight repair',time:'PM',done:false},
+        {step:3,name:'Eye Cream',product:'Sleepwear for Eyes',tip:'Pat gently — never rub',time:'PM',done:false},
+        {step:4,name:'Night Creme',product:'Sleepwear',tip:'Wake up to visibly smoother skin',time:'PM',done:false}
+      ]
+    },
+    combo: {
+      am: [
+        {step:1,name:'Cleanse',product:'Flash Foam Cleanser',tip:'Balanced, gentle cleanse',time:'AM',done:false},
+        {step:2,name:'Tone',product:'Power Peptide Toner',tip:'Balance combination zones',time:'AM',done:false},
+        {step:3,name:'Serum',product:'Age Activist Serum',tip:'Targeted correction for both zones',time:'AM',done:false},
+        {step:4,name:'Moisturize',product:'Absolute Moisture',tip:'Apply while skin is slightly damp',time:'AM',done:false},
+        {step:5,name:'SPF',product:'Raydefense SPF 30',tip:'Last step — Florida sun is intense!',time:'AM',done:false}
+      ],
+      pm: [
+        {step:1,name:'Double Cleanse',product:'Decongestant Cleanser',tip:'Remove all sunscreen & makeup',time:'PM',done:false},
+        {step:2,name:'Tone',product:'Power Peptide Toner',tip:'Prep skin to absorb actives',time:'PM',done:false},
+        {step:3,name:'Treatment',product:'Skin Editor AHA',tip:'Use 3–4 nights per week',time:'PM',done:false},
+        {step:4,name:'Eye Cream',product:'Sleepwear for Eyes',tip:'Pat gently with ring finger',time:'PM',done:false},
+        {step:5,name:'Night Creme',product:'Sleepwear',tip:'Warm between fingers first',time:'PM',done:false}
+      ]
+    },
+    normal: {
+      am: [
+        {step:1,name:'Cleanse',product:'Twice Daily Bar',tip:'Keep your balance — gentle cleanse',time:'AM',done:false},
+        {step:2,name:'Tone',product:'Power Peptide Toner',tip:'Anti-aging prep step',time:'AM',done:false},
+        {step:3,name:'Serum',product:'Age Activist Serum',tip:'Prevention is the best medicine',time:'AM',done:false},
+        {step:4,name:'Moisturize',product:'Absolute Moisture',tip:'Maintain your natural balance',time:'AM',done:false},
+        {step:5,name:'SPF',product:'Raydefense SPF 30',tip:'Daily sun protection — non-negotiable',time:'AM',done:false}
+      ],
+      pm: [
+        {step:1,name:'Cleanse',product:'Twice Daily Bar',tip:'End the day clean',time:'PM',done:false},
+        {step:2,name:'Tone',product:'Power Peptide Toner',tip:'Prep for actives',time:'PM',done:false},
+        {step:3,name:'Treatment',product:'Skin Editor AHA',tip:'Maintain glow & texture',time:'PM',done:false},
+        {step:4,name:'Night Creme',product:'Sleepwear',tip:'Overnight renewal',time:'PM',done:false}
+      ]
+    },
+    sensitive: {
+      am: [
+        {step:1,name:'Cleanse',product:'Sensitive Skin Cleansing Bar',tip:'Never use hot water — lukewarm only',time:'AM',done:false},
+        {step:2,name:'Tone',product:'Calm Skin Arnica Toner',tip:'Soothe immediately after cleansing',time:'AM',done:false},
+        {step:3,name:'Serum',product:'Barrier Fix Hydrator',tip:'Repair and protect your barrier',time:'AM',done:false},
+        {step:4,name:'Moisturize',product:'Soothing Creme',tip:'Calm redness on contact',time:'AM',done:false},
+        {step:5,name:'SPF',product:'Raydefense SPF 30',tip:'Mineral SPF — gentle on reactive skin',time:'AM',done:false}
+      ],
+      pm: [
+        {step:1,name:'Cleanse',product:'Sensitive Skin Cleansing Bar',tip:'Pat dry — never rub',time:'PM',done:false},
+        {step:2,name:'Tone',product:'Calm Skin Arnica Toner',tip:'Reduce overnight inflammation',time:'PM',done:false},
+        {step:3,name:'Eye Cream',product:'Sleepwear for Eyes',tip:'Fragrance-free application',time:'PM',done:false},
+        {step:4,name:'Night Creme',product:'Soothing Creme',tip:'Let skin recover undisturbed',time:'PM',done:false}
+      ]
+    }
+  };
+  const key = skinType in routines ? skinType : 'combo';
+  return routines[key][ampm] || (ampm === 'am' ? defaultAM() : defaultPM());
+}
+
+let amSteps = defaultAM();
+let pmSteps = defaultPM();
+
+function switchRoutine(tab, el) {
+  document.querySelectorAll('.rt-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active'); currentRoutineTab=tab; renderRoutine(tab);
+}
+
+function resetRoutineToday() {
+  const steps = currentRoutineTab === 'am' ? amSteps : pmSteps;
+  steps.forEach(s => s.done = false);
+  renderRoutine(currentRoutineTab);
+  if (activePanel === 'dashboard') renderDashboard(getUser());
+  toast('↺', 'Routine reset — ready for a fresh start!');
+}
+
+let routineEditMode = false;
+let recsOpen = false;
+
+function toggleRoutineEdit() {
+  routineEditMode = !routineEditMode;
+  const btn = document.getElementById('editRoutineBtn');
+  const form = document.getElementById('addStepForm');
+  btn.textContent = routineEditMode ? '✓ Done' : '✏️ Edit';
+  btn.className = routineEditMode ? 'btn-sm primary' : 'btn-sm ghost';
+  form.style.display = routineEditMode ? 'block' : 'none';
+  renderRoutine(currentRoutineTab);
+  if (routineEditMode) toast('✏️','Tap the × on any step to remove it');
+}
+
+function addRoutineStep() {
+  const name = document.getElementById('newStepName').value.trim();
+  const product = document.getElementById('newStepProduct').value.trim();
+  const tip = document.getElementById('newStepTip').value.trim();
+  if (!name) { toast('⚠️','Please enter a step name'); return; }
+  const steps = currentRoutineTab === 'am' ? amSteps : pmSteps;
+  const maxStep = steps.reduce((m,s) => Math.max(m, s.step), 0);
+  steps.push({
+    step: maxStep + 1,
+    name,
+    product: product || 'My product',
+    tip: tip || 'Apply as directed',
+    time: currentRoutineTab.toUpperCase(),
+    done: false,
+    custom: true
+  });
+  document.getElementById('newStepName').value = '';
+  document.getElementById('newStepProduct').value = '';
+  document.getElementById('newStepTip').value = '';
+  renderRoutine(currentRoutineTab);
+  if (activePanel === 'dashboard') renderDashboard(getUser());
+  toast('✦', `"${name}" added to your routine`);
+}
+
+function deleteRoutineStep(tab, stepNum) {
+  if (tab === 'am') {
+    amSteps = amSteps.filter(s => s.step !== stepNum);
+    // Re-number
+    amSteps.forEach((s,i) => s.step = i+1);
+  } else {
+    pmSteps = pmSteps.filter(s => s.step !== stepNum);
+    pmSteps.forEach((s,i) => s.step = i+1);
+  }
+  renderRoutine(tab);
+  if (activePanel === 'dashboard') renderDashboard(getUser());
+}
+
+function toggleRecommendations() {
+  recsOpen = !recsOpen;
+  document.getElementById('recommendationsPanel').style.display = recsOpen ? 'block' : 'none';
+  document.getElementById('recToggleIcon').style.transform = recsOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+  if (recsOpen) renderRecommendations();
+}
+
+function renderRecommendations() {
+  const user = getUser();
+  const skinType = user?.skin_type || '';
+  const st = skinType.toLowerCase().replace(' / balanced','').trim();
+  const key = {oily:'oily',dry:'dry',combination:'combo',normal:'normal',sensitive:'sensitive'}[st] || 'combo';
+  const recSteps = buildRoutine(key, currentRoutineTab);
+  const el = document.getElementById('recContent');
+  if (!recSteps || !recSteps.length) { el.innerHTML = `<p style="font-size:13px;color:rgba(232,213,255,.4);">Complete the skin quiz to see personalized recommendations.</p>`; return; }
+
+  const skinLabel = skinType || 'your skin type';
+  el.innerHTML = `
+    <p style="font-size:12px;color:rgba(232,213,255,.4);margin-bottom:14px;line-height:1.7;">
+      Recommended ${currentRoutineTab.toUpperCase()} routine for <strong style="color:var(--aurora);">${skinLabel}</strong> skin.
+      Tap <em>Add to Routine</em> to include any step you'd like to try.
+    </p>
+    ${recSteps.map(s => {
+      const currentSteps = currentRoutineTab === 'am' ? amSteps : pmSteps;
+      const alreadyIn = currentSteps.some(cs => cs.name.toLowerCase() === s.name.toLowerCase());
+      return `<div style="display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid rgba(168,85,247,.07);">
+        <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,rgba(107,47,160,.4),rgba(61,47,160,.3));display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--aurora);flex-shrink:0;">${s.step}</div>
+        <div style="flex:1;">
+          <div style="font-size:13px;color:var(--starlight);">${s.name}</div>
+          <div style="font-size:11px;color:rgba(168,85,247,.6);">Bioelements® ${s.product}</div>
+        </div>
+        ${alreadyIn
+          ? `<span style="font-size:10px;color:var(--success);letter-spacing:.1em;">✓ In routine</span>`
+          : `<button onclick="addRecStep('${s.name}','${s.product}','${s.tip}')" class="btn-sm ghost" style="font-size:10px;padding:6px 12px;white-space:nowrap;">+ Add</button>`
+        }
+      </div>`;
+    }).join('')}`;
+}
+
+function addRecStep(name, product, tip) {
+  const steps = currentRoutineTab === 'am' ? amSteps : pmSteps;
+  if (steps.some(s => s.name.toLowerCase() === name.toLowerCase())) {
+    toast('⚠️', `"${name}" is already in your routine`); return;
+  }
+  const maxStep = steps.reduce((m,s) => Math.max(m, s.step), 0);
+  steps.push({ step: maxStep+1, name, product, tip, time: currentRoutineTab.toUpperCase(), done: false });
+  renderRoutine(currentRoutineTab);
+  renderRecommendations();
+  if (activePanel === 'dashboard') renderDashboard(getUser());
+  toast('✦', `"${name}" added to your routine`);
+}
+
+function renderRoutine(tab) {
+  const steps = tab==='am'?amSteps:pmSteps;
+  const done=steps.filter(s=>s.done).length, total=steps.length;
+  const pct=total?Math.round(done/total*100):0;
+  document.getElementById('routineBar').style.width=pct+'%';
+  document.getElementById('routineProgressText').textContent=`${done} / ${total} steps done`;
+
+  // Show reset button only when at least one step is checked
+  const resetBtn = document.getElementById('resetRoutineBtn');
+  if (resetBtn) resetBtn.style.display = done > 0 ? 'block' : 'none';
+
+  document.getElementById('routineList').innerHTML = steps.length === 0
+    ? `<div style="text-align:center;padding:30px 20px;">
+        <div style="font-size:32px;margin-bottom:10px;">🌙</div>
+        <div style="font-size:14px;color:var(--starlight);margin-bottom:6px;">No steps yet</div>
+        <div style="font-size:12px;color:rgba(232,213,255,.4);">Add your own steps above, or pull from Christina's recommendations below.</div>
+      </div>`
+    : steps.map(s=>`
+    <div class="routine-card ${s.done&&!routineEditMode?'completed':''}"
+         onclick="${routineEditMode ? '' : `toggleRoutineStep('${tab}',${s.step})`}"
+         style="${routineEditMode?'cursor:default;':''}">
+      <div class="rc-num" style="${s.done&&!routineEditMode?'background:var(--success);color:#fff;border:none;':s.custom?'background:rgba(96,165,250,.2);border-color:rgba(96,165,250,.3);':''}">${s.done&&!routineEditMode?'✓':s.step}</div>
+      <div class="rc-info">
+        <div class="rc-name" style="${s.done&&!routineEditMode?'text-decoration:line-through;opacity:.5;':''}">${s.name}${s.custom?'<span style="font-size:9px;color:#60a5fa;letter-spacing:.15em;margin-left:6px;vertical-align:middle;">CUSTOM</span>':''}</div>
+        <div class="rc-product">${s.custom?'':'Bioelements® '}${s.product}</div>
+        <div class="rc-tip">💡 ${s.tip}</div>
+      </div>
+      ${routineEditMode
+        ? `<button onclick="deleteRoutineStep('${tab}',${s.step})" style="width:28px;height:28px;border-radius:50%;background:rgba(248,113,113,.15);border:1px solid rgba(248,113,113,.3);color:#f87171;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .3s;" onmouseover="this.style.background='rgba(248,113,113,.3)'" onmouseout="this.style.background='rgba(248,113,113,.15)'">×</button>`
+        : `<button class="rc-toggle ${s.done?'done':''}" onclick="event.stopPropagation();toggleRoutineStep('${tab}',${s.step})">${s.done?'✓':'○'}</button>`
+      }
+    </div>`).join('');
+
+  const tips={am:'☀️ Always apply SPF as your final AM step — Florida sun is intense year-round.<br>💧 Apply moisturizer to slightly damp skin to lock in extra hydration.<br>🌿 Give each product 30–60 seconds to absorb before layering the next.',pm:'🌙 PM is when your skin repairs most actively — don\'t skip your night creme.<br>✨ AHA treatments work best at night — avoid morning use to prevent sensitivity.<br>👁️ The eye area is delicate — always use ring finger and gentle patting motions.'};
+  document.getElementById('proTips').innerHTML=tips[tab];
+
+  // Re-render recommendations if open
+  if (recsOpen) renderRecommendations();
+}
+
+function toggleRoutineStep(tab, stepNum) {
+  const steps=tab==='am'?amSteps:pmSteps;
+  const step=steps.find(s=>s.step===stepNum);
+  if(step) {
+    step.done=!step.done;
+    const allDone=steps.every(s=>s.done);
+    if(allDone) {
+      if (tab==='am' && currentUser) currentUser.superstar_days=(currentUser.superstar_days||0)+1;
+      const newStreak = incrementStreak();
+      if (currentUser) currentUser.streak = newStreak;
+      toast('🌟','Full routine complete! Streak: ' + newStreak + ' days ✦');
+    }
+    renderRoutine(tab);
+    if (activePanel==='dashboard') renderDashboard(getUser());
+  }
+}
+
+// ── Profile ──
+function renderProfile(user) {
+  if (!user) return;
+  document.getElementById('profileFullName').textContent=(user.first_name||'')+' '+(user.last_name||'');
+  document.getElementById('profileEmail').textContent=user.email||'';
+  document.getElementById('pfFirst').value=user.first_name||'';
+  document.getElementById('pfLast').value=user.last_name||'';
+  document.getElementById('pfEmail').value=user.email||'';
+  document.getElementById('pfPhone').value=user.phone||'';
+  document.getElementById('pfSkinType').value=user.skin_type||'';
+  const tags=document.getElementById('profileTags');
+  tags.innerHTML='';
+  if(user.skin_type) tags.innerHTML+=`<span class="pill">${getEmoji(user.skin_type)} ${user.skin_type}</span>`;
+  (user.concerns||[]).slice(0,3).forEach(c=>tags.innerHTML+=`<span class="pill blue">${c}</span>`);
+  document.querySelectorAll('.concern-chip').forEach(chip=>chip.classList.toggle('selected',(user.concerns||[]).includes(chip.textContent.trim())));
+}
+
+function toggleConcern(el) { el.classList.toggle('selected'); }
+
+function selectTone(el) {
+  document.querySelectorAll('.tone-swatch').forEach(s => s.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('pfFitz').value = el.dataset.tone;
+  document.getElementById('toneLabel').textContent = el.dataset.tone + ' · ' + el.title;
+}
+
+function saveProfile() {
+  const updates={first_name:document.getElementById('pfFirst').value.trim(),last_name:document.getElementById('pfLast').value.trim(),phone:document.getElementById('pfPhone').value.trim(),skin_type:document.getElementById('pfSkinType').value,concerns:[...document.querySelectorAll('.concern-chip.selected')].map(c=>c.textContent.trim())};
+  Object.assign(currentUser,updates);
+  document.getElementById('userName').textContent=(updates.first_name||'')+' '+(updates.last_name||'');
+  document.getElementById('userAvatar').textContent=getEmoji(updates.skin_type);
+  renderProfile(currentUser);
+  toast('✦','Profile saved successfully!');
+}
+
+// ── Photos ──
+let capturedImageData=null, capturedFile=null, cameraStream=null, compareMode=false, compareSlot='left';
+
+function openUpload() {
+  capturedImageData=null; capturedFile=null;
+  document.getElementById('photoLabel').value='';
+  document.getElementById('savePhotoBtn').style.display='none';
+  document.getElementById('cameraFeed').style.display='none';
+  document.getElementById('cameraControls').style.display='none';
+  document.getElementById('uploadMethods').style.display='grid';
+  document.getElementById('uploadModal').classList.add('open');
+}
+function closeUpload() { stopCamera(); document.getElementById('uploadModal').classList.remove('open'); }
+async function startCamera() {
+  try { cameraStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'}}); const feed=document.getElementById('cameraFeed'); feed.srcObject=cameraStream; feed.style.display='block'; document.getElementById('uploadMethods').style.display='none'; document.getElementById('cameraControls').style.display='block'; }
+  catch(e) { toast('⚠️','Camera access denied — try uploading instead'); }
+}
+function stopCamera() { if(cameraStream){cameraStream.getTracks().forEach(t=>t.stop());cameraStream=null;} document.getElementById('cameraFeed').style.display='none'; document.getElementById('cameraControls').style.display='none'; document.getElementById('uploadMethods').style.display='grid'; }
+function capturePhoto() { const video=document.getElementById('cameraFeed'),c=document.getElementById('photoCanvas'); c.width=video.videoWidth; c.height=video.videoHeight; c.getContext('2d').drawImage(video,0,0); capturedImageData=c.toDataURL('image/jpeg',.8); stopCamera(); document.getElementById('savePhotoBtn').style.display='block'; toast('📸','Photo captured! Add a label and save.'); }
+function handleFileUpload(e) { capturedFile=e.target.files[0]; if(!capturedFile) return; document.getElementById('savePhotoBtn').style.display='block'; toast('🖼️','Photo loaded! Add a label and save.'); }
+function savePhoto() { toast('✦','Progress photo saved!'); closeUpload(); }
+function populatePhotoGrid() { document.getElementById('photoGrid').innerHTML=`<div class="photo-add" onclick="openUpload()"><div class="pa-icon">+</div><div class="pa-text">Add your first<br>progress photo</div></div>`; }
+function toggleCompare() { compareMode=!compareMode; document.getElementById('compareToggle').className='btn-sm '+(compareMode?'primary':'ghost'); document.getElementById('compareView').style.display=compareMode?'block':'none'; if(compareMode) toast('⚡','Tap two photos to compare them'); }
+
+// ── Reminders ──
+function saveReminders() { toast('🔔','Reminders saved!'); }
+
+// ══════════════════════════════════════════════════════
+// YOUR COSMIC GLOW — galaxy system
+// ══════════════════════════════════════════════════════
+
+// Each month gets a planet whose appearance is shaped by:
+//   - skin type → base color palette
+//   - concern → planet style variant
+//   - achievement that month → unlocked/superstar state
+// 12 months = 12 planets on 12 orbits around the client's radiant Sun
+
+const MONTH_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+// Planet palette by skin type
+function getPlanetPalette(skinType) {
+  const palettes = {
+    'Oily':        { colors:['#34d399','#10b981','#6ee7b7'], glow:'rgba(52,211,153,0.35)',  accent:'#a7f3d0' },
+    'Dry':         { colors:['#f9a8d4','#ec4899','#fbcfe8'], glow:'rgba(249,168,212,0.35)', accent:'#fce7f3' },
+    'Combination': { colors:['#a855f7','#7c3aed','#c084fc'], glow:'rgba(168,85,247,0.35)',  accent:'#e9d5ff' },
+    'Normal':      { colors:['#60a5fa','#3b82f6','#93c5fd'], glow:'rgba(96,165,250,0.35)',  accent:'#dbeafe' },
+    'Sensitive':   { colors:['#fb923c','#f97316','#fed7aa'], glow:'rgba(251,146,60,0.35)',  accent:'#ffedd5' },
+  };
+  return palettes[skinType] || palettes['Combination'];
+}
+
+// Planet visual variant by primary concern
+function getPlanetVariant(concerns) {
+  if (!concerns || !concerns.length) return 'smooth';
+  const c = concerns[0];
+  if (c.includes('Acne') || c.includes('Breakout')) return 'textured';
+  if (c.includes('Fine') || c.includes('Aging')) return 'ringed';
+  if (c.includes('Dehydration')) return 'icy';
+  if (c.includes('Dull') || c.includes('Uneven')) return 'cloudy';
+  if (c.includes('Redness') || c.includes('Sensitivity')) return 'rosy';
+  if (c.includes('Pores')) return 'cratered';
+  return 'smooth';
+}
+
+// Month data: what achievement unlocks/superstar status
+// superstarDays tracks how many times all tasks completed in that month
+function buildMonthData(user) {
+  const now = new Date();
+  const currentMonth = now.getMonth(); // 0-indexed
+  const streak = user.streak || 0;
+  const superstars = user.superstar_days || 0; // total superstar completions
+  const facials = user.facials || 0;
+  const orders = user.orders || 0;
+  const joinedAt = user.joined_at ? new Date(user.joined_at) : now;
+  const monthsActive = Math.min(12, Math.max(1,
+    (now.getFullYear() - joinedAt.getFullYear()) * 12 +
+    (now.getMonth() - joinedAt.getMonth()) + 1
+  ));
+
+  return Array.from({length:12}, (_,i) => {
+    const isPast = i < currentMonth;
+    const isCurrent = i === currentMonth;
+    const monthNum = i + 1;
+
+    // Unlock logic: month unlocked if client was active that month
+    const unlocked = i < monthsActive;
+
+    // Superstar: all routine tasks checked off for at least 1 day in the month
+    // For demo: distribute superstars across unlocked months
+    const superstar = unlocked && (i < Math.floor(superstars / 3) || (i === currentMonth && streak >= 7));
+
+    // Planet size grows with how active the month was
+    const baseR = 7;
+    const bonusR = superstar ? 4 : unlocked ? 2 : 0;
+
+    // Assign an orbit radius — 12 planets, staggered orbits
+    // Inner 6 orbits + outer 6 in a second ring
+    const innerOrbits = [48, 70, 92, 114, 136, 158];
+    const outerOrbits = [180, 200, 220, 240, 260, 280];
+    const orbit = i < 6 ? innerOrbits[i] : outerOrbits[i - 6];
+
+    return { month: i, name: MONTH_NAMES[i], unlocked, superstar, r: baseR + bonusR, orbit,
+      speed: 0.0015 + (12 - i) * 0.0003, angle: (i / 12) * Math.PI * 2 + Math.random() * 0.3,
+      moonAngle: Math.random() * Math.PI * 2,
+      hasMoon: i < facials,                       // each facial earned = moon on a planet
+      hasRing: superstar,                          // superstar month gets rings
+      isComet: i < orders && !unlocked,            // future months w/ purchase = comet placeholder
+    };
+  });
+}
+
+function renderGarden() {
+  const user = getUser();
+  if (!user) return;
+  const streak = user.streak || 0;
+  const superstars = user.superstar_days || 0;
+  const facials = user.facials || 0;
+  const orders = user.orders || 0;
+
+  document.getElementById('gs-streak').textContent = streak;
+  document.getElementById('gs-superstars').textContent = superstars;
+  document.getElementById('gs-facials').textContent = facials;
+  document.getElementById('gs-orders').textContent = orders;
+
+  const badge = calcGlowBadge(user);
+  document.getElementById('badgeCrown').textContent = badge.icon;
+  document.getElementById('badgeTitle').innerHTML = badge.title;
+  document.getElementById('badgeDesc').textContent = badge.desc;
+  document.getElementById('badgeNext').textContent = badge.next;
+
+  // Superstar banners
+  renderSuperstarBanners(user);
+
+  // Build the galaxy
+  const monthData = buildMonthData(user);
+  buildGalaxy(user, monthData);
+  renderMonthLegend(user, monthData);
+  renderMilestones(user);
+}
+
+// ── Onboarding ──
+let obCurrentSlide = 1;
+const OB_TOTAL = 4;
+let obRocketAnim = null;
+let obBgAnim = null;
+
+function openAlienOnboarding() {
+  obCurrentSlide = 1;
+  renderObDots();
+  document.querySelectorAll('.ob-slide').forEach(s => s.classList.remove('active'));
+  document.getElementById('ob-slide-1').classList.add('active');
+  document.getElementById('alienModal').classList.add('open');
+  setTimeout(() => {
+    obDrawBgStars();
+    obLaunchRocket();
+  }, 80);
+}
+
+function closeAlienOnboarding() {
+  document.getElementById('alienModal').classList.remove('open');
+  if (obRocketAnim) { cancelAnimationFrame(obRocketAnim); obRocketAnim = null; }
+  if (obBgAnim) { cancelAnimationFrame(obBgAnim); obBgAnim = null; }
+  localStorage.setItem('cbs_onboarding_done', '1');
+  setTimeout(() => goTo('garden'), 300);
+}
+
+function obNext() {
+  if (obCurrentSlide < OB_TOTAL) {
+    const cur = document.getElementById(`ob-slide-${obCurrentSlide}`);
+    cur.style.opacity = '0'; cur.style.transform = 'translateX(-16px)';
+    setTimeout(() => {
+      cur.classList.remove('active'); cur.style.opacity = ''; cur.style.transform = '';
+      obCurrentSlide++;
+      const next = document.getElementById(`ob-slide-${obCurrentSlide}`);
+      next.style.opacity = '0'; next.style.transform = 'translateX(16px)';
+      next.classList.add('active');
+      requestAnimationFrame(() => {
+        next.style.transition = 'opacity .3s ease,transform .3s ease';
+        next.style.opacity = '1'; next.style.transform = 'translateX(0)';
+        setTimeout(() => { next.style.transition = ''; next.style.opacity = ''; next.style.transform = ''; }, 350);
+      });
+      renderObDots();
+      if (obCurrentSlide === 2) setTimeout(() => obDrawConstellation('constCanvas1', 'orion'), 200);
+      if (obCurrentSlide === 3) setTimeout(() => obDrawConstellation('constCanvas2', 'serpent'), 200);
+      if (obCurrentSlide === 4) setTimeout(() => obDrawConstellation('constCanvas3', 'crown'), 200);
+    }, 200);
+  }
+}
+
+function obPrev() {
+  if (obCurrentSlide > 1) {
+    const cur = document.getElementById(`ob-slide-${obCurrentSlide}`);
+    cur.style.opacity = '0'; cur.style.transform = 'translateX(16px)';
+    setTimeout(() => {
+      cur.classList.remove('active'); cur.style.opacity = ''; cur.style.transform = '';
+      obCurrentSlide--;
+      const prev = document.getElementById(`ob-slide-${obCurrentSlide}`);
+      prev.style.opacity = '0'; prev.style.transform = 'translateX(-16px)';
+      prev.classList.add('active');
+      requestAnimationFrame(() => {
+        prev.style.transition = 'opacity .3s ease,transform .3s ease';
+        prev.style.opacity = '1'; prev.style.transform = 'translateX(0)';
+        setTimeout(() => { prev.style.transition = ''; prev.style.opacity = ''; prev.style.transform = ''; }, 350);
+      });
+      renderObDots();
+      if (obCurrentSlide === 1) setTimeout(() => obLaunchRocket(), 200);
+    }, 200);
+  }
+}
+
+function renderObDots() {
+  document.getElementById('obDots').innerHTML = Array.from({length: OB_TOTAL}, (_, i) =>
+    `<div class="ob-dot ${i + 1 === obCurrentSlide ? 'active' : ''}"></div>`
+  ).join('');
+}
+
+// ── Background starfield for modal ──
+function obDrawBgStars() {
+  const cvs = document.getElementById('obBgCanvas');
+  if (!cvs) return;
+  cvs.width = window.innerWidth; cvs.height = window.innerHeight;
+  const c = cvs.getContext('2d');
+  const stars = Array.from({length: 200}, (_, i) => ({
+    x: Math.abs(Math.sin(i * 9301 + 49297)) * cvs.width,
+    y: Math.abs(Math.sin(i * 7331 + 19937)) * cvs.height,
+    r: Math.abs(Math.sin(i * 1234 + 5678)) * 1.2 + 0.2,
+    tw: Math.abs(Math.sin(i * 3)) * 0.015 + 0.004,
+    off: Math.abs(Math.sin(i * 7)) * Math.PI * 2,
+    col: i % 7 === 0 ? '#60a5fa' : i % 5 === 0 ? '#c4b5fd' : '#e8d5ff'
+  }));
+  let t = 0;
+  function draw() {
+    c.clearRect(0, 0, cvs.width, cvs.height);
+    stars.forEach(s => {
+      c.globalAlpha = 0.1 + 0.7 * (0.5 + 0.5 * Math.sin(t * s.tw + s.off));
+      c.fillStyle = s.col; c.beginPath(); c.arc(s.x, s.y, s.r, 0, Math.PI * 2); c.fill();
+    });
+    c.globalAlpha = 1; t++;
+    obBgAnim = requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+// ── Rocket launch animation ──
+function obLaunchRocket() {
+  const cvs = document.getElementById('rocketCanvas');
+  if (!cvs) return;
+  const par = cvs.parentElement;
+  cvs.width = par.offsetWidth || 380; cvs.height = par.offsetHeight || 160;
+  const c = cvs.getContext('2d');
+  const W = cvs.width, H = cvs.height;
+
+  // Background stars
+  const stars = Array.from({length: 60}, (_, i) => ({
+    x: Math.abs(Math.sin(i * 9301)) * W,
+    y: Math.abs(Math.sin(i * 7331)) * H,
+    r: Math.abs(Math.sin(i * 1234)) * 1.0 + 0.2,
+    tw: Math.abs(Math.sin(i * 3)) * 0.02 + 0.005,
+    off: i
+  }));
+
+  // Planet dots orbiting
+  const planets = [
+    { angle: 0,   speed: 0.018, orbitX: W/2, orbitY: H * 0.38, rx: 52, ry: 14, r: 4, col: '#a855f7' },
+    { angle: 2.1, speed: 0.012, orbitX: W/2, orbitY: H * 0.38, rx: 72, ry: 18, r: 3, col: '#60a5fa' },
+    { angle: 4.2, speed: 0.022, orbitX: W/2, orbitY: H * 0.38, rx: 38, ry: 10, r: 2.5, col: '#fde68a' },
+  ];
+
+  const targetY = H * 0.3;
+  let ry = targetY;        // start already in position
+  let frame = 0;
+  let exhaustParticles = [];
+
+  function addExhaust() {
+    const cx = W / 2;
+    for (let i = 0; i < 3; i++) {
+      exhaustParticles.push({
+        x: cx + (Math.random() - 0.5) * 8,
+        y: ry + 28,
+        vx: (Math.random() - 0.5) * 1.2,
+        vy: Math.random() * 2.5 + 1.5,
+        life: 1, decay: 0.04 + Math.random() * 0.03,
+        r: Math.random() * 4 + 2,
+        col: Math.random() > 0.5 ? '#fbbf24' : '#f97316'
+      });
+    }
+  }
+
+  function drawRocket(cx, cy) {
+    c.save();
+    c.translate(cx, cy);
+    // Body
+    const bodyGrad = c.createLinearGradient(-8, -26, 8, 10);
+    bodyGrad.addColorStop(0, '#e8d5ff'); bodyGrad.addColorStop(0.4, '#a855f7'); bodyGrad.addColorStop(1, '#4c1d95');
+    c.fillStyle = bodyGrad;
+    c.beginPath(); c.moveTo(0, -28); c.quadraticCurveTo(10, -10, 10, 10); c.lineTo(-10, 10); c.quadraticCurveTo(-10, -10, 0, -28); c.fill();
+    // Nose cone glow
+    c.fillStyle = '#fde68a'; c.beginPath(); c.arc(0, -26, 3, 0, Math.PI * 2); c.fill();
+    // Window
+    c.fillStyle = '#bae6fd'; c.beginPath(); c.arc(0, -8, 4, 0, Math.PI * 2); c.fill();
+    c.strokeStyle = '#7c3aed'; c.lineWidth = 1.5; c.stroke();
+    // Fins
+    c.fillStyle = '#7c3aed';
+    c.beginPath(); c.moveTo(-10, 6); c.lineTo(-18, 16); c.lineTo(-10, 10); c.fill();
+    c.beginPath(); c.moveTo(10, 6); c.lineTo(18, 16); c.lineTo(10, 10); c.fill();
+    // Nozzle
+    c.fillStyle = '#4c1d95'; c.beginPath(); c.moveTo(-5, 10); c.lineTo(5, 10); c.lineTo(3, 16); c.lineTo(-3, 16); c.fill();
+    c.restore();
+  }
+
+  function tick() {
+    c.clearRect(0, 0, W, H);
+
+    // Deep space bg
+    const bg = c.createLinearGradient(0, 0, 0, H);
+    bg.addColorStop(0, '#020510'); bg.addColorStop(1, '#0d0520');
+    c.fillStyle = bg; c.fillRect(0, 0, W, H);
+
+    // Twinkling stars
+    stars.forEach(s => {
+      c.globalAlpha = 0.15 + 0.7 * (0.5 + 0.5 * Math.sin(frame * s.tw + s.off));
+      c.fillStyle = '#e8d5ff'; c.beginPath(); c.arc(s.x, s.y, s.r, 0, Math.PI * 2); c.fill();
+    });
+    c.globalAlpha = 1;
+
+    // Orbit rings
+    planets.forEach(p => {
+      c.beginPath(); c.ellipse(p.orbitX, p.orbitY, p.rx, p.ry, 0, 0, Math.PI * 2);
+      c.strokeStyle = 'rgba(168,85,247,0.18)'; c.lineWidth = 0.8; c.stroke();
+    });
+
+    // Sun glow at center-top
+    const sg = c.createRadialGradient(W/2, H*0.38, 0, W/2, H*0.38, 22);
+    sg.addColorStop(0, 'rgba(253,230,138,.9)'); sg.addColorStop(0.4, 'rgba(251,146,60,.4)'); sg.addColorStop(1, 'transparent');
+    c.fillStyle = sg; c.beginPath(); c.arc(W/2, H*0.38, 22, 0, Math.PI*2); c.fill();
+    c.fillStyle = '#fde68a'; c.beginPath(); c.arc(W/2, H*0.38, 7, 0, Math.PI*2); c.fill();
+
+    // Orbiting planets
+    planets.forEach(p => {
+      p.angle += p.speed;
+      const px = p.orbitX + Math.cos(p.angle) * p.rx;
+      const py = p.orbitY + Math.sin(p.angle) * p.ry;
+      const halo = c.createRadialGradient(px, py, 0, px, py, p.r * 2.5);
+      halo.addColorStop(0, p.col + 'aa'); halo.addColorStop(1, 'transparent');
+      c.fillStyle = halo; c.beginPath(); c.arc(px, py, p.r * 2.5, 0, Math.PI * 2); c.fill();
+      c.fillStyle = p.col; c.beginPath(); c.arc(px, py, p.r, 0, Math.PI * 2); c.fill();
+    });
+
+    // Gentle float
+    ry = targetY + Math.sin(frame * 0.035) * 4;
+    if (frame % 8 === 0) addExhaust();
+
+    // Exhaust particles
+    exhaustParticles = exhaustParticles.filter(p => p.life > 0);
+    exhaustParticles.forEach(p => {
+      p.x += p.vx; p.y += p.vy; p.life -= p.decay; p.r *= 0.96;
+      c.globalAlpha = p.life * 0.8;
+      const eg = c.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
+      eg.addColorStop(0, p.col); eg.addColorStop(1, 'transparent');
+      c.fillStyle = eg; c.beginPath(); c.arc(p.x, p.y, p.r, 0, Math.PI*2); c.fill();
+    });
+    c.globalAlpha = 1;
+
+    // Draw rocket glow
+    const rg = c.createRadialGradient(W/2, ry, 0, W/2, ry, 30);
+    rg.addColorStop(0, 'rgba(168,85,247,.25)'); rg.addColorStop(1, 'transparent');
+    c.fillStyle = rg; c.beginPath(); c.arc(W/2, ry, 30, 0, Math.PI*2); c.fill();
+
+    drawRocket(W / 2, ry);
+
+    frame++;
+    obRocketAnim = requestAnimationFrame(tick);
+  }
+  tick();
+}
+
+// ── Constellation drawing ──
+function obDrawConstellation(canvasId, type) {
+  const cvs = document.getElementById(canvasId);
+  if (!cvs) return;
+  const par = cvs.parentElement;
+  cvs.width = par.offsetWidth || 380; cvs.height = par.offsetHeight || 100;
+  const c = cvs.getContext('2d');
+  const W = cvs.width, H = cvs.height;
+
+  // Star field
+  const bgStars = Array.from({length: 55}, (_, i) => ({
+    x: Math.abs(Math.sin(i * 9301 + 100)) * W,
+    y: Math.abs(Math.sin(i * 7331 + 200)) * H,
+    r: Math.abs(Math.sin(i * 1234 + 300)) * 0.9 + 0.2
+  }));
+
+  // Constellation star positions and connection lines
+  const consts = {
+    orion: {
+      stars: [
+        {x:.18,y:.25},{x:.32,y:.18},{x:.50,y:.15},{x:.67,y:.20},{x:.80,y:.28},  // shoulders + head
+        {x:.38,y:.48},{x:.50,y:.50},{x:.62,y:.48},                                // belt
+        {x:.30,y:.72},{x:.42,y:.78},{x:.58,y:.78},{x:.70,y:.72}                   // feet
+      ],
+      lines:[[0,1],[1,2],[2,3],[3,4],[1,5],[4,6],[5,6],[6,7],[5,8],[6,9],[7,10],[6,11]],
+      col:'#c4b5fd', name:'The Orion Glow'
+    },
+    serpent: {
+      stars: [
+        {x:.10,y:.55},{x:.22,y:.40},{x:.35,y:.30},{x:.50,y:.35},
+        {x:.63,y:.28},{x:.75,y:.38},{x:.85,y:.52},{x:.90,y:.65}
+      ],
+      lines:[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7]],
+      col:'#6ee7b7', name:'The Glow Serpent'
+    },
+    crown: {
+      stars: [
+        {x:.18,y:.65},{x:.30,y:.38},{x:.42,y:.22},{x:.50,y:.30},
+        {x:.58,y:.22},{x:.70,y:.38},{x:.82,y:.65}
+      ],
+      lines:[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[0,6]],
+      col:'#fde68a', name:'The Beauty Crown'
+    }
+  };
+
+  const def = consts[type] || consts.orion;
+  const pts = def.stars.map(s => ({x: s.x * W, y: s.y * H}));
+
+  let progress = 0; // 0-1 draw-on progress
+  let twinkle = 0;
+
+  function draw() {
+    c.clearRect(0, 0, W, H);
+    // bg
+    c.fillStyle = '#020510'; c.fillRect(0, 0, W, H);
+    // bg stars
+    bgStars.forEach((s, i) => {
+      c.globalAlpha = 0.12 + 0.25 * (0.5 + 0.5 * Math.sin(twinkle * 0.018 + i));
+      c.fillStyle = '#e8d5ff'; c.beginPath(); c.arc(s.x, s.y, s.r, 0, Math.PI*2); c.fill();
+    });
+    c.globalAlpha = 1;
+
+    // Draw lines progressively
+    const totalLines = def.lines.length;
+    const linesDone = Math.floor(progress * totalLines);
+    const partial = (progress * totalLines) % 1;
+
+    for (let i = 0; i < linesDone; i++) {
+      const [a, b] = def.lines[i];
+      c.beginPath(); c.moveTo(pts[a].x, pts[a].y); c.lineTo(pts[b].x, pts[b].y);
+      c.strokeStyle = def.col + '55'; c.lineWidth = 1; c.stroke();
+    }
+    // Draw partial last line
+    if (linesDone < totalLines && progress > 0) {
+      const [a, b] = def.lines[linesDone];
+      const ex = pts[a].x + (pts[b].x - pts[a].x) * partial;
+      const ey = pts[a].y + (pts[b].y - pts[a].y) * partial;
+      c.beginPath(); c.moveTo(pts[a].x, pts[a].y); c.lineTo(ex, ey);
+      c.strokeStyle = def.col + '55'; c.lineWidth = 1; c.stroke();
+    }
+
+    // Stars (appear as lines reach them)
+    pts.forEach((p, i) => {
+      const revealAt = i / pts.length;
+      const alpha = Math.min(1, Math.max(0, (progress - revealAt) * 8));
+      if (alpha <= 0) return;
+      // Glow
+      const glow = c.createRadialGradient(p.x, p.y, 0, p.x, p.y, 10);
+      glow.addColorStop(0, def.col + 'cc'); glow.addColorStop(1, 'transparent');
+      c.globalAlpha = alpha * (0.5 + 0.3 * Math.sin(twinkle * 0.04 + i));
+      c.fillStyle = glow; c.beginPath(); c.arc(p.x, p.y, 10, 0, Math.PI*2); c.fill();
+      // Core
+      c.globalAlpha = alpha;
+      c.fillStyle = '#fff'; c.beginPath(); c.arc(p.x, p.y, 2.2, 0, Math.PI*2); c.fill();
+      c.fillStyle = def.col; c.beginPath(); c.arc(p.x, p.y, 1.2, 0, Math.PI*2); c.fill();
+      c.globalAlpha = 1;
+    });
+
+    if (progress < 1) progress = Math.min(1, progress + 0.012);
+    twinkle++;
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+
+
+function shareMyGlow() {
+  const user = getUser();
+  if (!user) return;
+  const badge = calcGlowBadge(user);
+  document.getElementById('shareGlowIcon').textContent = badge.icon;
+  // Strip the <em> tags for plain text title
+  document.getElementById('shareGlowTitle').innerHTML = badge.title;
+  document.getElementById('shareGlowName').textContent = (user.first_name||'') + ' ' + (user.last_name||'');
+  document.getElementById('shareStreak').textContent = user.streak||0;
+  document.getElementById('shareSuperstars').textContent = user.superstar_days||0;
+  document.getElementById('shareFacials').textContent = user.facials||0;
+  document.getElementById('shareGlowModal').classList.add('open');
+}
+
+function closeShareGlow() {
+  document.getElementById('shareGlowModal').classList.remove('open');
+}
+
+function renderSuperstarBanners(user) {
+  const superstars = user.superstar_days || 0;
+  const el = document.getElementById('superstarBanners');
+  if (superstars === 0) { el.innerHTML=''; return; }
+  el.innerHTML = `
+    <div class="superstar-banner">
+      <span class="sb-icon">🌟</span>
+      <div class="sb-text">
+        <div class="sb-title">SUPERSTAR · All Tasks Complete</div>
+        <div class="sb-sub">Every step checked off — your routine is flawless. Each Superstar Day powers up a planet.</div>
+      </div>
+      <span class="sb-count">×${superstars}</span>
+    </div>`;
+}
+
+function calcGlowBadge(user) {
+  const streak = user.streak || 0;
+  const superstars = user.superstar_days || 0;
+  const facials = user.facials || 0;
+  const orders = user.orders || 0;
+  const score = streak * 2 + superstars * 5 + facials * 20 + orders * 10;
+
+  const badges = [
+    { min:0,   icon:'🌑', title:'Dark <em>Matter</em>',
+      desc:'Your cosmos awaits. Complete your daily AM + PM routine to ignite your first planet.',
+      next:'Check off all tasks in a day to unlock your first planet →' },
+    { min:5,   icon:'⭐', title:'Rising <em>Star</em>',
+      desc:'Your first light is shining. A planet glows in your galaxy — keep the streak burning.',
+      next:'Reach 7 days to earn your second planet →' },
+    { min:14,  icon:'🌟', title:'Superstar <em>Nova</em>',
+      desc:'Two planets orbit your sun. You\'ve had your first Superstar Day — every task complete.',
+      next:'Maintain your streak + complete full routines to unlock more worlds →' },
+    { min:30,  icon:'💫', title:'Stardust <em>Ritual</em>',
+      desc:'Four planets glow. Your skincare ritual is becoming second nature.',
+      next:'Book a facial with Christina to earn your first moon →' },
+    { min:60,  icon:'🚀', title:'Galaxy <em>Navigator</em>',
+      desc:'Six planets orbit your radiant sun. A facial has blessed your cosmos with a moon.',
+      next:'Reach 10 Superstar Days to unlock the outer ring of planets →' },
+    { min:100, icon:'🪐', title:'Nebula <em>Sovereign</em>',
+      desc:'The outer ring of planets has ignited. Your commitment is written in the stars.',
+      next:'Complete all 12 months to become a Celestial Icon →' },
+    { min:160, icon:'☀️', title:'Celestial <em>Icon</em>',
+      desc:'All 12 planets orbit your sun. Your full year of radiance is immortalized in the cosmos.',
+      next:'✦ You have mastered the cosmic glow — wear it with radiance ✦' },
+  ];
+  let current = badges[0];
+  for (const b of badges) { if (score >= b.min) current = b; }
+  return current;
+}
+
+function buildGalaxy(user, monthData) {
+  if (solarAnim) { cancelAnimationFrame(solarAnim); solarAnim = null; }
+  const cvs = document.getElementById('solarCanvas');
+  const scene = document.getElementById('gardenScene');
+  cvs.width = scene.offsetWidth || 600;
+  cvs.height = scene.offsetHeight || 420;
+  const c = cvs.getContext('2d');
+  const W = cvs.width, H = cvs.height, cx = W/2, cy = H/2;
+  const palette = getPlanetPalette(user.skin_type);
+  const variant = getPlanetVariant(user.concerns);
+  const streak = user.streak || 0;
+  const orders = user.orders || 0;
+
+  // Deep-space background stars (deterministic)
+  const bgStars = Array.from({length:120}, (_,i) => {
+    const r=Math.sin(i*9301+49297)*.5+.5, r2=Math.sin(i*7331+19937)*.5+.5, r3=Math.sin(i*1234+56789)*.5+.5;
+    return {x:r*W, y:r2*H, r:r3*1.4+.2, base:r3*.5+.15, tw:r*.012+.004, off:r2*Math.PI*2,
+      color: i%5===0?'#60a5fa': i%7===0?palette.accent :'#e8d5ff'};
+  });
+
+  // Comets (one per purchase)
+  const comets = Array.from({length:Math.min(orders,4)}, (_,i) => ({
+    x:-60-i*180, y:(i+1)*(H/(Math.min(orders,4)+1)), speed:2+i*.5, len:55+i*12
+  }));
+
+  let frame = 0;
+  function draw() {
+    c.clearRect(0,0,W,H);
+
+    // Deep nebula background
+    const nebula = c.createRadialGradient(cx,cy,0,cx,cy,Math.max(W,H)*.7);
+    nebula.addColorStop(0,'rgba(26,10,61,0.7)');
+    nebula.addColorStop(.5,'rgba(13,6,40,0.5)');
+    nebula.addColorStop(1,'rgba(3,6,18,0)');
+    c.fillStyle=nebula; c.fillRect(0,0,W,H);
+
+    // Nebula color wash from skin type
+    const skinNeb = c.createRadialGradient(cx*.6,cy*.5,0,cx*.6,cy*.5,W*.45);
+    skinNeb.addColorStop(0, palette.glow.replace('0.35','0.08'));
+    skinNeb.addColorStop(1,'transparent');
+    c.fillStyle=skinNeb; c.fillRect(0,0,W,H);
+
+    // Twinkling stars
+    bgStars.forEach(s => {
+      c.globalAlpha=s.base*(0.4+0.6*Math.sin(frame*s.tw+s.off));
+      c.fillStyle=s.color; c.beginPath(); c.arc(s.x,s.y,s.r,0,Math.PI*2); c.fill();
+    });
+    c.globalAlpha=1;
+
+    // Purchase comets
+    comets.forEach(cm => {
+      cm.x+=cm.speed; if(cm.x>W+80) cm.x=-cm.len-Math.random()*100;
+      const g=c.createLinearGradient(cm.x-cm.len,cm.y,cm.x,cm.y);
+      g.addColorStop(0,'transparent'); g.addColorStop(.6,'rgba(186,230,253,.45)'); g.addColorStop(1,palette.glow.replace('0.35','0.9'));
+      c.strokeStyle=g; c.lineWidth=1.5; c.beginPath(); c.moveTo(cm.x-cm.len,cm.y); c.lineTo(cm.x,cm.y); c.stroke();
+      c.globalAlpha=.85; c.fillStyle='#bae6fd'; c.beginPath(); c.arc(cm.x,cm.y,2,0,Math.PI*2); c.fill(); c.globalAlpha=1;
+    });
+
+    // Orbit rings — dashed for locked, solid faint for unlocked
+    monthData.forEach(p => {
+      c.beginPath(); c.arc(cx,cy,p.orbit,0,Math.PI*2);
+      c.strokeStyle = p.unlocked ? 'rgba(168,85,247,0.12)' : 'rgba(168,85,247,0.04)';
+      c.lineWidth=1;
+      if (!p.unlocked) c.setLineDash([3,6]); else c.setLineDash([]);
+      c.stroke(); c.setLineDash([]);
+    });
+
+    // Central Sun — grows with streak, colored by skin type
+    const sunR = 18 + Math.min(streak,30)*.4;
+    const sunG1 = c.createRadialGradient(cx,cy,0,cx,cy,sunR*4);
+    sunG1.addColorStop(0, palette.glow.replace('0.35','0.3'));
+    sunG1.addColorStop(.5, palette.glow.replace('0.35','0.08'));
+    sunG1.addColorStop(1,'transparent');
+    c.fillStyle=sunG1; c.beginPath(); c.arc(cx,cy,sunR*4,0,Math.PI*2); c.fill();
+
+    const shimmer = 0.88+0.12*Math.sin(frame*.04);
+    const sunBody = c.createRadialGradient(cx-sunR*.3,cy-sunR*.35,0,cx,cy,sunR);
+    sunBody.addColorStop(0,'#fffbeb');
+    sunBody.addColorStop(.3, palette.colors[0]);
+    sunBody.addColorStop(1, palette.colors[1]+'cc');
+    c.fillStyle=sunBody; c.beginPath(); c.arc(cx,cy,sunR*shimmer,0,Math.PI*2); c.fill();
+
+    // "CBS" initials on sun when big enough
+    if (sunR > 20) {
+      c.globalAlpha=0.4; c.fillStyle='rgba(255,255,255,0.6)';
+      c.font=`${Math.floor(sunR*.55)}px 'Syncopate',sans-serif`;
+      c.textAlign='center'; c.textBaseline='middle';
+      c.fillText('✦',cx,cy); c.globalAlpha=1;
+    }
+
+    // Planets
+    monthData.forEach(p => {
+      p.angle += p.speed;
+      const px = cx + Math.cos(p.angle)*p.orbit;
+      const py = cy + Math.sin(p.angle)*p.orbit;
+
+      if (!p.unlocked) {
+        // Locked = dim hollow sphere
+        c.globalAlpha=0.18;
+        c.strokeStyle='rgba(168,85,247,0.3)'; c.lineWidth=1;
+        c.beginPath(); c.arc(px,py,p.r*.8,0,Math.PI*2); c.stroke();
+        // Month label
+        c.font='8px DM Sans'; c.fillStyle='rgba(232,213,255,0.25)';
+        c.textAlign='center'; c.textBaseline='middle'; c.fillText(p.name,px,py);
+        c.globalAlpha=1;
+        return;
+      }
+
+      // Glow halo
+      const halo = c.createRadialGradient(px,py,0,px,py,p.r*(p.superstar?3.5:2.5));
+      halo.addColorStop(0, p.superstar ? 'rgba(251,191,36,0.4)' : palette.glow);
+      halo.addColorStop(1,'transparent');
+      c.fillStyle=halo; c.beginPath(); c.arc(px,py,p.r*3,0,Math.PI*2); c.fill();
+
+      // Saturn-style rings for superstar months
+      if (p.hasRing) {
+        c.save(); c.translate(px,py); c.scale(1,.28);
+        c.beginPath(); c.arc(0,0,p.r*2.2,0,Math.PI*2);
+        c.strokeStyle='rgba(251,191,36,0.6)'; c.lineWidth=3; c.stroke();
+        c.beginPath(); c.arc(0,0,p.r*1.7,0,Math.PI*2);
+        c.strokeStyle='rgba(251,191,36,0.3)'; c.lineWidth=1.5; c.stroke();
+        c.restore();
+      }
+
+      // Planet body — skin-type palette
+      const pBody = c.createRadialGradient(px-p.r*.35,py-p.r*.35,0,px,py,p.r);
+      pBody.addColorStop(0,'rgba(255,255,255,0.7)');
+      pBody.addColorStop(.3, p.superstar ? '#fbbf24' : palette.colors[0]);
+      pBody.addColorStop(1, (p.superstar ? '#d97706' : palette.colors[1])+'cc');
+      c.fillStyle=pBody; c.beginPath(); c.arc(px,py,p.r,0,Math.PI*2); c.fill();
+
+      // Variant texture overlays
+      if (variant==='textured'||variant==='cratered') {
+        // small crater dots
+        c.save(); c.globalAlpha=0.2; c.beginPath(); c.arc(px,py,p.r,0,Math.PI*2); c.clip();
+        [[-.3,-.3,.15],[.25,.1,.1],[-.1,.3,.12]].forEach(([dx,dy,dr])=>{
+          c.fillStyle='rgba(0,0,0,0.4)';c.beginPath();c.arc(px+dx*p.r*2,py+dy*p.r*2,dr*p.r,0,Math.PI*2);c.fill();
+        });
+        c.restore();
+      }
+      if (variant==='icy') {
+        c.save(); c.globalAlpha=0.3; c.beginPath(); c.arc(px,py,p.r,0,Math.PI*2); c.clip();
+        c.fillStyle='rgba(186,230,253,0.6)'; c.fillRect(px-p.r,py-p.r*.4,p.r*2,p.r*.5); c.restore();
+      }
+      if (variant==='cloudy') {
+        c.save(); c.globalAlpha=0.25; c.beginPath(); c.arc(px,py,p.r,0,Math.PI*2); c.clip();
+        ['rgba(255,255,255,0.5)','rgba(200,200,220,0.4)'].forEach((clr,ci)=>{
+          c.fillStyle=clr; c.beginPath(); c.arc(px+(ci-.5)*p.r*.8,py,p.r*.55,0,Math.PI*2); c.fill();
+        });
+        c.restore();
+      }
+      if (variant==='rosy') {
+        c.save(); c.globalAlpha=0.2; c.fillStyle='rgba(249,168,212,0.6)';
+        c.beginPath(); c.arc(px,py,p.r*.6,0,Math.PI*2); c.fill(); c.restore();
+      }
+
+      // Superstar star sparkle
+      if (p.superstar) {
+        c.globalAlpha=0.7+0.3*Math.sin(frame*.08+p.month);
+        c.fillStyle='#fbbf24'; c.font=`${p.r*.9}px serif`;
+        c.textAlign='center'; c.textBaseline='middle'; c.fillText('★',px,py-.5);
+        c.globalAlpha=1;
+      }
+
+      // Moon from facial
+      if (p.hasMoon) {
+        p.moonAngle+=p.speed*5;
+        const mo=p.r+9, mx=px+Math.cos(p.moonAngle)*mo, my=py+Math.sin(p.moonAngle)*mo;
+        c.globalAlpha=.2; c.fillStyle='#e8d5ff'; c.beginPath(); c.arc(mx,my,4.5,0,Math.PI*2); c.fill(); c.globalAlpha=1;
+        const mG=c.createRadialGradient(mx-.8,my-.8,0,mx,my,2.8);
+        mG.addColorStop(0,'#f5f0ff'); mG.addColorStop(1,'#c4b5fd');
+        c.fillStyle=mG; c.beginPath(); c.arc(mx,my,2.8,0,Math.PI*2); c.fill();
+      }
+
+      // Month name label below planet
+      c.font='8px DM Sans'; c.fillStyle= p.superstar?'#fbbf24':'rgba(232,213,255,0.55)';
+      c.textAlign='center'; c.textBaseline='top'; c.fillText(p.name, px, py+p.r+3);
+    });
+
+    frame++;
+    solarAnim=requestAnimationFrame(draw);
+  }
+  solarAnim=requestAnimationFrame(draw);
+  const stopOnLeave=(e)=>{if(e.detail!=='garden'){cancelAnimationFrame(solarAnim);solarAnim=null;document.removeEventListener('panelChange',stopOnLeave);}};
+  document.addEventListener('panelChange',stopOnLeave);
+}
+
+function renderMonthLegend(user, monthData) {
+  const palette = getPlanetPalette(user.skin_type);
+  // Planet emoji by skin type + month index
+  const planetEmojis = {
+    'Oily':        ['🟢','💚','🌿','🫛','🍀','🌱','✅','💠','🫐','💙','🌊','🔵'],
+    'Dry':         ['🩷','💗','🌸','🌺','🌷','💐','🌹','🩸','❤️','🧡','🍑','💛'],
+    'Combination': ['🟣','💜','🔮','🌌','🫧','🔵','💙','🫐','🌀','⚪','🪐','✨'],
+    'Normal':      ['🔵','💙','🌀','🫧','⚡','🌐','💎','🪩','🔷','🌟','⭐','🌙'],
+    'Sensitive':   ['🟠','🧡','🍊','🌅','🔶','🫧','🪷','🌸','💮','🌼','🌻','⭐'],
+  };
+  const emojis = planetEmojis[user.skin_type] || planetEmojis['Combination'];
+  const skinLabels = {
+    'Oily':'Emerald World','Dry':'Rose Planet','Combination':'Amethyst Sphere',
+    'Normal':'Sapphire Orb','Sensitive':'Amber World'
+  };
+  const baseLabel = skinLabels[user.skin_type] || 'Cosmic Orb';
+
+  const el = document.getElementById('monthLegend');
+  el.innerHTML = monthData.map((p,i) => {
+    const cls = p.superstar ? 'superstar' : p.unlocked ? 'unlocked' : '';
+    const lbl = p.superstar ? '⭐ Superstar' : p.unlocked ? baseLabel : 'Locked';
+    return `<div class="ml-item ${cls}" title="${p.name}: ${lbl}">
+      <span class="ml-month">${p.name}</span>
+      <span class="ml-planet">${emojis[i]}</span>
+      <span class="ml-label">${p.superstar?'⭐ Star':'·'}</span>
+    </div>`;
+  }).join('');
+}
+
+function renderMilestones(user) {
+  const streak = user.streak||0;
+  const superstars = user.superstar_days||0;
+  const facials = user.facials||0;
+  const orders = user.orders||0;
+
+  const milestones = [
+    // Routine-based
+    { icon:'⭐', label:'First Light',            desc:'Complete your first full day of routines',       done: streak>=1 },
+    { icon:'🌟', label:'Superstar',              desc:`All tasks checked off — ×${superstars} times`,  done: superstars>=1, count: superstars },
+    { icon:'🔥', label:'7-Day Streak',           desc:'7 consecutive days of AM + PM routine',         done: streak>=7 },
+    { icon:'💫', label:'Stardust Ritual',        desc:'30-day routine streak',                         done: streak>=30 },
+    { icon:'🌌', label:'Constellation',          desc:'90-day routine streak',                         done: streak>=90 },
+    // Skin-care specific
+    { icon:'🚀', label:'First Launch',           desc:'Completed the Skin Quiz',                       done: !!(user.skin_type) },
+    { icon:'📸', label:'Before & After',         desc:'Uploaded your first progress photo',            done: false },
+    { icon:'💎', label:'Facial Glow',            desc:'First professional facial with Christina',      done: facials>=1 },
+    { icon:'🌙', label:'Double Moon',            desc:'Two facials — two moons orbit your planets',    done: facials>=2 },
+    { icon:'☄️', label:'First Comet',            desc:'First Bioelements® product purchase',           done: orders>=1 },
+    { icon:'🪐', label:'Outer Ring',             desc:'6 months of consistent routine',                done: streak>=180 },
+    { icon:'☀️', label:'Celestial Icon',         desc:'Full year — all 12 planets illuminated',        done: streak>=365 },
+  ];
+
+  document.getElementById('gardenMilestones').innerHTML = milestones.map(m => {
+    const countBadge = m.count > 0 ? `<span style="font-family:'Cormorant Garamond',serif;font-size:20px;color:#fbbf24;flex-shrink:0;">×${m.count}</span>` : `<span style="font-size:16px;color:var(--aurora);flex-shrink:0;">${m.done?'✓':'·'}</span>`;
+    return `<div style="display:flex;align-items:center;gap:14px;padding:12px 16px;border-radius:14px;
+      background:${m.done?'rgba(168,85,247,0.08)':'rgba(255,255,255,0.02)'};
+      border:1px solid ${m.done?'rgba(168,85,247,0.28)':'rgba(168,85,247,0.06)'};">
+      <span style="font-size:22px;filter:${m.done?'none':'grayscale(1) opacity(0.4)'};">${m.icon}</span>
+      <div style="flex:1;">
+        <div style="font-size:13px;color:${m.done?'var(--starlight)':'rgba(232,213,255,0.35)'};margin-bottom:2px;">${m.label}</div>
+        <div style="font-size:11px;color:rgba(232,213,255,0.3);">${m.desc}</div>
+      </div>
+      ${countBadge}
+    </div>`;
+  }).join('');
+}
+
+// ── Daily Tip ──
+function renderDailyTip(user) {
+  const skinType = user?.skin_type || 'normal';
+  const allTips = {
+    Oily: [
+      { icon:'🫧', text:'Double cleansing at night removes ALL traces of SPF and makeup — skipping this step clogs pores more than any product can unclog.', source:'Bioelements® Pro Tip' },
+      { icon:'⚖️', text:'Skipping moisturizer actually makes oily skin worse. Your skin overproduces oil to compensate for dryness. Use a lightweight gel formula.', source:'Skin Science' },
+      { icon:'🎯', text:'Never pop. Never pick. Every extraction you do at home causes micro-scarring. Leave it to Christina.', source:'Esthetician Tip' },
+      { icon:'💧', text:'Niacinamide is your best friend — it regulates sebum, minimizes pores, and brightens all at once.', source:'Active Ingredients' },
+      { icon:'🌿', text:'Change your pillowcase every 2–3 days. It collects oils, bacteria and product residue that transfer directly back to your skin.', source:'Daily Habit' },
+    ],
+    Dry: [
+      { icon:'💧', text:'Apply your moisturizer within 60 seconds of cleansing, while skin is still slightly damp. This locks in hydration instead of just sitting on top.', source:'Bioelements® Pro Tip' },
+      { icon:'🛡️', text:'Ceramides repair your skin barrier. Look for them in your moisturizer — they mimic the natural lipids your skin already produces.', source:'Skin Science' },
+      { icon:'🌙', text:'Overnight is when your skin does its deepest repair work. A richer PM cream makes a noticeable difference by morning.', source:'Esthetician Tip' },
+      { icon:'🚫', text:'Avoid foaming cleansers — the sulfates that create the lather strip your already-low oil levels. Opt for cream or oil-based formulas.', source:'Cleanser Guide' },
+      { icon:'💎', text:'Hyaluronic acid holds 1000× its weight in water — but only if there\'s moisture in the air to attract. Layer it under a cream to seal it in.', source:'Active Ingredients' },
+    ],
+    Combination: [
+      { icon:'⚖️', text:'Treat your zones differently. A lightweight gel on your T-zone, a richer cream on your cheeks. One product rarely works perfectly across both.', source:'Bioelements® Pro Tip' },
+      { icon:'🔬', text:'Exfoliate 2–3× per week max — enough to keep pores clear without triggering dryness in your drier zones.', source:'Esthetician Tip' },
+      { icon:'☀️', text:'SPF is non-negotiable in Florida. UV damage is the #1 cause of premature aging — and Pasco County sun is intense year-round.', source:'Sun Protection' },
+      { icon:'💜', text:'Combination skin often reacts to fragrance. If your skin feels irritated after a new product, check the ingredients for parfum or fragrance.', source:'Sensitivity Guide' },
+      { icon:'🌸', text:'Facial massage improves lymphatic drainage, reduces puffiness, and gives you a natural glow. 2 minutes every morning makes a real difference.', source:'Daily Habit' },
+    ],
+    Normal: [
+      { icon:'✨', text:'Normal skin is a gift — your job is maintenance and prevention. Start retinol early and thank yourself in 10 years.', source:'Esthetician Tip' },
+      { icon:'☀️', text:'The best anti-aging product you can use is SPF 30+, every single day, even indoors. UV rays pass through glass.', source:'Sun Protection' },
+      { icon:'🌿', text:'Antioxidants like Vitamin C neutralize free radical damage from sun, pollution and stress. Apply in the morning before SPF.', source:'Active Ingredients' },
+      { icon:'💆', text:'Stress spikes cortisol, which breaks down collagen and triggers inflammation. Your skin reflects your nervous system.', source:'Skin Science' },
+      { icon:'🥗', text:'Omega-3 fatty acids (salmon, flaxseed, walnuts) reduce inflammation and strengthen your skin barrier from the inside out.', source:'Nutrition Tip' },
+    ],
+    Sensitive: [
+      { icon:'🌿', text:'Patch test every new product on your inner arm for 48 hours before applying to your face. Even "natural" products can cause reactions.', source:'Esthetician Tip' },
+      { icon:'🚿', text:'Hot water inflames sensitive skin. Use lukewarm water to cleanse, and always pat dry — never rub — with a clean, soft cloth.', source:'Daily Habit' },
+      { icon:'🛡️', text:'Fragrance is the #1 irritant in skincare. Always check for "parfum," "fragrance," or essential oils in ingredient lists.', source:'Sensitivity Guide' },
+      { icon:'💜', text:'Less is more with sensitive skin. A simple 3-step routine done consistently outperforms a complex routine that overwhelms your barrier.', source:'Bioelements® Pro Tip' },
+      { icon:'🌡️', text:'Redness often means your skin barrier is compromised. Focus on ceramides, fatty acids and niacinamide to rebuild it before adding actives.', source:'Skin Science' },
+    ],
+  };
+  const tipKey = Object.keys(allTips).find(k => k.toLowerCase() === skinType.toLowerCase()) || 'Normal';
+  const tips = allTips[tipKey];
+  // Rotate by day of year so it changes daily
+  const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(),0,0)) / 86400000);
+  const tip = tips[dayOfYear % tips.length];
+  document.getElementById('tipIcon').textContent = tip.icon;
+  document.getElementById('tipText').textContent = tip.text;
+  document.getElementById('tipSource').textContent = tip.source;
+}
+
+// ── Water Tracker ──
+let waterCount = 0;
+const WATER_KEY = 'cbs_water_' + new Date().toDateString();
+
+function renderWaterTracker() {
+  // Load today's count from localStorage
+  waterCount = parseInt(localStorage.getItem(WATER_KEY) || '0');
+  const el = document.getElementById('waterDrops');
+  if (!el) return;
+  el.innerHTML = Array.from({length:8}, (_,i) => `
+    <span class="water-drop ${i < waterCount ? 'filled' : ''}" onclick="toggleWaterDrop(${i})">💧</span>
+  `).join('');
+  document.getElementById('waterCount').textContent = waterCount;
+  const msgs = ['Drink up! Hydration is skin food.','Getting started — keep going! 💙','Halfway there! Your skin feels it.','4 glasses! Looking dewy already.','More than half! Keep the momentum.','5 glasses! Your cells are celebrating.','Almost there! One more drop.','7! One glass to go — you\'ve got this.','8 glasses! Superstar hydration today 💧✦'];
+  const msgEl = document.getElementById('waterMsg');
+  if (msgEl) msgEl.textContent = msgs[Math.min(waterCount, 8)];
+}
+
+function toggleWaterDrop(index) {
+  // If tapping the last filled drop, unfill it (undo); otherwise fill up to this index
+  if (index === waterCount - 1) {
+    waterCount = Math.max(0, waterCount - 1);
+  } else {
+    waterCount = index + 1;
+  }
+  localStorage.setItem(WATER_KEY, waterCount);
+  renderWaterTracker();
+  if (waterCount === 8) toast('💧','8 glasses! Superstar hydration ✦');
+}
+
+// ── Photo localStorage persistence ──
+const PHOTOS_KEY = 'cbs_photos';
+
+function loadPhotos() {
+  try { return JSON.parse(localStorage.getItem(PHOTOS_KEY) || '[]'); } catch(e) { return []; }
+}
+
+function savePhotosToStorage(photos) {
+  try { localStorage.setItem(PHOTOS_KEY, JSON.stringify(photos)); } catch(e) {
+    toast('⚠️','Storage full — try deleting older photos');
+  }
+}
+
+function savePhoto() {
+  if (!capturedImageData && !capturedFile) { toast('⚠️','No photo to save'); return; }
+  const label = document.getElementById('photoLabel').value.trim() || 'Progress Photo';
+  const reader = new FileReader();
+  const finish = (dataUrl) => {
+    const photos = loadPhotos();
+    photos.unshift({ id: Date.now(), url: dataUrl, label, date: new Date().toISOString() });
+    savePhotosToStorage(photos);
+    closeUpload();
+    populatePhotoGrid();
+    document.getElementById('statPhotos') && (document.getElementById('statPhotos').textContent = photos.length);
+    toast('✦','Progress photo saved!');
+  };
+  if (capturedImageData) {
+    finish(capturedImageData);
+  } else {
+    reader.onload = e => finish(e.target.result);
+    reader.readAsDataURL(capturedFile);
+  }
+}
+
+function deletePhoto(id) {
+  const photos = loadPhotos().filter(p => p.id !== id);
+  savePhotosToStorage(photos);
+  populatePhotoGrid();
+  toast('🗑️','Photo removed');
+}
+
+function populatePhotoGrid() {
+  const photos = loadPhotos();
+  const grid = document.getElementById('photoGrid');
+  if (!grid) return;
+  if (document.getElementById('statPhotos')) document.getElementById('statPhotos').textContent = photos.length;
+  grid.innerHTML = photos.map((p,i) => `
+    <div class="photo-tile-inner" onclick="handlePhotoTap(${i})">
+      <img src="${p.url}" alt="${p.label}" loading="lazy">
+      <div class="photo-tile-meta">
+        <div class="photo-tile-date">${new Date(p.date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</div>
+        <div class="photo-tile-label">${p.label}</div>
+      </div>
+      <div class="photo-tile-del" onclick="event.stopPropagation();deletePhoto(${p.id})">×</div>
+    </div>`).join('') + `
+    <div class="photo-add" onclick="openUpload()">
+      <div class="pa-icon">+</div>
+      <div class="pa-text">${photos.length === 0 ? 'Add your first<br>progress photo' : 'Add photo'}</div>
+    </div>`;
+}
+
+function handlePhotoTap(idx) {
+  if (!compareMode) return;
+  const photos = loadPhotos();
+  const photo = photos[idx];
+  if (!photo) return;
+  const slot = document.getElementById(compareSlot === 'left' ? 'compareLeft' : 'compareRight');
+  slot.innerHTML = `<img src="${photo.url}" alt="${photo.label}" style="width:100%;height:100%;object-fit:cover;">
+    <div class="compare-tag">${photo.label}</div>`;
+  compareSlot = compareSlot === 'left' ? 'right' : 'left';
+  toast('✦', `Set as ${compareSlot === 'right' ? 'Before' : 'After'}`);
+}
+
+// ── Streak localStorage persistence ──
+const STREAK_KEY   = 'cbs_streak';
+const LAST_DAY_KEY = 'cbs_last_routine_day';
+
+function loadStreak() {
+  return parseInt(localStorage.getItem(STREAK_KEY) || '0');
+}
+
+function incrementStreak() {
+  const today = new Date().toDateString();
+  const lastDay = localStorage.getItem(LAST_DAY_KEY);
+  const yesterday = new Date(Date.now() - 86400000).toDateString();
+  let streak = loadStreak();
+  if (lastDay === today) return streak; // already counted today
+  if (lastDay === yesterday) {
+    streak += 1; // consecutive day
+  } else if (!lastDay) {
+    streak = 1; // first ever
+  } else {
+    streak = 1; // streak broken, start fresh
+  }
+  localStorage.setItem(STREAK_KEY, streak);
+  localStorage.setItem(LAST_DAY_KEY, today);
+  if (currentUser) currentUser.streak = streak;
+  return streak;
+}
+function toast(icon, text) {
+  const t=document.getElementById('toast');
+  document.getElementById('ti').textContent=icon; document.getElementById('tt').textContent=text;
+  t.classList.add('show'); clearTimeout(t._timer); t._timer=setTimeout(()=>t.classList.remove('show'),3200);
+}
+
+// ── Init ──
+window.addEventListener('DOMContentLoaded', async () => {
+  // Require a session — redirect to login if none found
+  await cbsInitSession(
+    async (user, profile) => {
+      // cbsInitSession already called _bridgeSession, so CosmicAuth session is fresh
+      const _cs = (typeof CosmicAuth !== 'undefined') ? CosmicAuth.getSession() : null;
+
+      // Inject the top auth bar (requires CosmicAuth session)
+      if (typeof CosmicAuth !== 'undefined' && _cs) {
+        CosmicAuth.injectAuthBar(['guest', 'esthetician'], 'portal');
+      }
+
+      // Load portal with Supabase profile data (also available from bridge session)
+      const _profile = profile || (_cs && _cs.profile) || {};
+      launchPortal({
+        first_name: profile?.first_name || (_cs?.firstName) || '',
+        last_name:  profile?.last_name  || (_cs?.lastName)  || '',
+        email:      user.email || profile?.email || '',
+        skin_type:  _profile.skin_type  || '',
+        concerns:   _profile.concerns   || [],
+        streak:     _profile.streak     || 0,
+        facials:    _profile.facials    || 0,
+        orders:     _profile.orders     || 0,
+        joined_at:  profile?.joined_at  || _profile.joined_at || new Date().toISOString(),
+      });
+
+      initQuiz();
+      document.getElementById('routineDate').textContent = new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+    },
+    () => {
+      window.location.replace('index.html');
+    }
+  );
+});
+
+// ── Expose all functions to window for onclick handlers ──
+window.toggleWaterDrop = toggleWaterDrop;
+window.deletePhoto = deletePhoto;
+window.handlePhotoTap = handlePhotoTap;
+window.showForgotPassword = showForgotPassword;
+window.handleForgotPassword = handleForgotPassword;
+window.resetRoutineToday = resetRoutineToday;
+window.toggleRoutineEdit = toggleRoutineEdit;
+window.openAlienOnboarding = openAlienOnboarding;
+window.closeAlienOnboarding = closeAlienOnboarding;
+window.obNext = obNext;
+window.obPrev = obPrev;
+window.selectTone = selectTone;
+window.shareMyGlow = shareMyGlow;
+window.closeShareGlow = closeShareGlow;
+window.addRoutineStep = addRoutineStep;
+window.deleteRoutineStep = deleteRoutineStep;
+window.toggleRecommendations = toggleRecommendations;
+window.addRecStep = addRecStep;
+window.toggleDashStep = toggleDashStep;
+window.switchAuthTab = switchAuthTab;
+window.handleLogin = handleLogin;
+window.handleRegister = handleRegister;
+window.demoLogin = demoLogin;
+window.handleLogout = handleLogout;
+window.goTo = goTo;
+window.selectOpt = selectOpt;
+window.nextStep = nextStep;
+window.prevStep = prevStep;
+window.finishQuiz = finishQuiz;
+window.switchRoutine = switchRoutine;
+window.toggleRoutineStep = toggleRoutineStep;
+window.toggleConcern = toggleConcern;
+window.saveProfile = saveProfile;
+window.openUpload = openUpload;
+window.closeUpload = closeUpload;
+window.startCamera = startCamera;
+window.stopCamera = stopCamera;
+window.capturePhoto = capturePhoto;
+window.handleFileUpload = handleFileUpload;
+window.savePhoto = savePhoto;
+window.toggleCompare = toggleCompare;
+window.saveReminders = saveReminders;
+window.toast = toast;
+
+if (window._flushPending) window._flushPending();
+</script>
+
+<script>
+(function(){
+  var el = document.getElementById('app-logic');
+  if (!el) { console.error('app-logic not found'); return; }
+  var code = el.textContent || el.innerHTML;
+  try { (0, eval)(code); } catch(e) { console.error('Portal load error:', e); }
+})();
+</script>
+</body>
+</html>

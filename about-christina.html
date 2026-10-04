@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet Christina · Cosmic Beauty Spa · Hudson, Florida</title>
+<meta name="description" content="Meet Christina, licensed esthetician and owner of Cosmic Beauty Spa in Hudson, FL. Born and raised locally, passionate artist, Bioelements® certified professional.">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Syncopate:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --void:#030612;--deep:#0a0820;
+  --violet:#6b2fa0;--indigo:#3d2fa0;--electric:#7c3aed;
+  --aurora:#a855f7;--sky:#60a5fa;--ice:#bae6fd;
+  --starlight:#e8d5ff;--pearl:#f5f0ff;
+  --gold:#f59e0b;--rose:#f472b6;
+  --border:rgba(168,85,247,.15);--border-hi:rgba(168,85,247,.45);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+::selection{background:var(--aurora);color:var(--void);}
+body{background:var(--void);color:var(--pearl);font-family:'DM Sans',sans-serif;font-weight:300;overflow-x:hidden;cursor:none;}
+
+/* CURSOR */
+.cursor{width:10px;height:10px;background:var(--aurora);border-radius:50%;position:fixed;pointer-events:none;z-index:9999;mix-blend-mode:screen;transition:transform .15s;}
+.cursor-trail{width:32px;height:32px;border:1px solid rgba(168,85,247,.35);border-radius:50%;position:fixed;pointer-events:none;z-index:9998;transition:all .3s ease;}
+
+/* BG */
+#starfield{position:fixed;inset:0;z-index:0;pointer-events:none;}
+.nb{position:fixed;border-radius:50%;filter:blur(110px);pointer-events:none;z-index:0;}
+.nb1{width:580px;height:580px;background:radial-gradient(circle,rgba(107,47,160,.28) 0%,transparent 70%);top:-100px;left:-70px;animation:drift 22s ease-in-out infinite alternate;}
+.nb2{width:440px;height:440px;background:radial-gradient(circle,rgba(61,47,160,.22) 0%,transparent 70%);bottom:12%;right:-60px;animation:drift 28s ease-in-out infinite alternate-reverse;}
+.nb3{width:320px;height:320px;background:radial-gradient(circle,rgba(244,114,182,.1) 0%,transparent 70%);top:40%;left:30%;animation:drift 35s ease-in-out infinite alternate;}
+@keyframes drift{0%{transform:translate(0,0);}100%{transform:translate(28px,20px);}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+@keyframes twinkle{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.3;transform:scale(.8);}}
+@keyframes shimmer{from{transform:translateX(-100%);}to{transform:translateX(100%);}}
+@keyframes floatUp{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+@keyframes glow{0%,100%{box-shadow:0 0 30px rgba(168,85,247,.3);}50%{box-shadow:0 0 60px rgba(168,85,247,.6);}}
+@keyframes rotateSlow{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+
+/* LAYOUT */
+.site{position:relative;z-index:1;}
+.container{max-width:1160px;margin:0 auto;padding:0 56px;}
+.divider{width:100%;height:1px;background:linear-gradient(to right,transparent,rgba(168,85,247,.22),rgba(244,114,182,.12),transparent);}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:0 56px;height:66px;display:flex;align-items:center;justify-content:space-between;backdrop-filter:blur(20px);background:rgba(3,6,18,.65);border-bottom:1px solid var(--border);transition:background .3s;}
+.nav-logo{font-family:'Syncopate',sans-serif;font-size:11px;letter-spacing:.28em;color:var(--starlight);text-decoration:none;line-height:1.4;}
+.nav-logo span{display:block;font-size:7px;letter-spacing:.45em;color:rgba(168,85,247,.48);margin-top:1px;}
+.nav-logo::after{content:'✦';font-size:7px;position:absolute;top:-1px;right:-13px;color:var(--aurora);animation:twinkle 2s infinite;}
+.nav-logo{position:relative;}
+.nav-right{display:flex;align-items:center;gap:28px;}
+.nav-link{color:rgba(232,213,255,.5);text-decoration:none;font-size:12px;letter-spacing:.12em;text-transform:uppercase;transition:color .3s;}
+.nav-link:hover{color:var(--aurora);}
+.nav-book{background:linear-gradient(135deg,var(--electric),var(--violet));color:#fff;padding:9px 22px;border-radius:100px;font-size:11px;letter-spacing:.13em;text-transform:uppercase;text-decoration:none;transition:all .3s;box-shadow:0 0 18px rgba(124,58,237,.35);}
+.nav-book:hover{box-shadow:0 0 36px rgba(124,58,237,.65);transform:translateY(-1px);color:#fff;}
+
+/* HERO — SPLIT LAYOUT */
+.about-hero{padding-top:66px;min-height:100vh;display:grid;grid-template-columns:1fr 1fr;position:relative;overflow:hidden;}
+.hero-left{display:flex;flex-direction:column;justify-content:center;padding:80px 56px 80px 0;position:relative;z-index:1;}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:9px;letter-spacing:.45em;text-transform:uppercase;color:var(--aurora);border:1px solid rgba(168,85,247,.28);padding:7px 18px;border-radius:100px;margin-bottom:28px;background:rgba(168,85,247,.07);animation:fadeUp .8s ease both;}
+.hero-left h1{font-family:'Cormorant Garamond',serif;font-size:clamp(52px,7vw,90px);font-weight:300;line-height:.92;letter-spacing:-.02em;margin-bottom:10px;animation:fadeUp .8s .15s ease both;}
+.hero-left h1 em{font-style:italic;background:linear-gradient(135deg,var(--rose),var(--aurora),var(--sky));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero-title-sub{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;font-style:italic;color:rgba(232,213,255,.5);margin-bottom:28px;animation:fadeUp .8s .28s ease both;}
+.hero-bio{font-size:15px;line-height:1.9;color:rgba(232,213,255,.58);margin-bottom:32px;animation:fadeUp .8s .4s ease both;max-width:480px;}
+.hero-bio strong{color:var(--aurora);font-weight:500;}
+.hero-tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:36px;animation:fadeUp .8s .52s ease both;}
+.htag{display:inline-flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.1em;padding:6px 14px;border-radius:100px;background:rgba(168,85,247,.09);border:1px solid rgba(168,85,247,.2);color:rgba(168,85,247,.88);}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;animation:fadeUp .8s .64s ease both;}
+.btn-primary{background:linear-gradient(135deg,var(--electric),var(--indigo));color:#fff;padding:14px 34px;border-radius:100px;text-decoration:none;font-size:12px;letter-spacing:.14em;text-transform:uppercase;border:none;cursor:none;position:relative;overflow:hidden;transition:all .4s;box-shadow:0 0 26px rgba(124,58,237,.45),inset 0 1px 0 rgba(255,255,255,.16);display:inline-flex;align-items:center;gap:8px;}
+.btn-primary::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent,rgba(255,255,255,.12),transparent);transform:translateX(-100%);transition:transform .5s;}
+.btn-primary:hover::before{transform:translateX(100%);}
+.btn-primary:hover{box-shadow:0 0 50px rgba(124,58,237,.7),inset 0 1px 0 rgba(255,255,255,.16);transform:translateY(-2px);}
+.btn-ghost{color:var(--starlight);padding:14px 30px;border-radius:100px;text-decoration:none;font-size:12px;letter-spacing:.14em;text-transform:uppercase;border:1px solid rgba(168,85,247,.3);cursor:none;transition:all .4s;background:rgba(168,85,247,.06);display:inline-flex;align-items:center;gap:8px;}
+.btn-ghost:hover{border-color:var(--aurora);background:rgba(168,85,247,.13);box-shadow:0 0 20px rgba(168,85,247,.2);}
+
+/* HERO RIGHT — Photo Frame */
+.hero-right{position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.hero-right::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(107,47,160,.12),transparent,rgba(244,114,182,.06));}
+.photo-frame-outer{position:relative;width:420px;height:520px;animation:fadeIn 1s .3s ease both;}
+.photo-frame{width:100%;height:100%;border-radius:32px;overflow:hidden;position:relative;border:1px solid rgba(168,85,247,.25);box-shadow:0 0 80px rgba(107,47,160,.25);}
+.photo-frame img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s ease;}
+.photo-frame:hover img{transform:scale(1.04);}
+.photo-placeholder{width:100%;height:100%;background:linear-gradient(145deg,rgba(107,47,160,.4),rgba(61,47,160,.3),rgba(244,114,182,.15));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;}
+.pp-emoji{font-size:80px;filter:drop-shadow(0 0 24px rgba(168,85,247,.5));animation:floatUp 4s ease-in-out infinite;}
+.pp-upload{font-size:12px;color:rgba(168,85,247,.5);letter-spacing:.15em;text-transform:uppercase;text-align:center;padding:8px 18px;border:1px dashed rgba(168,85,247,.3);border-radius:100px;cursor:none;transition:all .3s;}
+.pp-upload:hover{border-color:rgba(168,85,247,.6);color:var(--aurora);}
+.photo-upload-input{display:none;}
+
+/* Floating badges around photo */
+.float-badge{position:absolute;background:linear-gradient(135deg,rgba(18,10,45,.95),rgba(13,26,74,.92));border:1px solid rgba(168,85,247,.3);border-radius:16px;padding:12px 16px;backdrop-filter:blur(16px);box-shadow:0 0 24px rgba(107,47,160,.2);animation:floatUp 5s ease-in-out infinite;}
+.fb-1{top:40px;left:-30px;animation-delay:0s;}
+.fb-2{bottom:100px;right:-35px;animation-delay:-2s;}
+.fb-3{bottom:30px;left:-20px;animation-delay:-4s;}
+.fb-icon{font-size:18px;margin-bottom:4px;display:block;}
+.fb-label{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--aurora);display:block;}
+.fb-val{font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--starlight);display:block;margin-top:2px;}
+
+/* Orbital ring around photo */
+.orbital{position:absolute;width:500px;height:500px;border-radius:50%;border:1px dashed rgba(168,85,247,.1);animation:rotateSlow 40s linear infinite;}
+.orbital::after{content:'✦';position:absolute;top:-8px;left:50%;transform:translateX(-50%);font-size:10px;color:rgba(168,85,247,.4);}
+
+/* SECTION SHARED */
+.stag{font-size:9px;letter-spacing:.5em;text-transform:uppercase;color:var(--aurora);display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.stag::before{content:'';display:block;width:20px;height:1px;background:var(--aurora);}
+.stag.c{justify-content:center;}
+.stag.c::before{display:none;}
+.stag.c::after{content:'';display:block;width:20px;height:1px;background:var(--aurora);}
+.stitle{font-family:'Cormorant Garamond',serif;font-size:clamp(32px,4.5vw,56px);font-weight:300;line-height:1.06;margin-bottom:16px;}
+.stitle em{font-style:italic;background:linear-gradient(135deg,var(--aurora),var(--sky));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.ssub{font-size:15px;color:rgba(232,213,255,.5);line-height:1.85;max-width:560px;}
+
+/* STORY SECTION */
+.story{padding:100px 0;}
+.story-grid{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:start;}
+.story-block{display:flex;flex-direction:column;gap:20px;}
+.story-p{font-size:15px;line-height:1.92;color:rgba(232,213,255,.55);}
+.story-p strong{color:var(--aurora);font-weight:500;}
+.story-p em{font-style:italic;color:var(--starlight);}
+.story-quote{background:linear-gradient(135deg,rgba(107,47,160,.2),rgba(61,47,160,.15));border-left:3px solid var(--aurora);border-radius:0 16px 16px 0;padding:22px 26px;margin:8px 0;}
+.story-quote blockquote{font-family:'Cormorant Garamond',serif;font-size:22px;font-style:italic;font-weight:300;color:var(--starlight);line-height:1.55;}
+.story-quote cite{display:block;font-size:11px;color:rgba(168,85,247,.6);letter-spacing:.15em;margin-top:10px;font-style:normal;}
+.values-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px;}
+.value-card{background:rgba(26,10,61,.55);border:1px solid var(--border);border-radius:14px;padding:18px;transition:all .35s;}
+.value-card:hover{border-color:rgba(168,85,247,.3);transform:translateY(-3px);}
+.vc-icon{font-size:22px;margin-bottom:8px;display:block;}
+.vc-title{font-size:13px;color:var(--starlight);margin-bottom:5px;font-weight:500;}
+.vc-text{font-size:12px;color:rgba(232,213,255,.45);line-height:1.65;}
+.fun-facts{background:linear-gradient(145deg,rgba(26,10,61,.7),rgba(13,26,74,.6));border:1px solid rgba(168,85,247,.18);border-radius:20px;padding:28px;margin-top:8px;}
+.fun-facts h4{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;color:var(--starlight);margin-bottom:16px;}
+.fact-row{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid rgba(168,85,247,.07);}
+.fact-row:last-child{border-bottom:none;}
+.fact-icon{font-size:18px;width:28px;flex-shrink:0;}
+.fact-text{font-size:13px;color:rgba(232,213,255,.58);}
+.fact-text strong{color:var(--aurora);font-weight:500;}
+
+/* CERTIFICATIONS */
+.certs{padding:100px 0;background:linear-gradient(to bottom,transparent,rgba(13,26,74,.12),transparent);}
+.certs-hdr{text-align:center;margin-bottom:56px;}
+.cert-upload-area{background:rgba(26,10,61,.4);border:2px dashed rgba(168,85,247,.22);border-radius:16px;padding:20px;text-align:center;cursor:none;transition:all .3s;margin-bottom:28px;}
+.cert-upload-area:hover{border-color:rgba(168,85,247,.5);background:rgba(107,47,160,.12);}
+.cert-upload-area p{font-size:12px;color:rgba(168,85,247,.5);letter-spacing:.1em;}
+.cert-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:28px;}
+.cert-card{background:linear-gradient(145deg,rgba(18,10,45,.92),rgba(13,26,74,.85));border:1px solid rgba(168,85,247,.18);border-radius:20px;overflow:hidden;transition:all .4s;position:relative;}
+.cert-card:hover{border-color:rgba(168,85,247,.4);transform:translateY(-5px);box-shadow:0 20px 50px rgba(107,47,160,.22);}
+.cert-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(to right,var(--aurora),var(--sky));opacity:.6;}
+.cert-img{width:100%;height:180px;object-fit:cover;display:block;transition:transform .4s;}
+.cert-card:hover .cert-img{transform:scale(1.04);}
+.cert-img-placeholder{width:100%;height:180px;background:linear-gradient(135deg,rgba(107,47,160,.35),rgba(61,47,160,.28));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;cursor:none;position:relative;overflow:hidden;}
+.cert-img-placeholder::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent,rgba(168,85,247,.06),transparent);transform:translateX(-100%);animation:shimmer 3s ease-in-out infinite 1s;}
+.cip-emoji{font-size:40px;filter:drop-shadow(0 0 12px rgba(168,85,247,.4));}
+.cip-add{font-size:10px;color:rgba(168,85,247,.45);letter-spacing:.2em;text-transform:uppercase;}
+.cert-body{padding:18px 20px 20px;}
+.cert-title{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;color:var(--starlight);margin-bottom:5px;}
+.cert-issuer{font-size:11px;color:rgba(168,85,247,.65);letter-spacing:.08em;margin-bottom:8px;}
+.cert-year{font-size:10px;color:rgba(232,213,255,.3);letter-spacing:.1em;}
+.cert-badge-row{display:flex;gap:6px;margin-top:10px;}
+.cert-badge{font-size:9px;letter-spacing:.12em;padding:3px 9px;border-radius:100px;background:rgba(168,85,247,.1);border:1px solid rgba(168,85,247,.18);color:rgba(168,85,247,.8);}
+.cert-edit-btn{position:absolute;top:10px;right:10px;background:rgba(3,6,18,.7);border:1px solid rgba(168,85,247,.2);border-radius:8px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-size:13px;cursor:none;transition:all .3s;opacity:0;}
+.cert-card:hover .cert-edit-btn{opacity:1;}
+.cert-edit-btn:hover{background:rgba(168,85,247,.25);}
+
+/* ADD CERT CARD */
+.cert-add-card{background:rgba(26,10,61,.3);border:2px dashed rgba(168,85,247,.2);border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:40px 24px;cursor:none;transition:all .3s;min-height:280px;}
+.cert-add-card:hover{border-color:rgba(168,85,247,.45);background:rgba(107,47,160,.12);}
+.ca-icon{font-size:36px;color:rgba(168,85,247,.35);}
+.ca-text{font-size:11px;color:rgba(168,85,247,.45);letter-spacing:.18em;text-transform:uppercase;text-align:center;}
+
+/* CERT MODAL */
+.cert-modal-overlay{position:fixed;inset:0;background:rgba(3,6,18,.85);backdrop-filter:blur(16px);z-index:300;display:none;align-items:center;justify-content:center;padding:24px;}
+.cert-modal-overlay.open{display:flex;}
+.cert-modal{background:linear-gradient(145deg,rgba(14,8,36,.98),rgba(10,20,60,.96));border:1px solid rgba(168,85,247,.28);border-radius:24px;width:100%;max-width:520px;box-shadow:0 0 70px rgba(107,47,160,.28);animation:fadeUp .35s ease both;}
+.cm-header{padding:22px 26px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.cm-title{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:var(--starlight);}
+.cm-close{background:rgba(168,85,247,.1);border:1px solid var(--border);border-radius:50%;width:30px;height:30px;color:var(--starlight);font-size:14px;cursor:none;display:flex;align-items:center;justify-content:center;transition:all .3s;}
+.cm-close:hover{background:rgba(168,85,247,.25);}
+.cm-body{padding:22px 26px 26px;}
+.cm-field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
+.cm-field label{font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--aurora);}
+.cm-field input,.cm-field select,.cm-field textarea{background:rgba(26,10,61,.55);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--pearl);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;transition:all .3s;width:100%;}
+.cm-field input:focus,.cm-field textarea:focus{border-color:var(--border-hi);}
+.cm-field input::placeholder,.cm-field textarea::placeholder{color:rgba(232,213,255,.2);}
+.cm-field select option{background:var(--deep);}
+.cm-img-upload{border:2px dashed rgba(168,85,247,.22);border-radius:12px;padding:20px;text-align:center;cursor:none;transition:all .3s;position:relative;overflow:hidden;}
+.cm-img-upload:hover{border-color:rgba(168,85,247,.5);}
+.cm-img-upload img{width:100%;height:140px;object-fit:cover;border-radius:8px;display:none;}
+.cm-img-upload p{font-size:12px;color:rgba(168,85,247,.45);letter-spacing:.1em;}
+.cm-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.cm-footer{padding:14px 26px 22px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end;}
+
+/* WORK GALLERY */
+.gallery{padding:100px 0;}
+.gallery-hdr{text-align:center;margin-bottom:52px;}
+.gallery-tabs{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:36px;}
+.gtab{padding:9px 20px;border-radius:100px;border:1px solid rgba(168,85,247,.18);background:rgba(26,10,61,.4);color:rgba(232,213,255,.5);font-size:11px;letter-spacing:.12em;text-transform:uppercase;cursor:none;transition:all .3s;font-family:'DM Sans',sans-serif;}
+.gtab:hover{border-color:rgba(168,85,247,.38);color:var(--starlight);}
+.gtab.active{background:linear-gradient(135deg,rgba(107,47,160,.5),rgba(61,47,160,.38));border-color:rgba(168,85,247,.5);color:var(--starlight);box-shadow:0 0 15px rgba(107,47,160,.2);}
+.gallery-panel{display:none;}
+.gallery-panel.active{display:block;animation:fadeIn .4s ease both;}
+.photo-masonry{columns:3;gap:14px;}
+.masonry-item{break-inside:avoid;margin-bottom:14px;border-radius:16px;overflow:hidden;border:1px solid rgba(168,85,247,.12);position:relative;cursor:none;transition:all .35s;}
+.masonry-item:hover{border-color:rgba(168,85,247,.35);box-shadow:0 12px 40px rgba(107,47,160,.22);}
+.masonry-item img{width:100%;display:block;transition:transform .45s;}
+.masonry-item:hover img{transform:scale(1.04);}
+.masonry-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(3,6,18,.75) 0%,transparent 55%);opacity:0;transition:opacity .35s;display:flex;flex-direction:column;justify-content:flex-end;padding:14px;}
+.masonry-item:hover .masonry-overlay{opacity:1;}
+.mo-label{font-size:11px;color:var(--starlight);letter-spacing:.08em;}
+.mo-type{font-size:9px;color:var(--aurora);letter-spacing:.15em;text-transform:uppercase;margin-bottom:3px;}
+.photo-placeholder-item{background:linear-gradient(135deg,rgba(107,47,160,.3),rgba(61,47,160,.22));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:40px 20px;}
+.ppi-emoji{font-size:36px;color:rgba(168,85,247,.4);}
+.ppi-text{font-size:10px;color:rgba(168,85,247,.4);letter-spacing:.15em;text-align:center;}
+
+.gallery-upload-row{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:24px;}
+
+/* WORK ADD MODAL */
+.work-modal-overlay{position:fixed;inset:0;background:rgba(3,6,18,.85);backdrop-filter:blur(16px);z-index:300;display:none;align-items:center;justify-content:center;padding:24px;}
+.work-modal-overlay.open{display:flex;}
+.work-modal{background:linear-gradient(145deg,rgba(14,8,36,.98),rgba(10,20,60,.96));border:1px solid rgba(168,85,247,.28);border-radius:24px;width:100%;max-width:520px;box-shadow:0 0 70px rgba(107,47,160,.28);animation:fadeUp .35s ease both;}
+
+/* LIGHTBOX */
+.lightbox{position:fixed;inset:0;background:rgba(3,6,18,.94);backdrop-filter:blur(20px);z-index:400;display:none;align-items:center;justify-content:center;padding:24px;}
+.lightbox.open{display:flex;}
+.lb-inner{position:relative;max-width:860px;width:100%;}
+.lb-img{width:100%;max-height:80vh;object-fit:contain;border-radius:16px;border:1px solid rgba(168,85,247,.2);}
+.lb-close{position:absolute;top:-14px;right:-14px;background:linear-gradient(135deg,var(--electric),var(--violet));border:none;border-radius:50%;width:36px;height:36px;color:#fff;font-size:16px;cursor:none;display:flex;align-items:center;justify-content:center;box-shadow:0 0 20px rgba(124,58,237,.5);}
+.lb-caption{text-align:center;margin-top:14px;}
+.lb-caption p{font-family:'Cormorant Garamond',serif;font-size:18px;font-style:italic;color:var(--starlight);}
+.lb-caption span{font-size:11px;color:rgba(168,85,247,.6);letter-spacing:.12em;}
+
+/* CONNECT SECTION */
+.connect{padding:90px 0;}
+.connect-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:800px;margin:40px auto 0;}
+.connect-card{background:linear-gradient(145deg,rgba(26,10,61,.75),rgba(13,26,74,.65));border:1px solid rgba(168,85,247,.16);border-radius:20px;padding:28px;text-align:center;transition:all .4s;}
+.connect-card:hover{border-color:rgba(168,85,247,.35);transform:translateY(-4px);box-shadow:0 16px 45px rgba(107,47,160,.2);}
+.cc-icon{font-size:36px;margin-bottom:12px;display:block;filter:drop-shadow(0 0 10px rgba(168,85,247,.35));}
+.cc-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;color:var(--starlight);margin-bottom:8px;}
+.cc-text{font-size:13px;color:rgba(232,213,255,.45);line-height:1.7;margin-bottom:16px;}
+.cc-link{display:inline-flex;align-items:center;gap:7px;font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--aurora);text-decoration:none;transition:gap .3s;}
+.cc-link:hover{gap:14px;}
+.cc-link::after{content:'→';}
+
+/* FOOTER */
+footer{padding:50px 56px 32px;border-top:1px solid var(--border);}
+.foot-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px;}
+.foot-logo{font-family:'Syncopate',sans-serif;font-size:10px;letter-spacing:.25em;color:var(--aurora);}
+.foot-links{display:flex;gap:24px;}
+.foot-links a{color:rgba(232,213,255,.35);text-decoration:none;font-size:12px;transition:color .3s;letter-spacing:.06em;}
+.foot-links a:hover{color:var(--aurora);}
+.foot-copy{font-size:11px;color:rgba(232,213,255,.2);}
+
+/* TOAST */
+.toast{position:fixed;bottom:32px;right:32px;background:linear-gradient(135deg,rgba(18,10,45,.97),rgba(13,26,74,.97));border:1px solid rgba(168,85,247,.35);border-radius:14px;padding:13px 20px;display:flex;align-items:center;gap:10px;z-index:1000;transform:translateY(60px);opacity:0;transition:all .4s;box-shadow:0 0 40px rgba(107,47,160,.3);}
+.toast.show{transform:translateY(0);opacity:1;}
+.ti{font-size:16px;}.tt{font-size:13px;color:var(--starlight);}
+
+/* RESPONSIVE */
+@media(max-width:1024px){
+  .about-hero{grid-template-columns:1fr;min-height:auto;}
+  .hero-right{display:none;}
+  .hero-left{padding:80px 0 60px;}
+  .photo-masonry{columns:2;}
+  .cert-grid{grid-template-columns:repeat(2,1fr);}
+  .story-grid{grid-template-columns:1fr;}
+  .connect-grid{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:768px){
+  nav{padding:0 20px;}
+  .container{padding:0 22px;}
+  .cert-grid{grid-template-columns:1fr 1fr;}
+  .photo-masonry{columns:2;}
+  .connect-grid{grid-template-columns:1fr;}
+  .values-grid{grid-template-columns:1fr;}
+  footer{padding:36px 22px 24px;}
+  .foot-inner{flex-direction:column;text-align:center;}
+}
+@media(max-width:480px){
+  .cert-grid,.photo-masonry{columns:1;grid-template-columns:1fr;}
+  .cm-grid-2{grid-template-columns:1fr;}
+}
+</style>
+<script src="auth.js"></script>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-trail" id="cursorTrail"></div>
+<canvas id="starfield"></canvas>
+<div class="nb nb1"></div><div class="nb nb2"></div><div class="nb nb3"></div>
+
+<div class="site">
+
+<!-- NAV -->
+<nav id="mainNav">
+  <a href="skincare-cosmos.html" class="nav-logo">COSMIC BEAUTY SPA <span>Hudson · Florida</span></a>
+  <div class="nav-right">
+    <a href="skincare-cosmos.html" class="nav-link">← Home</a>
+    <a href="skincare-cosmos.html#services" class="nav-link">Services</a>
+    <a href="bioelements-shop.html" class="nav-link">Shop</a>
+    <a href="https://cosmicnailsandspa.glossgenius.com" target="_blank" class="nav-book">Book Now</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="about-hero" id="top">
+  <div class="hero-left container" style="padding-right:0;max-width:none;">
+    <div style="max-width:560px;padding-left:56px;">
+      <div class="hero-eyebrow">✦ Owner · Licensed Esthetician · Hudson, FL</div>
+      <h1>Meet<br><em>Christina</em></h1>
+      <div class="hero-title-sub">Founder of Cosmic Beauty Spa</div>
+      <p class="hero-bio">
+        Born and raised right here in <strong>Brooksville, Florida</strong>, Christina is a lifelong artist who found her calling at the intersection of beauty, science, and genuine human connection. She opened <strong>Cosmic Beauty Spa in Hudson, Florida in 2025</strong> alongside her business partner Bradley — the person she credits as <em>"the magic behind making this a reality."</em>
+      </p>
+      <div class="hero-tags">
+        <span class="htag">🌸 Licensed Esthetician</span>
+        <span class="htag">✦ Bioelements® Certified</span>
+        <span class="htag">🎨 Lifelong Artist</span>
+        <span class="htag">📍 Hudson, FL Local</span>
+        <span class="htag">💜 Passionate About Skin</span>
+      </div>
+      <div class="hero-actions">
+        <a href="https://cosmicnailsandspa.glossgenius.com" target="_blank" class="btn-primary">Book with Christina ✦</a>
+        <a href="#certifications" class="btn-ghost">View Certifications</a>
+      </div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="orbital"></div>
+    <div class="photo-frame-outer">
+      <div class="photo-frame" id="heroPhotoFrame">
+        <div class="photo-placeholder" onclick="document.getElementById('heroPhotoInput').click()">
+          <div class="pp-emoji">🌸</div>
+          <div class="pp-upload">+ Upload Your Photo</div>
+        </div>
+      </div>
+      <input type="file" id="heroPhotoInput" class="photo-upload-input" accept="image/*" onchange="uploadHeroPhoto(event)">
+      <!-- Floating badges -->
+      <div class="float-badge fb-1">
+        <span class="fb-icon">📍</span>
+        <span class="fb-label">Based In</span>
+        <span class="fb-val">Hudson, FL</span>
+      </div>
+      <div class="float-badge fb-2">
+        <span class="fb-icon">✨</span>
+        <span class="fb-label">Opened</span>
+        <span class="fb-val">2025</span>
+      </div>
+      <div class="float-badge fb-3">
+        <span class="fb-icon">🔬</span>
+        <span class="fb-label">Certified</span>
+        <span class="fb-val">Bioelements®</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- STORY -->
+<section class="story" id="story">
+  <div class="container">
+    <div class="story-grid">
+      <div class="story-block">
+        <div class="stag">My Story</div>
+        <h2 class="stitle">Art, Passion &<br><em>Purpose</em></h2>
+        <p class="story-p">
+          Christina has always seen the world through an artist's eyes. From a young age, creativity wasn't just a hobby — it was how she understood everything around her. That artistic instinct naturally drew her toward the beauty industry, where <strong>skin itself becomes a canvas</strong> and every treatment is an act of care.
+        </p>
+        <p class="story-p">
+          Growing up in <strong>Brooksville, Florida</strong>, Christina was deeply rooted in her community long before she ever opened a spa. That connection to home — to the people who raised her and the county she loves — is at the heart of everything she's built. When she decided to open Cosmic Beauty Spa, she didn't look elsewhere. She brought it home.
+        </p>
+        <div class="story-quote">
+          <blockquote>"Bradley is the magic behind making this a reality. We built this together — and I couldn't be more proud of what we've created."</blockquote>
+          <cite>— Christina, Owner & Licensed Esthetician</cite>
+        </div>
+        <p class="story-p">
+          Today, Christina combines her <strong>professional esthetician license</strong>, her <strong>Bioelements® certification</strong>, and her lifelong artist's eye to create skincare experiences that go far beyond a typical facial. Every client is seen as an individual. Every treatment is built around their unique skin, their real life, and their personal goals.
+        </p>
+        <p class="story-p">
+          With big plans for expansion already in motion, <em>this is just the beginning</em> — and Christina is just getting started.
+        </p>
+      </div>
+      <div>
+        <div class="values-grid">
+          <div class="value-card">
+            <span class="vc-icon">🎨</span>
+            <div class="vc-title">Artist at Heart</div>
+            <div class="vc-text">A lifelong creator across many art forms — painting, design, beauty. Art isn't what Christina does; it's how she thinks.</div>
+          </div>
+          <div class="value-card">
+            <span class="vc-icon">🌱</span>
+            <div class="vc-title">Local Roots</div>
+            <div class="vc-text">Born and raised in Brooksville. Every decision is made with this community in mind — because this is home.</div>
+          </div>
+          <div class="value-card">
+            <span class="vc-icon">🔬</span>
+            <div class="vc-title">Clinically Grounded</div>
+            <div class="vc-text">Bioelements® certified and professionally licensed. The science behind your skin is just as important as the artistry.</div>
+          </div>
+          <div class="value-card">
+            <span class="vc-icon">💜</span>
+            <div class="vc-title">Client-First Always</div>
+            <div class="vc-text">Every ritual is designed around the person in the chair — their concerns, their skin, their goals. Nothing one-size-fits-all.</div>
+          </div>
+          <div class="value-card">
+            <span class="vc-icon">🚀</span>
+            <div class="vc-title">Always Expanding</div>
+            <div class="vc-text">More services, more treatments, more ways to serve. Cosmic Beauty Spa has big plans and even bigger energy behind them.</div>
+          </div>
+          <div class="value-card">
+            <span class="vc-icon">🤝</span>
+            <div class="vc-title">Built with Partnership</div>
+            <div class="vc-text">Co-founded with Bradley — the person who turned the dream into reality. Great things are built with great people beside you.</div>
+          </div>
+        </div>
+        <div class="fun-facts" style="margin-top:20px;">
+          <h4>A Few Things About Christina ✦</h4>
+          <div class="fact-row"><span class="fact-icon">📍</span><span class="fact-text"><strong>Hometown:</strong> Brooksville, Florida — born and raised</span></div>
+          <div class="fact-row"><span class="fact-icon">🎨</span><span class="fact-text"><strong>Art forms:</strong> Many — beauty is just the latest medium</span></div>
+          <div class="fact-row"><span class="fact-icon">🌸</span><span class="fact-text"><strong>Opened:</strong> Cosmic Beauty Spa, Hudson FL, 2025</span></div>
+          <div class="fact-row"><span class="fact-icon">🤝</span><span class="fact-text"><strong>Business partner:</strong> Bradley — the magic behind the vision</span></div>
+          <div class="fact-row"><span class="fact-icon">🔬</span><span class="fact-text"><strong>Specialty:</strong> Bioelements® professional protocols</span></div>
+          <div class="fact-row"><span class="fact-icon">💫</span><span class="fact-text"><strong>Mission:</strong> Professional skin results for every Floridian</span></div>
+          <div class="fact-row"><span class="fact-icon">🚀</span><span class="fact-text"><strong>What's next:</strong> Expansion — bigger services, deeper reach</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CERTIFICATIONS -->
+<section class="certs" id="certifications">
+  <div class="container">
+    <div class="certs-hdr">
+      <div class="stag c">Credentials</div>
+      <h2 class="stitle" style="text-align:center;">Certifications &<br><em>Professional Training</em></h2>
+      <p class="ssub" style="text-align:center;margin:0 auto;">Every credential represents hours of study, hands-on training, and a commitment to delivering the best possible results for every client.</p>
+    </div>
+
+    <div class="cert-upload-area" onclick="openCertModal()">
+      <p>➕ Click to add a certification — upload your certificate image, name, and issuing body</p>
+    </div>
+
+    <div class="cert-grid" id="certGrid">
+      <!-- Default certs — Christina can edit these -->
+      <div class="cert-card" data-id="1">
+        <div class="cert-edit-btn" onclick="openCertModal(1)">✏️</div>
+        <div class="cert-img-placeholder" onclick="triggerCertImageUpload(1)">
+          <div class="cip-emoji">🎓</div>
+          <div class="cip-add">Click to upload certificate image</div>
+        </div>
+        <div class="cert-body">
+          <div class="cert-title">Florida Esthetician License</div>
+          <div class="cert-issuer">Florida Department of Health · DBPR</div>
+          <div class="cert-year">State of Florida · Active License</div>
+          <div class="cert-badge-row">
+            <span class="cert-badge">✦ Licensed</span>
+            <span class="cert-badge">Active</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cert-card" data-id="2">
+        <div class="cert-edit-btn" onclick="openCertModal(2)">✏️</div>
+        <div class="cert-img-placeholder" onclick="triggerCertImageUpload(2)">
+          <div class="cip-emoji">🔬</div>
+          <div class="cip-add">Click to upload certificate image</div>
+        </div>
+        <div class="cert-body">
+          <div class="cert-title">Bioelements® Professional Certification</div>
+          <div class="cert-issuer">Bioelements® Inc.</div>
+          <div class="cert-year">Professional Esthetician Program</div>
+          <div class="cert-badge-row">
+            <span class="cert-badge">✦ Certified</span>
+            <span class="cert-badge">Professional</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Add cert card -->
+      <div class="cert-add-card" onclick="openCertModal()">
+        <div class="ca-icon">+</div>
+        <div class="ca-text">Add a certification,<br>training or award</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- WORK GALLERY -->
+<section class="gallery" id="work">
+  <div class="container">
+    <div class="gallery-hdr">
+      <div class="stag c">My Work</div>
+      <h2 class="stitle" style="text-align:center;">Results That<br><em>Speak For Themselves</em></h2>
+      <p class="ssub" style="text-align:center;margin:0 auto;">Real treatments. Real clients. Real glow. Browse Christina's work across services and skin types.</p>
+    </div>
+
+    <div class="gallery-tabs">
+      <button class="gtab active" onclick="switchGallery('all',this)">✨ All Work</button>
+      <button class="gtab" onclick="switchGallery('before-after',this)">⚡ Before & After</button>
+      <button class="gtab" onclick="switchGallery('facials',this)">🌸 Facials</button>
+      <button class="gtab" onclick="switchGallery('results',this)">🌟 Skin Results</button>
+      <button class="gtab" onclick="switchGallery('spa',this)">💜 The Spa</button>
+    </div>
+
+    <div id="galleryPanels">
+      <div class="gallery-panel active" id="gpanel-all">
+        <div class="photo-masonry" id="masonryAll">
+          <!-- Placeholder tiles -->
+          <div class="masonry-item"><div class="photo-placeholder-item" style="height:260px;"><div class="ppi-emoji">🌸</div><div class="ppi-text">Upload a photo<br>of your work</div></div></div>
+          <div class="masonry-item"><div class="photo-placeholder-item" style="height:200px;"><div class="ppi-emoji">✨</div><div class="ppi-text">Before & After</div></div></div>
+          <div class="masonry-item"><div class="photo-placeholder-item" style="height:300px;"><div class="ppi-emoji">💆</div><div class="ppi-text">Facial results</div></div></div>
+          <div class="masonry-item"><div class="photo-placeholder-item" style="height:220px;"><div class="ppi-emoji">🔬</div><div class="ppi-text">Skin results</div></div></div>
+          <div class="masonry-item"><div class="photo-placeholder-item" style="height:280px;"><div class="ppi-emoji">💜</div><div class="ppi-text">The spa space</div></div></div>
+          <div class="masonry-item"><div class="photo-placeholder-item" style="height:240px;"><div class="ppi-emoji">🌟</div><div class="ppi-text">Client glow</div></div></div>
+        </div>
+      </div>
+      <div class="gallery-panel" id="gpanel-before-after"><div class="photo-masonry" id="masonryBA"><div class="masonry-item"><div class="photo-placeholder-item" style="height:320px;"><div class="ppi-emoji">⚡</div><div class="ppi-text">Add before & after<br>photos here</div></div></div><div class="masonry-item"><div class="photo-placeholder-item" style="height:280px;"><div class="ppi-emoji">⚡</div><div class="ppi-text">Before & After</div></div></div><div class="masonry-item"><div class="photo-placeholder-item" style="height:300px;"><div class="ppi-emoji">⚡</div><div class="ppi-text">Before & After</div></div></div></div></div>
+      <div class="gallery-panel" id="gpanel-facials"><div class="photo-masonry" id="masonryFacials"><div class="masonry-item"><div class="photo-placeholder-item" style="height:280px;"><div class="ppi-emoji">🌸</div><div class="ppi-text">Facial photos<br>go here</div></div></div><div class="masonry-item"><div class="photo-placeholder-item" style="height:240px;"><div class="ppi-emoji">🌸</div><div class="ppi-text">Facial</div></div></div><div class="masonry-item"><div class="photo-placeholder-item" style="height:300px;"><div class="ppi-emoji">🌸</div><div class="ppi-text">Facial</div></div></div></div></div>
+      <div class="gallery-panel" id="gpanel-results"><div class="photo-masonry" id="masonryResults"><div class="masonry-item"><div class="photo-placeholder-item" style="height:300px;"><div class="ppi-emoji">🌟</div><div class="ppi-text">Skin results<br>photos here</div></div></div><div class="masonry-item"><div class="photo-placeholder-item" style="height:260px;"><div class="ppi-emoji">🌟</div><div class="ppi-text">Results</div></div></div><div class="masonry-item"><div class="photo-placeholder-item" style="height:280px;"><div class="ppi-emoji">🌟</div><div class="ppi-text">Results</div></div></div></div></div>
+      <div class="gallery-panel" id="gpanel-spa"><div class="photo-masonry" id="masonrySpa"><div class="masonry-item"><div class="photo-placeholder-item" style="height:280px;"><div class="ppi-emoji">💜</div><div class="ppi-text">Spa space photos<br>go here</div></div></div><div class="masonry-item"><div class="photo-placeholder-item" style="height:300px;"><div class="ppi-emoji">💜</div><div class="ppi-text">The spa</div></div></div><div class="masonry-item"><div class="photo-placeholder-item" style="height:260px;"><div class="ppi-emoji">💜</div><div class="ppi-text">The spa</div></div></div></div></div>
+    </div>
+
+    <div class="gallery-upload-row">
+      <button class="btn-primary" onclick="openWorkModal()">+ Add Photo to Gallery</button>
+      <button class="btn-ghost" onclick="openWorkModal()">📸 Upload Work</button>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CONNECT -->
+<section class="connect" style="padding:90px 0;">
+  <div class="container">
+    <div class="stag c" style="margin-bottom:14px;">Work With Christina</div>
+    <h2 class="stitle" style="text-align:center;margin-bottom:10px;">Ready to Experience<br><em>the Difference?</em></h2>
+    <p class="ssub" style="text-align:center;margin:0 auto;">Book directly with Christina for any service — in-spa, at-home, or virtually from anywhere.</p>
+    <div class="connect-grid">
+      <div class="connect-card">
+        <span class="cc-icon">📅</span>
+        <div class="cc-title">Book an Appointment</div>
+        <div class="cc-text">Ready to glow? Book any service — online consultation, at-home facial, or in-spa treatment — directly through our GlossGenius calendar.</div>
+        <a href="https://cosmicnailsandspa.glossgenius.com" target="_blank" class="cc-link">Book Now</a>
+      </div>
+      <div class="connect-card">
+        <span class="cc-icon">💬</span>
+        <div class="cc-title">Start with a Consult</div>
+        <div class="cc-text">Not sure which service is right for you? Start with a virtual skin consultation. Christina will assess your skin and build a plan specifically for you.</div>
+        <a href="https://cosmicnailsandspa.glossgenius.com" target="_blank" class="cc-link">Book a Consult</a>
+      </div>
+      <div class="connect-card">
+        <span class="cc-icon">📱</span>
+        <div class="cc-title">Client Skin Portal</div>
+        <div class="cc-text">Track your skin journey, complete your skin quiz, follow your personalized Bioelements® routine, and upload progress photos — all in one place.</div>
+        <a href="client-portal.html" target="_blank" class="cc-link">Open Portal</a>
+      </div>
+      <div class="connect-card">
+        <span class="cc-icon">🛍️</span>
+        <div class="cc-title">Shop Bioelements®</div>
+        <div class="cc-text">The same professional formulas Christina uses in your treatments — available for your daily home ritual. 32+ products organized by your skin concern.</div>
+        <a href="bioelements-shop.html" class="cc-link">Shop Now</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div><!-- end site -->
+
+<!-- CERTIFICATION MODAL -->
+<div class="cert-modal-overlay" id="certModalOverlay">
+  <div class="cert-modal">
+    <div class="cm-header">
+      <div class="cm-title" id="certModalTitle">Add Certification</div>
+      <button class="cm-close" onclick="closeCertModal()">✕</button>
+    </div>
+    <div class="cm-body">
+      <div class="cm-field">
+        <label>Certificate Image</label>
+        <div class="cm-img-upload" id="cmImgUpload" onclick="document.getElementById('cmImgInput').click()">
+          <img id="cmImgPreview" src="" alt="">
+          <p id="cmImgText">📜 Click to upload certificate image</p>
+        </div>
+        <input type="file" id="cmImgInput" accept="image/*" style="display:none;" onchange="handleCertImg(event)">
+      </div>
+      <div class="cm-field"><label>Certification Name *</label><input type="text" id="cm-name" placeholder="e.g. Bioelements® Advanced Certification"></div>
+      <div class="cm-grid-2">
+        <div class="cm-field"><label>Issuing Organization *</label><input type="text" id="cm-issuer" placeholder="e.g. Bioelements® Inc."></div>
+        <div class="cm-field"><label>Year Earned</label><input type="text" id="cm-year" placeholder="e.g. 2024"></div>
+      </div>
+      <div class="cm-field"><label>Category</label>
+        <select id="cm-cat">
+          <option value="">Select category…</option>
+          <option>State License</option>
+          <option>Professional Certification</option>
+          <option>Advanced Training</option>
+          <option>Continuing Education</option>
+          <option>Specialized Technique</option>
+          <option>Product Training</option>
+          <option>Award / Recognition</option>
+        </select>
+      </div>
+      <div class="cm-field"><label>Notes (optional)</label><textarea id="cm-notes" rows="2" placeholder="Brief description of what this certification covers…"></textarea></div>
+    </div>
+    <div style="padding:0 26px 22px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:space-between;align-items:center;padding-top:14px;">
+      <button id="certDeleteBtn" onclick="deleteCert()" style="display:none;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.2);color:#f87171;padding:8px 16px;border-radius:100px;font-size:10px;cursor:none;font-family:'DM Sans',sans-serif;transition:all .3s;" onmouseover="this.style.background='rgba(248,113,113,.22)'" onmouseout="this.style.background='rgba(248,113,113,.1)'">Delete</button>
+      <div style="display:flex;gap:10px;margin-left:auto;">
+        <button onclick="closeCertModal()" style="background:rgba(168,85,247,.08);border:1px solid var(--border);color:rgba(232,213,255,.6);padding:10px 20px;border-radius:100px;font-size:11px;cursor:none;font-family:'DM Sans',sans-serif;transition:all .3s;">Cancel</button>
+        <button onclick="saveCert()" style="background:linear-gradient(135deg,var(--electric),rgba(107,47,160,.9));color:#fff;border:none;padding:10px 22px;border-radius:100px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;cursor:none;font-family:'DM Sans',sans-serif;box-shadow:0 0 16px rgba(124,58,237,.3);transition:all .3s;">Save ✦</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- WORK UPLOAD MODAL -->
+<div class="work-modal-overlay" id="workModalOverlay">
+  <div class="work-modal">
+    <div class="cm-header">
+      <div class="cm-title">Add to Gallery</div>
+      <button class="cm-close" onclick="closeWorkModal()">✕</button>
+    </div>
+    <div class="cm-body">
+      <div class="cm-field">
+        <label>Photo</label>
+        <div class="cm-img-upload" id="workImgUpload" onclick="document.getElementById('workImgInput').click()">
+          <img id="workImgPreview" src="" alt="">
+          <p id="workImgText">📸 Click to upload your work photo</p>
+        </div>
+        <input type="file" id="workImgInput" accept="image/*" style="display:none;" onchange="handleWorkImg(event)">
+      </div>
+      <div class="cm-field"><label>Caption / Label</label><input type="text" id="work-caption" placeholder="e.g. Custom Corrective Facial · Combination Skin"></div>
+      <div class="cm-grid-2">
+        <div class="cm-field"><label>Category</label>
+          <select id="work-cat">
+            <option value="all">All Work</option>
+            <option value="before-after">Before & After</option>
+            <option value="facials">Facials</option>
+            <option value="results">Skin Results</option>
+            <option value="spa">The Spa</option>
+          </select>
+        </div>
+        <div class="cm-field"><label>Height Style</label>
+          <select id="work-height">
+            <option value="200px">Short</option>
+            <option value="260px" selected>Medium</option>
+            <option value="320px">Tall</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div style="padding:14px 26px 22px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end;">
+      <button onclick="closeWorkModal()" style="background:rgba(168,85,247,.08);border:1px solid var(--border);color:rgba(232,213,255,.6);padding:10px 20px;border-radius:100px;font-size:11px;cursor:none;font-family:'DM Sans',sans-serif;">Cancel</button>
+      <button onclick="saveWorkPhoto()" style="background:linear-gradient(135deg,var(--electric),rgba(107,47,160,.9));color:#fff;border:none;padding:10px 22px;border-radius:100px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;cursor:none;font-family:'DM Sans',sans-serif;box-shadow:0 0 16px rgba(124,58,237,.3);">Add to Gallery ✦</button>
+    </div>
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <div class="lb-inner" onclick="event.stopPropagation()">
+    <button class="lb-close" onclick="closeLightbox()">✕</button>
+    <img class="lb-img" id="lbImg" src="" alt="">
+    <div class="lb-caption"><p id="lbCaption"></p><span id="lbType"></span></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><span class="ti" id="ti">✦</span><span class="tt" id="tt"></span></div>
+
+<script>
+// Auth guard
+document.addEventListener('DOMContentLoaded', () => {
+  CosmicAuth.injectAuthBar(['guest', 'esthetician'], 'about');
+});
+
+// ── STORAGE ──
+const S = {
+  get: k => { try { return JSON.parse(localStorage.getItem('cbs_about_' + k)); } catch(e){ return null; } },
+  set: (k,v) => localStorage.setItem('cbs_about_' + k, JSON.stringify(v)),
+};
+
+// ── STARS ──
+const canvas = document.getElementById('starfield');
+const ctx = canvas.getContext('2d');
+let stars = [];
+function resizeStars(){
+  canvas.width=innerWidth; canvas.height=innerHeight;
+  stars=Array.from({length:180},()=>({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*1.3+.2,ts:Math.random()*.02+.005,color:Math.random()>.7?'#60a5fa':Math.random()>.5?'#e8d5ff':'#f472b6'}));
+}
+function drawStars(t){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  stars.forEach(s=>{ctx.globalAlpha=.1+.7*(.5+.5*Math.sin(t*s.ts));ctx.fillStyle=s.color;ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fill();});
+  ctx.globalAlpha=1; requestAnimationFrame(drawStars);
+}
+resizeStars(); window.addEventListener('resize',resizeStars); requestAnimationFrame(drawStars);
+
+// ── CURSOR ──
+const cur=document.getElementById('cursor'), trail=document.getElementById('cursorTrail');
+let mx=-100,my=-100,tx=-100,ty=-100;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx-5+'px';cur.style.top=my-5+'px';});
+(function loop(){tx+=(mx-tx)*.12;ty+=(my-ty)*.12;trail.style.left=tx-16+'px';trail.style.top=ty-16+'px';requestAnimationFrame(loop);})();
+document.addEventListener('mousedown',()=>cur.style.transform='scale(1.8)');
+document.addEventListener('mouseup',()=>cur.style.transform='scale(1)');
+
+// ── NAV scroll ──
+window.addEventListener('scroll',()=>{
+  document.getElementById('mainNav').style.background = window.scrollY>60 ? 'rgba(3,6,18,.92)' : 'rgba(3,6,18,.65)';
+});
+
+// ── HERO PHOTO ──
+function uploadHeroPhoto(e){
+  const file = e.target.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const data = ev.target.result;
+    S.set('heroPhoto', data);
+    renderHeroPhoto(data);
+    toast('📸','Profile photo uploaded!');
+  };
+  reader.readAsDataURL(file);
+}
+function renderHeroPhoto(src){
+  const frame = document.getElementById('heroPhotoFrame');
+  frame.innerHTML = `
+    <img src="${src}" alt="Christina" style="width:100%;height:100%;object-fit:cover;">
+    <div style="position:absolute;bottom:12px;right:12px;background:rgba(3,6,18,.7);border:1px solid rgba(168,85,247,.3);border-radius:8px;padding:5px 10px;font-size:9px;color:var(--aurora);cursor:none;" onclick="document.getElementById('heroPhotoInput').click()">Change Photo</div>`;
+}
+
+// ── GALLERY TABS ──
+function switchGallery(tab, el){
+  document.querySelectorAll('.gtab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.gallery-panel').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('gpanel-'+tab).classList.add('active');
+}
+
+// ── CERTIFICATIONS ──
+let certs = [];
+let editingCertId = null;
+let certImgData = null;
+
+function loadCerts(){
+  certs = S.get('certs') || [
+    {id:1, name:'Florida Esthetician License', issuer:'Florida Department of Health · DBPR', year:'Active', category:'State License', notes:'', image:''},
+    {id:2, name:'Bioelements® Professional Certification', issuer:'Bioelements® Inc.', year:'Professional Program', category:'Professional Certification', notes:'', image:''},
+  ];
+  renderCertGrid();
+}
+
+function renderCertGrid(){
+  const grid = document.getElementById('certGrid');
+  grid.innerHTML = certs.map(c => `
+    <div class="cert-card" data-id="${c.id}">
+      <div class="cert-edit-btn" onclick="openCertModal(${c.id})">✏️</div>
+      ${c.image
+        ? `<img src="${c.image}" class="cert-img" alt="${c.name}" onclick="openLightbox('${c.image}','${c.name}','${c.category}')"><div class="masonry-overlay"><div class="mo-label">${c.name}</div></div>`
+        : `<div class="cert-img-placeholder" onclick="openCertModal(${c.id})"><div class="cip-emoji">${getCertEmoji(c.category)}</div><div class="cip-add">Click to add image</div></div>`
+      }
+      <div class="cert-body">
+        <div class="cert-title">${c.name}</div>
+        <div class="cert-issuer">${c.issuer}</div>
+        <div class="cert-year">${c.year}</div>
+        <div class="cert-badge-row">
+          <span class="cert-badge">${c.category||'Certified'}</span>
+          ${c.year ? `<span class="cert-badge">${c.year}</span>` : ''}
+        </div>
+      </div>
+    </div>`).join('') +
+    `<div class="cert-add-card" onclick="openCertModal()"><div class="ca-icon">+</div><div class="ca-text">Add a certification,<br>training or award</div></div>`;
+}
+
+function getCertEmoji(cat){
+  const m = {'State License':'🏛️','Professional Certification':'🔬','Advanced Training':'📚','Continuing Education':'🎓','Specialized Technique':'✨','Product Training':'🧴','Award / Recognition':'🏆'};
+  return m[cat]||'🎓';
+}
+
+function openCertModal(id=null){
+  editingCertId = id;
+  certImgData = null;
+  if(id){
+    const c = certs.find(x=>x.id===id);
+    if(!c) return;
+    document.getElementById('certModalTitle').textContent = 'Edit Certification';
+    document.getElementById('certDeleteBtn').style.display = 'block';
+    document.getElementById('cm-name').value = c.name||'';
+    document.getElementById('cm-issuer').value = c.issuer||'';
+    document.getElementById('cm-year').value = c.year||'';
+    document.getElementById('cm-cat').value = c.category||'';
+    document.getElementById('cm-notes').value = c.notes||'';
+    if(c.image){ const img=document.getElementById('cmImgPreview'); img.src=c.image; img.style.display='block'; document.getElementById('cmImgText').style.display='none'; certImgData=c.image; }
+    else { resetCertImg(); }
+  } else {
+    document.getElementById('certModalTitle').textContent = 'Add Certification';
+    document.getElementById('certDeleteBtn').style.display = 'none';
+    ['cm-name','cm-issuer','cm-year','cm-notes'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('cm-cat').value='';
+    resetCertImg();
+  }
+  document.getElementById('certModalOverlay').classList.add('open');
+}
+
+function resetCertImg(){
+  const img=document.getElementById('cmImgPreview'); img.src=''; img.style.display='none';
+  document.getElementById('cmImgText').style.display='block';
+}
+
+function closeCertModal(){ document.getElementById('certModalOverlay').classList.remove('open'); certImgData=null; }
+
+function handleCertImg(e){
+  const file=e.target.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    certImgData=ev.target.result;
+    const img=document.getElementById('cmImgPreview'); img.src=certImgData; img.style.display='block';
+    document.getElementById('cmImgText').style.display='none';
+  };
+  reader.readAsDataURL(file);
+}
+
+function saveCert(){
+  const name = document.getElementById('cm-name').value.trim();
+  if(!name){ toast('⚠️','Certification name is required'); return; }
+  const cert = {
+    id: editingCertId || Date.now(),
+    name, issuer: document.getElementById('cm-issuer').value.trim(),
+    year: document.getElementById('cm-year').value.trim(),
+    category: document.getElementById('cm-cat').value,
+    notes: document.getElementById('cm-notes').value.trim(),
+    image: certImgData || (editingCertId ? certs.find(x=>x.id===editingCertId)?.image||'' : ''),
+  };
+  if(editingCertId){ const idx=certs.findIndex(x=>x.id===editingCertId); if(idx>=0) certs[idx]=cert; else certs.push(cert); }
+  else certs.push(cert);
+  S.set('certs', certs);
+  closeCertModal();
+  renderCertGrid();
+  toast('✦', `${name} saved!`);
+}
+
+function deleteCert(){
+  if(!editingCertId || !confirm('Remove this certification?')) return;
+  certs = certs.filter(x=>x.id!==editingCertId);
+  S.set('certs', certs);
+  closeCertModal();
+  renderCertGrid();
+  toast('✦','Certification removed');
+}
+
+function triggerCertImageUpload(id){ editingCertId=id; document.getElementById('cmImgInput').click(); }
+
+// ── WORK GALLERY ──
+let workPhotos = [];
+let workImgData = null;
+
+function loadWorkPhotos(){
+  workPhotos = S.get('workPhotos') || [];
+  if(workPhotos.length) renderWorkPhotos();
+}
+
+function renderWorkPhotos(){
+  const panels = { all:'masonryAll','before-after':'masonryBA', facials:'masonryFacials', results:'masonryResults', spa:'masonrySpa' };
+  Object.entries(panels).forEach(([tab, elId])=>{
+    const el = document.getElementById(elId);
+    const photos = tab==='all' ? workPhotos : workPhotos.filter(p=>p.category===tab);
+    if(!photos.length) return;
+    el.innerHTML = photos.map(p=>`
+      <div class="masonry-item" onclick="openLightbox('${p.image}','${p.caption}','${p.category}')">
+        <img src="${p.image}" alt="${p.caption}" style="width:100%;height:${p.height};object-fit:cover;display:block;">
+        <div class="masonry-overlay">
+          <div class="mo-type">${p.category}</div>
+          <div class="mo-label">${p.caption}</div>
+        </div>
+      </div>`).join('') +
+      `<div class="masonry-item" onclick="openWorkModal()"><div class="photo-placeholder-item" style="height:200px;"><div class="ppi-emoji">+</div><div class="ppi-text">Add photo</div></div></div>`;
+  });
+}
+
+function openWorkModal(){ workImgData=null; document.getElementById('workImgPreview').src=''; document.getElementById('workImgPreview').style.display='none'; document.getElementById('workImgText').style.display='block'; document.getElementById('work-caption').value=''; document.getElementById('workModalOverlay').classList.add('open'); }
+function closeWorkModal(){ document.getElementById('workModalOverlay').classList.remove('open'); workImgData=null; }
+
+function handleWorkImg(e){
+  const file=e.target.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    workImgData=ev.target.result;
+    const img=document.getElementById('workImgPreview'); img.src=workImgData; img.style.display='block';
+    document.getElementById('workImgText').style.display='none';
+  };
+  reader.readAsDataURL(file);
+}
+
+function saveWorkPhoto(){
+  if(!workImgData){ toast('⚠️','Please upload a photo first'); return; }
+  const photo = {
+    id: Date.now(), image: workImgData,
+    caption: document.getElementById('work-caption').value.trim() || 'Client Work',
+    category: document.getElementById('work-cat').value || 'all',
+    height: document.getElementById('work-height').value || '260px',
+  };
+  workPhotos.unshift(photo);
+  S.set('workPhotos', workPhotos);
+  closeWorkModal();
+  renderWorkPhotos();
+  toast('📸','Photo added to gallery!');
+}
+
+// ── LIGHTBOX ──
+function openLightbox(src, caption, type){
+  document.getElementById('lbImg').src = src;
+  document.getElementById('lbCaption').textContent = caption;
+  document.getElementById('lbType').textContent = type;
+  document.getElementById('lightbox').classList.add('open');
+}
+function closeLightbox(){ document.getElementById('lightbox').classList.remove('open'); }
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeLightbox(); });
+
+// ── SCROLL ANIMATIONS ──
+const obs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ e.target.style.opacity='1'; e.target.style.transform='translateY(0)'; } });
+},{threshold:0.08});
+document.querySelectorAll('.value-card,.cert-card,.cert-add-card,.masonry-item,.connect-card,.fact-row').forEach(el=>{
+  el.style.opacity='0'; el.style.transform='translateY(20px)'; el.style.transition='opacity .6s ease, transform .6s ease';
+  obs.observe(el);
+});
+
+// ── TOAST ──
+function toast(icon, text){
+  const t=document.getElementById('toast');
+  document.getElementById('ti').textContent=icon;
+  document.getElementById('tt').textContent=text;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer=setTimeout(()=>t.classList.remove('show'),3200);
+}
+
+// ── SMOOTH SCROLL ──
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{
+    const target=document.querySelector(a.getAttribute('href'));
+    if(target){e.preventDefault();target.scrollIntoView({behavior:'smooth'});}
+  });
+});
+
+// ── INIT ──
+window.addEventListener('DOMContentLoaded',()=>{
+  const heroPhoto = S.get('heroPhoto');
+  if(heroPhoto) renderHeroPhoto(heroPhoto);
+  loadCerts();
+  loadWorkPhotos();
+});
+</script>
+</body>
+</html>

@@ -1251,15 +1251,15 @@ body{background:var(--void);color:var(--pearl);font-family:'DM Sans',sans-serif;
       <video id="cameraFeed" autoplay playsinline muted></video>
       <img id="photoPreview" alt="Your photo" style="display:none;">
       <svg class="cam-guide" id="camGuide" viewBox="0 0 100 133" preserveAspectRatio="none" aria-hidden="true">
-        <ellipse cx="50" cy="62" rx="27" ry="38" fill="none" stroke="rgba(232,213,255,.85)" stroke-width=".6" stroke-dasharray="2 1.4"/>
-        <g stroke="rgba(168,85,247,.55)" stroke-width=".3" stroke-dasharray="1 1.2" fill="none">
-          <line x1="23" y1="40" x2="77" y2="40"/><line x1="23" y1="64" x2="77" y2="64"/><line x1="23" y1="86" x2="77" y2="86"/><line x1="50" y1="24" x2="50" y2="100"/>
+        <ellipse cx="50" cy="64" rx="41" ry="53" fill="none" stroke="rgba(232,213,255,.9)" stroke-width=".7" stroke-dasharray="2.4 1.6"/>
+        <g stroke="rgba(168,85,247,.6)" stroke-width=".35" stroke-dasharray="1 1.2" fill="none">
+          <line x1="12" y1="46" x2="88" y2="46"/><line x1="12" y1="72" x2="88" y2="72"/><line x1="12" y1="96" x2="88" y2="96"/><line x1="50" y1="14" x2="50" y2="114"/>
         </g>
-        <g font-size="3" fill="rgba(232,213,255,.7)" text-anchor="middle" font-family="DM Sans,sans-serif" letter-spacing=".3">
-          <text x="50" y="34">FOREHEAD</text><text x="35" y="58">CHEEK</text><text x="65" y="58">CHEEK</text><text x="50" y="76">T-ZONE</text><text x="50" y="96">CHIN</text>
+        <g font-size="3.4" fill="rgba(232,213,255,.8)" text-anchor="middle" font-family="DM Sans,sans-serif" letter-spacing=".3">
+          <text x="50" y="36">FOREHEAD</text><text x="27" y="64">CHEEK</text><text x="73" y="64">CHEEK</text><text x="50" y="84">T-ZONE</text><text x="50" y="108">CHIN</text>
         </g>
       </svg>
-      <div class="cam-hint" id="camHint">Line your face up inside the oval</div>
+      <div class="cam-hint" id="camHint">Move closer — fill the oval</div>
     </div>
     <canvas id="photoCanvas"></canvas>
     <div class="upload-methods" id="uploadMethods">
@@ -2211,7 +2211,7 @@ function startLightingCheck() {
     const avg=sum/(d.length/4);
     if(avg<60){hint.textContent='Too dark — face a window or light';hint.className='cam-hint warn';}
     else if(avg>215){hint.textContent='Too bright — step out of direct glare';hint.className='cam-hint warn';}
-    else {hint.textContent='Great light ✦ Line your face up inside the oval';hint.className='cam-hint';}
+    else {hint.textContent='Great light ✦ Move closer';hint.className='cam-hint';}
   },600);
 }
 
@@ -2253,7 +2253,7 @@ function resetPhotoPreview() {
   const img=document.getElementById('photoPreview'); if(!img) return;
   img.removeAttribute('src'); img.style.display='none';
   document.getElementById('camHint').style.display='block';
-  document.getElementById('camHint').textContent='Line your face up inside the oval';
+  document.getElementById('camHint').textContent='Move closer — fill the oval';
   document.getElementById('camHint').className='cam-hint';
   document.getElementById('camWrap').classList.remove('on');
   document.querySelectorAll('.ai-marker').forEach(m=>m.remove());

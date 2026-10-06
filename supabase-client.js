@@ -4,7 +4,8 @@
    getProfile, updateProfile, getAppointments, addAppointment,
    deleteAppointment, getTodayAppointments, getAllClients,
    getReorderFlags, setReorderFlag, getUrgentReorders,
-   getSkinPhotos, getTreatmentHistory, saveTreatmentRecord,
+   getSkinPhotos, getMySkinPhotos, addSkinPhoto, deleteSkinPhoto,
+   getTreatmentHistory, saveTreatmentRecord,
    getEstheNotes, saveEstheNotes, getAllReviews, saveReview,
    updateReview, deleteReview, getMyOrders
    ============================================================ */
@@ -191,6 +192,44 @@
     return (data || []).map(p => Object.assign(p, { caption: p.notes, taken_at: p.created_at }));
   }
 
+
+  /* Returns [{id, url (signed), label, date, path}] oldest-first not guaranteed; caller sorts. */
+  async function getMySkinPhotos() {
+    const { data: { user } } = await _sb.auth.getUser();
+    if (!user) return [];
+    const { data, error } = await _sb.from('skin_photos')
+      .select('id, url, label, notes, created_at').eq('client_id', user.id)
+      .order('created_at', { ascending: true });
+    if (error) throw error;
+    const rows = data || [];
+    if (!rows.length) return [];
+    const { data: signed, error: sErr } = await _sb.storage.from('skin-photos')
+      .createSignedUrls(rows.map(r => r.url), 60 * 60 * 6);
+    if (sErr) throw sErr;
+    return rows.map((r, i) => ({
+      id: r.id, path: r.url, label: r.label || r.notes || '',
+      date: r.created_at, url: signed[i] && signed[i].signedUrl || ''
+    })).filter(p => p.url);
+  }
+
+  async function addSkinPhoto(blob, label, takenAt) {
+    const { data: { user } } = await _sb.auth.getUser();
+    if (!user) throw new Error('Not signed in');
+    const path = user.id + '/' + Date.now() + '-' + Math.random().toString(36).slice(2, 8) + '.jpg';
+    const up = await _sb.storage.from('skin-photos').upload(path, blob, { contentType: 'image/jpeg' });
+    if (up.error) throw up.error;
+    const row = { client_id: user.id, url: path, label: label || '' };
+    if (takenAt) row.created_at = takenAt;
+    const { error } = await _sb.from('skin_photos').insert(row);
+    if (error) { await _sb.storage.from('skin-photos').remove([path]); throw error; }
+  }
+
+  async function deleteSkinPhoto(id, path) {
+    const { error } = await _sb.from('skin_photos').delete().eq('id', id);
+    if (error) throw error;
+    if (path) await _sb.storage.from('skin-photos').remove([path]);
+  }
+
   /* ── Treatment history ────────────────────────────────────── */
   async function getTreatmentHistory(clientId) {
     const { data, error } = await _sb.from('treatments')
@@ -284,7 +323,8 @@
     getProfile, updateProfile, getAllClients,
     getAppointments, addAppointment, deleteAppointment, getTodayAppointments,
     getReorderFlags, setReorderFlag, getUrgentReorders,
-    getSkinPhotos, getTreatmentHistory, saveTreatmentRecord,
+    getSkinPhotos, getMySkinPhotos, addSkinPhoto, deleteSkinPhoto,
+    getTreatmentHistory, saveTreatmentRecord,
     getEstheNotes, saveEstheNotes,
     getAllReviews, saveReview, updateReview, deleteReview,
     getMyOrders

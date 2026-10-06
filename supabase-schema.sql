@@ -231,6 +231,35 @@ create policy "Admin skin_photos" on public.skin_photos
 create policy "Own skin_photos" on public.skin_photos
   for select using (client_id = auth.uid());
 
+-- ── Skin Photos: label + private storage ──────────────────
+-- Photos live in the private "skin-photos" bucket under <client_id>/<file>.
+-- skin_photos.url holds the storage path; the app creates signed URLs to view it.
+alter table public.skin_photos add column if not exists label text default '';
+
+insert into storage.buckets (id, name, public)
+values ('skin-photos', 'skin-photos', false)
+on conflict (id) do nothing;
+
+drop policy if exists "Own insert skin_photos" on public.skin_photos;
+drop policy if exists "Own delete skin_photos" on public.skin_photos;
+create policy "Own insert skin_photos" on public.skin_photos
+  for insert with check (client_id = auth.uid());
+create policy "Own delete skin_photos" on public.skin_photos
+  for delete using (client_id = auth.uid());
+
+drop policy if exists "skin-photos own read"   on storage.objects;
+drop policy if exists "skin-photos own insert" on storage.objects;
+drop policy if exists "skin-photos own delete" on storage.objects;
+drop policy if exists "skin-photos admin read" on storage.objects;
+create policy "skin-photos own read" on storage.objects
+  for select using (bucket_id = 'skin-photos' and (storage.foldername(name))[1] = auth.uid()::text);
+create policy "skin-photos own insert" on storage.objects
+  for insert with check (bucket_id = 'skin-photos' and (storage.foldername(name))[1] = auth.uid()::text);
+create policy "skin-photos own delete" on storage.objects
+  for delete using (bucket_id = 'skin-photos' and (storage.foldername(name))[1] = auth.uid()::text);
+create policy "skin-photos admin read" on storage.objects
+  for select using (bucket_id = 'skin-photos' and public.is_admin());
+
 -- ── Done ──────────────────────────────────────────────────
 -- After running this script:
 -- 1. Disable email confirmation in Auth → Email settings

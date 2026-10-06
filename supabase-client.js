@@ -4,7 +4,8 @@
    getProfile, updateProfile, getAppointments, addAppointment,
    deleteAppointment, getTodayAppointments, getAllClients,
    getReorderFlags, setReorderFlag, getUrgentReorders,
-   getSkinPhotos, getTreatmentHistory, saveTreatmentRecord,
+   getSkinPhotos, getMySkinPhotos, addSkinPhoto, deleteSkinPhoto,
+   getTreatmentHistory, saveTreatmentRecord,
    getEstheNotes, saveEstheNotes, getAllReviews, saveReview,
    updateReview, deleteReview, getMyOrders
    ============================================================ */
@@ -186,9 +187,50 @@
   /* ── Skin photos ──────────────────────────────────────────── */
   async function getSkinPhotos(clientId) {
     const { data, error } = await _sb.from('skin_photos')
-      .select('*').eq('client_id', clientId).order('created_at', { ascending: false });
+      .select('*').eq('client_id', clientId).order('taken_at', { ascending: false });
     if (error) throw error;
-    return (data || []).map(p => Object.assign(p, { caption: p.notes, taken_at: p.created_at }));
+    const rows = data || [];
+    if (!rows.length) return [];
+    const { data: signed } = await _sb.storage.from('skin-photos')
+      .createSignedUrls(rows.map(r => r.storage_path), 60 * 60);
+    return rows.map((r, i) => Object.assign(r, { url: signed && signed[i] && signed[i].signedUrl || '' }));
+  }
+
+  /* Returns [{id, url (signed), label, date, path}] oldest-first not guaranteed; caller sorts. */
+  async function getMySkinPhotos() {
+    const { data: { user } } = await _sb.auth.getUser();
+    if (!user) return [];
+    const { data, error } = await _sb.from('skin_photos')
+      .select('id, storage_path, caption, taken_at').eq('client_id', user.id)
+      .order('taken_at', { ascending: true });
+    if (error) throw error;
+    const rows = data || [];
+    if (!rows.length) return [];
+    const { data: signed, error: sErr } = await _sb.storage.from('skin-photos')
+      .createSignedUrls(rows.map(r => r.storage_path), 60 * 60 * 6);
+    if (sErr) throw sErr;
+    return rows.map((r, i) => ({
+      id: r.id, path: r.storage_path, label: r.caption || '',
+      date: r.taken_at, url: signed[i] && signed[i].signedUrl || ''
+    })).filter(p => p.url);
+  }
+
+  async function addSkinPhoto(blob, label, takenAt) {
+    const { data: { user } } = await _sb.auth.getUser();
+    if (!user) throw new Error('Not signed in');
+    const path = user.id + '/' + Date.now() + '-' + Math.random().toString(36).slice(2, 8) + '.jpg';
+    const up = await _sb.storage.from('skin-photos').upload(path, blob, { contentType: 'image/jpeg' });
+    if (up.error) throw up.error;
+    const row = { client_id: user.id, storage_path: path, caption: label || '' };
+    if (takenAt) row.taken_at = takenAt;
+    const { error } = await _sb.from('skin_photos').insert(row);
+    if (error) { await _sb.storage.from('skin-photos').remove([path]); throw error; }
+  }
+
+  async function deleteSkinPhoto(id, path) {
+    const { error } = await _sb.from('skin_photos').delete().eq('id', id);
+    if (error) throw error;
+    if (path) await _sb.storage.from('skin-photos').remove([path]);
   }
 
   /* ── Treatment history ────────────────────────────────────── */
@@ -284,7 +326,8 @@
     getProfile, updateProfile, getAllClients,
     getAppointments, addAppointment, deleteAppointment, getTodayAppointments,
     getReorderFlags, setReorderFlag, getUrgentReorders,
-    getSkinPhotos, getTreatmentHistory, saveTreatmentRecord,
+    getSkinPhotos, getMySkinPhotos, addSkinPhoto, deleteSkinPhoto,
+    getTreatmentHistory, saveTreatmentRecord,
     getEstheNotes, saveEstheNotes,
     getAllReviews, saveReview, updateReview, deleteReview,
     getMyOrders

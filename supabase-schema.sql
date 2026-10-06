@@ -142,9 +142,9 @@ create table if not exists public.orders (
 create table if not exists public.skin_photos (
   id         uuid primary key default gen_random_uuid(),
   client_id  uuid references public.profiles(id) on delete cascade,
-  url        text,
-  notes      text default '',
-  created_at timestamptz default now()
+  storage_path text not null,   -- path inside the private "skin-photos" bucket: <client_id>/<file>
+  caption    text default '',
+  taken_at   timestamptz not null default now()
 );
 
 -- ── Enable Row Level Security ──────────────────────────────
@@ -222,14 +222,32 @@ create policy "Admin reorder_flags" on public.reorder_flags
   for all using (public.is_admin());
 
 -- ── RLS Policies: Skin Photos ────────────────────────────
-drop policy if exists "Admin skin_photos" on public.skin_photos;
-drop policy if exists "Own skin_photos"   on public.skin_photos;
+drop policy if exists "Admin reads all photos"      on public.skin_photos;
+drop policy if exists "Clients manage own photos"   on public.skin_photos;
 
-create policy "Admin skin_photos" on public.skin_photos
-  for all using (public.is_admin());
+create policy "Admin reads all photos" on public.skin_photos
+  for select using (public.is_admin());
 
-create policy "Own skin_photos" on public.skin_photos
-  for select using (client_id = auth.uid());
+create policy "Clients manage own photos" on public.skin_photos
+  for all using (auth.uid() = client_id) with check (auth.uid() = client_id);
+
+-- ── Skin Photos: private storage bucket + policies ───────
+insert into storage.buckets (id, name, public)
+values ('skin-photos', 'skin-photos', false)
+on conflict (id) do nothing;
+
+drop policy if exists "Clients upload own photo files" on storage.objects;
+drop policy if exists "Clients read own photo files"   on storage.objects;
+drop policy if exists "Clients delete own photo files" on storage.objects;
+drop policy if exists "Staff read all photo files"     on storage.objects;
+create policy "Clients upload own photo files" on storage.objects
+  for insert with check (bucket_id = 'skin-photos' and (storage.foldername(name))[1] = auth.uid()::text);
+create policy "Clients read own photo files" on storage.objects
+  for select using (bucket_id = 'skin-photos' and (storage.foldername(name))[1] = auth.uid()::text);
+create policy "Clients delete own photo files" on storage.objects
+  for delete using (bucket_id = 'skin-photos' and (storage.foldername(name))[1] = auth.uid()::text);
+create policy "Staff read all photo files" on storage.objects
+  for select using (bucket_id = 'skin-photos' and public.is_admin());
 
 -- ── Done ──────────────────────────────────────────────────
 -- After running this script:

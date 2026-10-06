@@ -187,9 +187,9 @@
   /* ── Skin photos ──────────────────────────────────────────── */
   async function getSkinPhotos(clientId) {
     const { data, error } = await _sb.from('skin_photos')
-      .select('*').eq('client_id', clientId).order('created_at', { ascending: false });
+      .select('*').eq('client_id', clientId).order('taken_at', { ascending: false });
     if (error) throw error;
-    return (data || []).map(p => Object.assign(p, { caption: p.notes, taken_at: p.created_at }));
+    return data || [];
   }
 
 
@@ -198,17 +198,17 @@
     const { data: { user } } = await _sb.auth.getUser();
     if (!user) return [];
     const { data, error } = await _sb.from('skin_photos')
-      .select('id, url, label, notes, created_at').eq('client_id', user.id)
-      .order('created_at', { ascending: true });
+      .select('id, storage_path, caption, taken_at').eq('client_id', user.id)
+      .order('taken_at', { ascending: true });
     if (error) throw error;
     const rows = data || [];
     if (!rows.length) return [];
     const { data: signed, error: sErr } = await _sb.storage.from('skin-photos')
-      .createSignedUrls(rows.map(r => r.url), 60 * 60 * 6);
+      .createSignedUrls(rows.map(r => r.storage_path), 60 * 60 * 6);
     if (sErr) throw sErr;
     return rows.map((r, i) => ({
-      id: r.id, path: r.url, label: r.label || r.notes || '',
-      date: r.created_at, url: signed[i] && signed[i].signedUrl || ''
+      id: r.id, path: r.storage_path, label: r.caption || '',
+      date: r.taken_at, url: signed[i] && signed[i].signedUrl || ''
     })).filter(p => p.url);
   }
 
@@ -218,8 +218,8 @@
     const path = user.id + '/' + Date.now() + '-' + Math.random().toString(36).slice(2, 8) + '.jpg';
     const up = await _sb.storage.from('skin-photos').upload(path, blob, { contentType: 'image/jpeg' });
     if (up.error) throw up.error;
-    const row = { client_id: user.id, url: path, label: label || '' };
-    if (takenAt) row.created_at = takenAt;
+    const row = { client_id: user.id, storage_path: path, caption: label || '' };
+    if (takenAt) row.taken_at = takenAt;
     const { error } = await _sb.from('skin_photos').insert(row);
     if (error) { await _sb.storage.from('skin-photos').remove([path]); throw error; }
   }

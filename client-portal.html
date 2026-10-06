@@ -244,6 +244,20 @@ body{background:var(--void);color:var(--pearl);font-family:'DM Sans',sans-serif;
 .tone-swatch.selected{border-color:var(--aurora);box-shadow:0 0 0 2px rgba(168,85,247,.4);transform:scale(1.15);}
 
 /* ── PHOTO PROGRESS ── */
+/* ── GLOW JOURNEY SLIDER (first photo → newest photo) ── */
+.glow-slider-card{margin-bottom:24px;}
+.glow-slider{position:relative;width:100%;max-width:520px;margin:16px auto 0;aspect-ratio:.85;border-radius:18px;overflow:hidden;border:1px solid var(--border);background:rgba(26,10,61,.5);user-select:none;-webkit-user-select:none;touch-action:pan-y;--pos:50%;}
+.glow-slider img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;}
+.glow-slider .gs-first{clip-path:inset(0 calc(100% - var(--pos)) 0 0);}
+.glow-slider .gs-line{position:absolute;top:0;bottom:0;left:var(--pos);width:2px;background:var(--starlight);box-shadow:0 0 12px rgba(168,85,247,.8);transform:translateX(-1px);pointer-events:none;}
+.glow-slider .gs-knob{position:absolute;top:50%;left:var(--pos);width:42px;height:42px;border-radius:50%;background:rgba(3,6,18,.75);border:2px solid var(--starlight);color:var(--starlight);display:flex;align-items:center;justify-content:center;font-size:14px;transform:translate(-50%,-50%);pointer-events:none;box-shadow:0 0 16px rgba(168,85,247,.6);}
+.glow-slider .gs-tag{position:absolute;bottom:12px;background:rgba(3,6,18,.75);border:1px solid var(--border);border-radius:12px;padding:6px 12px;font-size:10px;color:var(--starlight);letter-spacing:.08em;max-width:44%;pointer-events:none;}
+.glow-slider .gs-tag b{display:block;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--aurora);font-weight:500;margin-bottom:2px;}
+.glow-slider .gs-tag.l{left:12px;}
+.glow-slider .gs-tag.r{right:12px;text-align:right;}
+.glow-slider input[type=range]{position:absolute;inset:0;width:100%;height:100%;opacity:0;margin:0;cursor:ew-resize;touch-action:pan-y;}
+.glow-slider-empty{font-size:12px;color:rgba(232,213,255,.4);text-align:center;padding:22px 10px 6px;line-height:1.7;}
+
 .photo-toolbar{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;}
 .photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;}
 .photo-tile{aspect-ratio:1;border-radius:16px;overflow:hidden;position:relative;border:1px solid var(--border);background:rgba(26,10,61,.5);cursor:pointer;transition:all .3s;}
@@ -954,6 +968,11 @@ body{background:var(--void);color:var(--pearl);font-family:'DM Sans',sans-serif;
         <div class="p-tag">Photo Tracker</div>
         <h1 class="p-title">Track Your<br><em>Glow Journey</em></h1>
         <p class="p-sub">Upload or capture photos to see your skin transform over time.</p>
+      </div>
+      <div class="card glow-slider-card" id="glowSliderCard">
+        <div class="card-title">Your Glow Journey</div>
+        <div class="card-sub">Slide from your very first photo to your newest</div>
+        <div id="glowSliderBody"></div>
       </div>
       <div class="photo-toolbar">
         <button class="btn-sm primary" onclick="openUpload()">📸 Add Photo</button>
@@ -3014,7 +3033,38 @@ function deletePhoto(id) {
   toast('🗑️','Photo removed');
 }
 
+
+// ── Glow Journey slider: first photo (left) → newest photo (right) ──
+function renderGlowSlider() {
+  const body = document.getElementById('glowSliderBody');
+  if (!body) return;
+  const photos = loadPhotos().slice().sort((a,b) => new Date(a.date) - new Date(b.date));
+  if (photos.length < 2) {
+    body.innerHTML = '<div class="glow-slider-empty">' + (photos.length === 0
+      ? 'Add your first photo to start your journey.'
+      : 'Great start! Add another photo later and slide between your first and newest to see your progress.') + '</div>';
+    return;
+  }
+  const first = photos[0], latest = photos[photos.length - 1];
+  const fmt = d => new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  body.innerHTML = '';
+  const box = document.createElement('div');
+  box.className = 'glow-slider';
+  box.innerHTML = '<img class="gs-latest" alt="Newest photo"><img class="gs-first" alt="First photo">' +
+    '<div class="gs-line"></div><div class="gs-knob">◀ ▶</div>' +
+    '<div class="gs-tag l"><b>First</b><span class="gs-fl"></span></div>' +
+    '<div class="gs-tag r"><b>Newest</b><span class="gs-ll"></span></div>' +
+    '<input type="range" min="0" max="100" value="50" step="0.1" aria-label="Slide between your first and newest photo">';
+  box.querySelector('.gs-latest').src = latest.url;
+  box.querySelector('.gs-first').src = first.url;
+  box.querySelector('.gs-fl').textContent = fmt(first.date) + (first.label ? ' · ' + first.label : '');
+  box.querySelector('.gs-ll').textContent = fmt(latest.date) + (latest.label ? ' · ' + latest.label : '');
+  box.querySelector('input').addEventListener('input', e => box.style.setProperty('--pos', e.target.value + '%'));
+  body.appendChild(box);
+}
+
 function populatePhotoGrid() {
+  renderGlowSlider();
   const photos = loadPhotos();
   const grid = document.getElementById('photoGrid');
   if (!grid) return;

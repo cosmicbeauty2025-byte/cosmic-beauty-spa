@@ -189,9 +189,12 @@
     const { data, error } = await _sb.from('skin_photos')
       .select('*').eq('client_id', clientId).order('taken_at', { ascending: false });
     if (error) throw error;
-    return data || [];
+    const rows = data || [];
+    if (!rows.length) return [];
+    const { data: signed } = await _sb.storage.from('skin-photos')
+      .createSignedUrls(rows.map(r => r.storage_path), 60 * 60);
+    return rows.map((r, i) => Object.assign(r, { url: signed && signed[i] && signed[i].signedUrl || '' }));
   }
-
 
   /* Returns [{id, url (signed), label, date, path}] oldest-first not guaranteed; caller sorts. */
   async function getMySkinPhotos() {

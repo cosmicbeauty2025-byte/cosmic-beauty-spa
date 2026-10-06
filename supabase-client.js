@@ -4,7 +4,7 @@
    getProfile, updateProfile, getAppointments, addAppointment,
    deleteAppointment, getTodayAppointments, getAllClients,
    getReorderFlags, setReorderFlag, getUrgentReorders,
-   getSkinPhotos, getMySkinPhotos, addSkinPhoto, deleteSkinPhoto,
+   getSkinPhotos, getMySkinPhotos, addSkinPhoto, deleteSkinPhoto, analyzeSkinPhoto,
    getTreatmentHistory, saveTreatmentRecord,
    getEstheNotes, saveEstheNotes, getAllReviews, saveReview,
    updateReview, deleteReview, getMyOrders
@@ -233,6 +233,24 @@
     if (path) await _sb.storage.from('skin-photos').remove([path]);
   }
 
+  /* AI skin analysis (Supabase edge function "analyze-skin"). base64 = JPEG without the data: prefix. */
+  async function analyzeSkinPhoto(base64) {
+    const { data: { session } } = await _sb.auth.getSession();
+    if (!session) throw new Error('Please sign in to use skin analysis.');
+    const res = await fetch(SUPABASE_URL + '/functions/v1/analyze-skin', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + session.access_token,
+        'apikey': SUPABASE_ANON_KEY,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ image: base64 })
+    });
+    const body = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(body.error || 'Analysis failed. Please try again.');
+    return body;
+  }
+
   /* ── Treatment history ────────────────────────────────────── */
   async function getTreatmentHistory(clientId) {
     const { data, error } = await _sb.from('treatments')
@@ -326,7 +344,7 @@
     getProfile, updateProfile, getAllClients,
     getAppointments, addAppointment, deleteAppointment, getTodayAppointments,
     getReorderFlags, setReorderFlag, getUrgentReorders,
-    getSkinPhotos, getMySkinPhotos, addSkinPhoto, deleteSkinPhoto,
+    getSkinPhotos, getMySkinPhotos, addSkinPhoto, deleteSkinPhoto, analyzeSkinPhoto,
     getTreatmentHistory, saveTreatmentRecord,
     getEstheNotes, saveEstheNotes,
     getAllReviews, saveReview, updateReview, deleteReview,

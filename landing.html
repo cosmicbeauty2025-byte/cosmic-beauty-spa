@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cosmic Creators · Your All-In-One Beauty Business Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=Syncopate:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--void:#030612;--deep:#0a0820;--violet:#6b2fa0;--electric:#7c3aed;--aurora:#a855f7;--sky:#60a5fa;--ice:#bae6fd;--starlight:#e8d5ff;--pearl:#f5f0ff;--border:rgba(168,85,247,.15);--border-hi:rgba(168,85,247,.45);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--void);color:var(--pearl);font-family:'DM Sans',sans-serif;font-weight:300;min-height:100vh;overflow-x:hidden;}
+::selection{background:var(--aurora);color:var(--void);}
+.nb{position:fixed;border-radius:50%;filter:blur(120px);pointer-events:none;z-index:0;}
+.nb1{width:600px;height:600px;background:radial-gradient(circle,rgba(107,47,160,.3) 0%,transparent 70%);top:-150px;left:-100px;}
+.nb2{width:500px;height:500px;background:radial-gradient(circle,rgba(61,47,160,.22) 0%,transparent 70%);bottom:10%;right:-100px;}
+.nb3{width:380px;height:380px;background:radial-gradient(circle,rgba(96,165,250,.14) 0%,transparent 70%);top:50%;left:40%;}
+header{position:relative;z-index:1;text-align:center;padding:80px 24px 60px;}
+.logo{font-family:'Syncopate',sans-serif;font-size:26px;letter-spacing:.2em;color:var(--starlight);}
+.subtitle{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--ice);margin-top:12px;}
+h1{font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:300;margin-top:28px;line-height:1.2;}
+h1 em{font-style:italic;background:linear-gradient(135deg,var(--aurora),var(--sky));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+p.lead{max-width:680px;margin:20px auto 0;color:rgba(232,213,255,.7);font-size:16px;line-height:1.7;}
+.cta-row{margin-top:36px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
+a.btn-primary, button.btn-primary{background:linear-gradient(135deg,var(--electric),rgba(107,47,160,.9));color:#fff;border:none;padding:14px 28px;border-radius:12px;text-decoration:none;font-size:14px;letter-spacing:.12em;text-transform:uppercase;}
+a.btn-ghost{border:1px solid var(--border);color:var(--starlight);padding:14px 28px;border-radius:12px;text-decoration:none;font-size:14px;letter-spacing:.12em;text-transform:uppercase;}
+section{position:relative;z-index:1;padding:48px 24px;}
+.features{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;max-width:1100px;margin:0 auto;}
+.card{background:linear-gradient(145deg,rgba(18,10,45,.9),rgba(13,26,74,.8));border:1px solid var(--border);border-radius:18px;padding:28px;backdrop-filter:blur(10px);}
+.card h3{font-family:'Syncopate',sans-serif;font-size:13px;letter-spacing:.15em;margin-bottom:10px;color:var(--aurora);}
+.card p{color:rgba(232,213,255,.6);font-size:14px;line-height:1.6;}
+.ep, .emaill{display:flex;flex-direction:column;align-items:center;padding:60px 24px;}
+input.capture{width:100%;max-width:420px;padding:14px;border-radius:12px;border:1px solid var(--border);background:rgba(26,10,61,.6);color:var(--pearl);font-size:14px;outline:none;}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:1100px;margin:0 auto;padding-top:20px;}
+.panel{background:rgba(168,85,247,.06);border:1px solid var(--border);border-radius:18px;padding:28px;}
+.panel h3{font-family:'Syncopate',sans-serif;font-size:12px;letter-spacing:.2em;margin-bottom:14px;color:var(--sky);}
+.panel ul{list-style:none;color:rgba(232,213,255,.65);font-size:14px;line-height:1.8;}
+.footer{text-align:center;padding:40px 24px;color:rgba(232,213,255,.3);font-size:11px;letter-spacing:.1em;}
+</style>
+</head>
+<body>
+<canvas id="starfield"></canvas>
+<div class="nb nb1"></div><div class="nb nb2"></div><div class="nb nb3"></div>
+
+<header>
+  <div class="logo">COSMIC CREATORS</div>
+  <div class="subtitle">The beauty business platform for salons & estheticians</div>
+  <h1>Book. Serve. <em>Grow.</em></h1>
+  <p class="lead">One place to manage bookings, accept payments, sell skincare, and give every client a portal to track their facial routine and skin progress.</p>
+  <div class="cta-row">
+    <a class="btn-primary" href="#waitlist">Join the Waitlist</a>
+    <a class="btn-ghost" href="#features">See Features</a>
+  </div>
+</header>
+
+<section id="features">
+  <div class="features">
+    <div class="card"><h3>BOOKINGS</h3><p>Clients book services online 24/7, add-ons included.</p></div>
+    <div class="card"><h3>PAYMENTS</h3><p>Accept deposits or full payment at checkout.</p></div>
+    <div class="card"><h3>CLIENT PORTAL</h3><p>Routines, water tracking, streaks, skin-change photos.</p></div>
+    <div class="card"><h3>SHOP</h3><p>Sell skincare products directly to your clients.</p></div>
+    <div class="card"><h3>DASHBOARD</h3><p>View bookings, clients, and facial history in one place.</p></div>
+  </div>
+</section>
+
+<section class="split">
+  <div class="panel">
+    <h3>FOR SALON & ESTHETICIAN OWNERS</h3>
+    <ul>
+      <li>✓ Accept bookings and payments online</li>
+      <li>✓ Keep clients coming back with routines</li>
+      <li>✓ Sell products from your own shop</li>
+      <li>✓ Manage staff and clients easily</li>
+    </ul>
+  </div>
+  <div class="panel">
+    <h3>FOR CLIENTS</h3>
+    <ul>
+      <li>✓ Book your favorite esthetician</li>
+      <li>✓ Track your skin’s progress</li>
+      <li>✓ Follow your facial routine</li>
+      <li>✓ Order products when you need them</li>
+    </ul>
+  </div>
+</section>
+
+<section id="waitlist" class="ep">
+  <h2 style="font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:300;">Join the Waitlist</h2>
+  <p style="color:rgba(232,213,255,.5);margin:10px 0 24px;">Be first to know when we launch.</p>
+  <input id="emailCapture" class="capture" type="email" placeholder="your@email.com">
+  <div class="cta-row" style="margin-top:16px;">
+    <button class="btn-primary" onclick="capture()">Notify Me ✦</button>
+  </div>
+  <p id="captureMsg" style="margin-top:16px;color:var(--sky);font-size:13px;"></p>
+</section>
+
+<div class="footer">✦ COSMIC CREATORS · NATIONAL ✦</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const email = localStorage.getItem('cc_email');
+  function capture() {
+    const v = document.getElementById('emailCapture').value.trim();
+    const el = document.getElementById('captureMsg');
+    if (!v || !v.includes('@')) { el.textContent = 'Please enter a valid email.'; return; }
+    localStorage.setItem('cc_waitlist_email', v);
+    el.textContent = 'Thanks! We’ll let you know when we launch.';
+    document.getElementById('emailCapture').value = '';
+  }
+  // starfield
+  const canvas = document.createElement('canvas');
+  canvas.id='starfield'; canvas.style.position='fixed'; canvas.style.inset='0'; canvas.style.zIndex='0'; canvas.style.pointerEvents='none';
+  document.body.prepend(canvas);
+  const ctx = canvas.getContext('2d');
+  let stars = [];
+  function resize() { canvas.width = innerWidth; canvas.height = innerHeight; stars = []; for (let i=0;i<150;i++) stars.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*1.2+.2,ts:Math.random()*.02+.004,c:Math.random()>.7?'#60a5fa':'#e8d5ff'}); }
+  function draw(t) { ctx.clearRect(0,0,canvas.width,canvas.height); for (let s of stars) { ctx.globalAlpha = .12+.7*(.5+.5*Math.sin(t*s.ts)); ctx.fillStyle = s.c; ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2); ctx.fill(); } ctx.globalAlpha = 1; requestAnimationFrame(draw); }
+  resize(); window.addEventListener('resize', resize); requestAnimationFrame(draw);
+</script>
+</body>
+</html>

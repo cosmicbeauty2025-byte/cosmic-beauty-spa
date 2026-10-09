@@ -59,6 +59,8 @@ body{background:var(--void);color:var(--pearl);font-family:'DM Sans',sans-serif;
 .divider{text-align:center;font-size:11px;color:rgba(232,213,255,.2);letter-spacing:.2em;margin:14px 0;}
 
 .btn-demo{width:100%;background:rgba(168,85,247,.07);border:1px solid var(--border);border-radius:12px;padding:13px;color:rgba(232,213,255,.55);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;transition:all .3s;letter-spacing:.04em;}
+.btn-demo .demo-note{display:block;font-size:10px;opacity:.7;margin-top:3px;letter-spacing:.02em;}
+.error-msg a{color:var(--starlight);text-decoration:underline;cursor:pointer;}
 .btn-demo:hover{border-color:var(--border-hi);color:var(--starlight);}
 
 .error-msg{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.25);border-radius:10px;padding:10px 14px;font-size:12px;color:#f87171;margin-bottom:14px;display:none;}
@@ -104,7 +106,7 @@ body{background:var(--void);color:var(--pearl);font-family:'DM Sans',sans-serif;
         <div class="field"><label>Password</label><input type="password" id="loginPw" placeholder="••••••••" onkeydown="if(event.key==='Enter')guestLogin()" autocomplete="current-password"></div>
         <button class="btn-submit" onclick="guestLogin()">Sign In ✦</button>
         <div class="divider">· or ·</div>
-        <button class="btn-demo" onclick="demoGuest()">✦ Try Demo Guest Account</button>
+        <button class="btn-demo" onclick="demoGuest()">✦ Explore a Demo Account <span class="demo-note">(sample data only — not a real signup)</span></button>
       </div>
 
       <!-- Register form -->
@@ -212,6 +214,17 @@ function showError(msg) {
   var el = document.getElementById('errorMsg');
   el.textContent = msg; el.classList.add('show');
 }
+function showInvalidLogin(email) {
+  var el = document.getElementById('errorMsg');
+  el.textContent = "We couldn't find an account matching that email and password. ";
+  var a = document.createElement('a');
+  a.textContent = 'No account yet? Create one.';
+  a.onclick = function() {
+    switchAuthTab('register');
+    document.getElementById('regEmail').value = email;
+  };
+  el.appendChild(a); el.classList.add('show');
+}
 function clearError() { document.getElementById('errorMsg').classList.remove('show'); }
 function _btnState(btn, loading) {
   btn.disabled = loading;
@@ -231,7 +244,8 @@ async function guestLogin() {
     var profile = await getProfile(user.id);
     _navigate(profile && profile.is_admin ? DASH_PAGE : HOME_PAGE);
   } catch(e) {
-    showError(e.message || 'Sign in failed. Please check your credentials.');
+    if (/invalid login credentials/i.test(e.message || '')) showInvalidLogin(email);
+    else showError(e.message || 'Sign in failed. Please check your credentials.');
     _btnState(btn, false); btn.textContent = 'Sign In ✦';
   }
 }
@@ -265,7 +279,7 @@ async function demoGuest() {
     _navigate(HOME_PAGE);
   } catch(e) {
     // If demo account doesn't exist in Supabase yet, show friendly message
-    showError('Demo account not set up yet. Please create a free account above — it only takes 30 seconds!');
+    showError('The demo account isn\'t available right now. To book and track real visits, please use Create Account above — it only takes 30 seconds!');
   }
 }
 

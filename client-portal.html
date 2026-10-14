@@ -818,7 +818,7 @@ body{background:var(--void);color:var(--pearl);font-family:'DM Sans',sans-serif;
       <div class="p-header">
         <div class="p-tag">Skin Quiz</div>
         <h1 class="p-title">Discover Your<br><em>Skin Type</em></h1>
-        <p class="p-sub">Answer 7 quick questions so we can build your personalized Bioelements® routine.</p>
+        <p class="p-sub">Answer 7 quick questions so we can build your personalized skincare routine.</p>
       </div>
 
       <div class="quiz-progress" id="quizProgress"></div>
@@ -1097,7 +1097,7 @@ body{background:var(--void);color:var(--pearl);font-family:'DM Sans',sans-serif;
             <span style="font-size:18px;">💜</span>
             <div style="text-align:left;">
               <div style="font-size:13px;color:var(--starlight);font-family:'DM Sans',sans-serif;">Christina's Recommendations</div>
-              <div style="font-size:11px;color:rgba(232,213,255,.4);font-family:'DM Sans',sans-serif;">Bioelements® picks for your skin type</div>
+              <div style="font-size:11px;color:rgba(232,213,255,.4);font-family:'DM Sans',sans-serif;">Picks for your skin type</div>
             </div>
           </div>
           <span id="recToggleIcon" style="font-size:16px;color:var(--aurora);transition:transform .3s;">▾</span>
@@ -1351,7 +1351,7 @@ body{background:var(--void);color:var(--pearl);font-family:'DM Sans',sans-serif;
       </div>
       <div class="ob-feature">
         <span class="ob-fi">☄️</span>
-        <div><div class="ob-ft">Comets — Shop Bioelements®</div><div class="ob-fs">Every product purchase sends a comet blazing across your galaxy in real time.</div></div>
+        <div><div class="ob-ft">Comets — Shop Skincare</div><div class="ob-fs">Every product purchase sends a comet blazing across your galaxy in real time.</div></div>
       </div>
       <div class="ob-nav">
         <button class="ob-skip" onclick="obPrev()">← Back</button>
@@ -1621,7 +1621,7 @@ function renderDashboard(user) {
       <div style="text-align:center;padding:20px 10px;">
         <div style="font-size:32px;margin-bottom:10px;">🔬</div>
         <div style="font-size:14px;color:var(--starlight);margin-bottom:6px;">Your routine isn't set yet</div>
-        <div style="font-size:12px;color:rgba(232,213,255,.4);margin-bottom:16px;line-height:1.6;">Take the 2-minute skin quiz and we'll build your personalized Bioelements® routine.</div>
+        <div style="font-size:12px;color:rgba(232,213,255,.4);margin-bottom:16px;line-height:1.6;">Take the 2-minute skin quiz and we'll build your personalized skincare routine.</div>
         <button class="btn-sm primary" onclick="goTo('quiz')" style="margin:0 auto;">Take Skin Quiz →</button>
       </div>`;
   } else {
@@ -1811,7 +1811,7 @@ function finishQuiz() {
   const products = productMap[skinType]||productMap.combo;
   document.getElementById('resultBox').innerHTML = `<div class="result-icon">${data.icon}</div><div class="result-skin-type">${data.label}</div><div class="result-desc">${data.desc}</div>`;
   document.getElementById('resultProducts').innerHTML = `
-    <div class="ps-label" style="justify-content:center;margin:0 0 12px;">Your Recommended Bioelements® Products</div>
+    <div class="ps-label" style="justify-content:center;margin:0 0 12px;">Your Recommended Products</div>
     <div class="result-products">
       ${products.map(p=>`
         <a href="https://cosmicnailsandspa.glossgenius.com" target="_blank" style="text-decoration:none;">
@@ -3083,7 +3083,7 @@ function renderMilestones(user) {
     { icon:'📸', label:'Before & After',         desc:'Uploaded your first progress photo',            done: false },
     { icon:'💎', label:'Facial Glow',            desc:'First professional facial with Christina',      done: facials>=1 },
     { icon:'🌙', label:'Double Moon',            desc:'Two facials — two moons orbit your planets',    done: facials>=2 },
-    { icon:'☄️', label:'First Comet',            desc:'First Bioelements® product purchase',           done: orders>=1 },
+    { icon:'☄️', label:'First Comet',            desc:'First product purchase',                       done: orders>=1 },
     { icon:'🪐', label:'Outer Ring',             desc:'6 months of consistent routine',                done: streak>=180 },
     { icon:'☀️', label:'Celestial Icon',         desc:'Full year — all 12 planets illuminated',        done: streak>=365 },
   ];

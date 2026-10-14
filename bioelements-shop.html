@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LUMINOS · Bioelements Shop</title>
+<title>Cosmic Beauty Spa · Skincare Shop</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Syncopate:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root{--void:#030612;--deep:#0a0820;--nebula:#1a0a3d;--violet:#6b2fa0;--electric:#7c3aed;--aurora:#a855f7;--sky:#60a5fa;--ice:#bae6fd;--starlight:#e8d5ff;--pearl:#f5f0ff;}
@@ -245,15 +245,15 @@ nav{position:sticky;top:0;z-index:200;padding:18px 48px;display:flex;align-items
 
 <!-- PAGE HEADER -->
 <div class="shop-header">
-  <div class="shop-tag">✦ Professional · Clean · Clinical · Vegan ✦</div>
-  <h1>Bioelements<br><em>Complete Collection</em></h1>
-  <p>Every formula crafted for real skin. Shop by step — Cleanse, Tone, Exfoliate, Moisturize and more — or filter by skin type.</p>
+  <div class="shop-tag">✦ Skincare Shop ✦</div>
+  <h1>New Skincare<br><em>Coming Soon</em></h1>
+  <p>We're choosing new products for your routine at home. Until then, ask about products at your next visit.</p>
 </div>
 
 <div class="divider"></div>
 
 <!-- FILTER ZONE -->
-<div class="filter-zone">
+<div class="filter-zone" id="filterZone">
   <div class="filter-row">
     <span class="filter-label">Step</span>
     <div class="filter-pills" id="categoryList">
@@ -367,7 +367,7 @@ nav{position:sticky;top:0;z-index:200;padding:18px 48px;display:flex;align-items
   <div class="success-modal">
     <div class="success-icon">🎉</div>
     <h2>Order Confirmed!</h2>
-    <p>Thank you for your Bioelements order. A confirmation email is on its way to you.</p>
+    <p>Thank you for your order. A confirmation email is on its way to you.</p>
     <div class="success-items" id="successItems"></div>
     <button class="checkout-btn" onclick="closeSuccess()">Continue Shopping ✦</button>
   </div>
@@ -839,7 +839,15 @@ function getFiltered() {
 }
 
 // ─── RENDER ───────────────────────────────────────────────────────────────────
+// The online shop is closed while new products are chosen (the old product list stays in this file, hidden).
+const SHOP_OPEN = false;
 function renderAll() {
+  if (!SHOP_OPEN) {
+    const fz = document.getElementById('filterZone'); if (fz) fz.style.display = 'none';
+    const cb = document.querySelector('.cart-btn'); if (cb) cb.style.display = 'none';
+    document.getElementById('shopContent').innerHTML = `<div class="empty-state"><div class="empty-icon">🌌</div><p>Our online shop is getting new products.<br>Check back soon, or book a visit and ask about skincare in the spa.</p><p style="margin-top:22px"><a href="https://www.cosmicreators.com" class="nav-btn accent" style="display:inline-block">Book Now ✦</a></p></div>`;
+    return;
+  }
   const filtered = getFiltered();
   const content  = document.getElementById('shopContent');
   document.getElementById('resultCount').textContent =
@@ -953,7 +961,7 @@ function renderCart() {
     return `<div class="cart-item">
       <div class="ci-icon ${ciColors[i%4]}">${thumb}</div>
       <div class="ci-info">
-        <div class="ci-brand">BIOELEMENTS®</div>
+        <div class="ci-brand">COSMIC BEAUTY SPA</div>
         <div class="ci-name">${item.name}</div>
         <div class="ci-price">$${item.price} × ${item.qty}</div>
       </div>
